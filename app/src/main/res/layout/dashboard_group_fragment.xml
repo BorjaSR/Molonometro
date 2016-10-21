@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/termometer_container"
+        android:layout_width="match_parent"
+        android:layout_height="350dp">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:transitionName="@string/element_shared_dashboard_group"
+            android:layout_height="match_parent"
+            android:src="@drawable/termometer"
+            android:scaleType="fitXY"/>
+
+        <RelativeLayout
+            android:id="@+id/users_container"
+            android:layout_marginLeft = "135dp"
+            android:layout_marginTop = "10dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <include layout="@layout/termometer_user"/>
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/shadow"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorPrimaryLight"
+            android:alpha="0"/>
+    </RelativeLayout>
+
+    <ScrollView
+        android:id="@+id/scroll_dashboard_group"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/window_to_termometer"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="350dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:elevation="4dp"
+                android:background="@color/white">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Nada que mostrar"
+                    android:gravity="center"
+                    android:textSize="25dp"
+                    android:padding="15dp"/>
+
+                <SeekBar
+                    android:id="@+id/seek_bar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    />
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="350dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Nada que mostrar"
+                    android:gravity="center"
+                    android:textSize="25dp"
+                    android:padding="15dp"/>
+
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="350dp"/>
+
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>
