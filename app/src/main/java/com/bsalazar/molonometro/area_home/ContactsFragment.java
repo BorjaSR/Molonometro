@@ -9,6 +9,7 @@ import android.widget.ListView;
 
 import com.bsalazar.molonometro.MainActivity;
 import com.bsalazar.molonometro.R;
+import com.bsalazar.molonometro.general.Variables;
 
 /**
  * Created by bsalazar on 18/10/2016.
@@ -35,7 +36,7 @@ public class ContactsFragment extends Fragment {
     private void update() {
 
         ListView groups_list = (ListView) rootView.findViewById(R.id.contacts_list);
-        ContactsAdapter adapter = new ContactsAdapter(getActivity().getApplicationContext(), R.layout.group_item, ((MainActivity) getActivity()).contacts);
+        ContactsAdapter adapter = new ContactsAdapter(getActivity().getApplicationContext(), R.layout.group_item, Variables.contacts);
         groups_list.setAdapter(adapter);
     }
 }

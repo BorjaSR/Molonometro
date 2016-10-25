@@ -1,5 +1,6 @@
 package com.bsalazar.molonometro;
 
+import android.animation.Animator;
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -61,7 +63,7 @@ public class DashboardGroupFragment extends Fragment {
         final RelativeLayout users_container = (RelativeLayout) rootView.findViewById(R.id.users_container);
         final LinearLayout shadow = (LinearLayout) rootView.findViewById(R.id.shadow);
         ScrollView scroll_dashboard_group = (ScrollView) rootView.findViewById(R.id.scroll_dashboard_group);
-        SeekBar seek_bar = (SeekBar) rootView.findViewById(R.id.seek_bar);
+        final SeekBar seek_bar = (SeekBar) rootView.findViewById(R.id.seek_bar);
 
         final float ter_height = termometer_container.getLayoutParams().height;
 
@@ -97,6 +99,10 @@ public class DashboardGroupFragment extends Fragment {
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 users_container.getChildAt(2).setTranslationY(Constants.HEIGHT_OF_TEMOMETER - i);
                 Log.d("[SEEKBAR INFO]", i + "");
+
+                if(i > seek_bar.getMax()/2){
+                    enterReveal();
+                }
             }
 
             @Override
@@ -110,6 +116,27 @@ public class DashboardGroupFragment extends Fragment {
             }
         });
 
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    void enterReveal() {
+        // previously invisible view
+        final View myView = rootView.findViewById(R.id.text);
+
+        // get the center for the clipping circle
+        int cx = myView.getMeasuredWidth() / 2;
+        int cy = myView.getMeasuredHeight() / 2;
+
+        // get the final radius for the clipping circle
+        int finalRadius = Math.max(myView.getWidth(), myView.getHeight()) / 2;
+
+        // create the animator for this view (the start radius is zero)
+        Animator anim =
+                ViewAnimationUtils.createCircularReveal(myView, cx, cy, 0, finalRadius);
+
+        // make the view visible and start the animation
+        myView.setVisibility(View.VISIBLE);
+        anim.start();
     }
 
     private int getPositionUser(int molopuntos) {

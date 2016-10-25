@@ -68,11 +68,13 @@ public class MainScreenFragment extends Fragment {
         main_view_pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                ((MainActivity) getActivity()).mainViewPagerScrolled(position, positionOffset, positionOffsetPixels);
 
+                ((MainActivity) getActivity()).fab.setTranslationX(positionOffsetPixels / 3);
                 indicator_current_page.setX(positionOffsetPixels / 2);
-                if (position == 1 && positionOffsetPixels == 0)
+                if (position == 1 && positionOffsetPixels == 0) {
                     indicator_current_page.setX(((MainActivity) getActivity()).size.x / 2);
+                    ((MainActivity) getActivity()).fab.setX(((MainActivity) getActivity()).size.x);
+                }
             }
 
             @Override

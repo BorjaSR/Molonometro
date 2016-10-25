@@ -2,7 +2,6 @@ package com.bsalazar.molonometro;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -20,64 +19,32 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.view.Display;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.ListView;
 
+import com.bsalazar.molonometro.area_home.ContactsAdapter;
 import com.bsalazar.molonometro.area_home.MainScreenFragment;
 import com.bsalazar.molonometro.entities.Contact;
 import com.bsalazar.molonometro.general.Constants;
 import com.bsalazar.molonometro.general.Tools;
 import com.bsalazar.molonometro.general.Variables;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class NewGroupActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private int actualFragment = Constants.FRAG_ID_MAIN_SCREEN;
-    private HashMap<Integer, Fragment> fragments = new HashMap<>();
-    private FragmentManager fragmentManager;
-    public FloatingActionButton fab;
-    public float initialFabPosition;
-    private int fragmentContainterID;
     public Point size;
-
-    private final int PERMISSION_RESULT_READ_CONTACTS = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.new_group_activity);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        fragmentManager = getSupportFragmentManager();
-        fragmentContainterID = R.id.fragment_container;
-
-        fab = (FloatingActionButton) findViewById(R.id.fab);
-        initialFabPosition = fab.getTranslationX();
-        fab.setOnClickListener(this);
-
-        fragments.put(Constants.FRAG_ID_MAIN_SCREEN, new MainScreenFragment());
-        fragments.put(Constants.FRAG_ID_DASHBOARD_GROUP, new DashboardGroupFragment());
-
-        fragmentManager.beginTransaction()
-                .addToBackStack(null)
-                .replace(fragmentContainterID, fragments.get(actualFragment))
-                .commit();
-
-        int permissionCheck = ContextCompat.checkSelfPermission(this,
-                Manifest.permission.READ_CONTACTS);
-        if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
-            getContacts();
-        } else {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.READ_CONTACTS},
-                    PERMISSION_RESULT_READ_CONTACTS);
-        }
-
 
         // Save the screen size
         Display display = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
@@ -85,31 +52,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         display.getMetrics(metrics);
         size = new Point();
         display.getSize(size);
-    }
 
-    @Override
-    public void onBackPressed() {
-        switch (actualFragment) {
-            case Constants.FRAG_ID_DASHBOARD_GROUP:
-                actualFragment = Constants.FRAG_ID_MAIN_SCREEN;
-                super.onBackPressed();
-                break;
-            case Constants.FRAG_ID_MAIN_SCREEN:
-                finish();
-                break;
-        }
-    }
+        getContacts();
 
-    public void changeFragment(int destination_fragment) {
-        if (actualFragment != destination_fragment) {
+        ListView contact_for_new_group = (ListView) findViewById(R.id.contact_for_new_group);
+        contact_for_new_group.setAdapter(new ContactsAdapter(this, R.layout.group_item, Variables.contacts));
 
-            fragmentManager.beginTransaction()
-                    .setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
-                    .replace(R.id.fragment_container, fragments.get(destination_fragment))
-                    .addToBackStack(null)
-                    .commit();
-            actualFragment = destination_fragment;
-        }
     }
 
     private void getContacts() {
@@ -169,24 +117,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int id = v.getId();
         switch (id) {
             case R.id.fab:
-                startActivity(new Intent(this, NewGroupActivity.class));
-                break;
-        }
-    }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case PERMISSION_RESULT_READ_CONTACTS:
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    getContacts();
-
-                } else {
-                    this.finish();
-                }
-                break;
-            default:
                 break;
         }
     }
