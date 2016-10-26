@@ -10,4 +10,5 @@ import java.util.ArrayList;
 public class Variables {
 
     public static ArrayList<Contact> contacts = new ArrayList<>();
+    public static String search_for_contacts_for_group = "";
 }

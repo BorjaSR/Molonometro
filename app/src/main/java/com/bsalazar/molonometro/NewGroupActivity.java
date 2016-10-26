@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
@@ -15,7 +16,10 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.view.Display;
@@ -26,17 +30,24 @@ import android.view.WindowManager;
 import android.widget.ListView;
 
 import com.bsalazar.molonometro.area_home.ContactsAdapter;
+import com.bsalazar.molonometro.area_home.ContactsForGroupAdapter;
 import com.bsalazar.molonometro.area_home.MainScreenFragment;
 import com.bsalazar.molonometro.entities.Contact;
 import com.bsalazar.molonometro.general.Constants;
 import com.bsalazar.molonometro.general.Tools;
 import com.bsalazar.molonometro.general.Variables;
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.common.api.GoogleApiClient;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class NewGroupActivity extends AppCompatActivity implements View.OnClickListener {
 
     public Point size;
+    private ContactsForGroupAdapter adapter;
+    private ArrayList<Contact> filteredContacts = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +57,13 @@ public class NewGroupActivity extends AppCompatActivity implements View.OnClickL
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // Get a support ActionBar corresponding to this toolbar
+        ActionBar ab = getSupportActionBar();
+
+        // Enable the Up button
+        assert ab != null;
+        ab.setDisplayHomeAsUpEnabled(true);
+
         // Save the screen size
         Display display = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
         DisplayMetrics metrics = new DisplayMetrics();
@@ -54,10 +72,12 @@ public class NewGroupActivity extends AppCompatActivity implements View.OnClickL
         display.getSize(size);
 
         getContacts();
+        for (Contact contact : Variables.contacts)
+            filteredContacts.add(contact);
 
         ListView contact_for_new_group = (ListView) findViewById(R.id.contact_for_new_group);
-        contact_for_new_group.setAdapter(new ContactsAdapter(this, R.layout.group_item, Variables.contacts));
-
+        adapter = new ContactsForGroupAdapter(this, R.layout.contact_for_group_item, filteredContacts);
+        contact_for_new_group.setAdapter(adapter);
     }
 
     private void getContacts() {
@@ -93,8 +113,34 @@ public class NewGroupActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_new_group, menu);
+
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                Variables.search_for_contacts_for_group = newText;
+                filterResults(newText);
+                return false;
+            }
+        });
+
         return true;
+    }
+
+    private void filterResults(String query) {
+        filteredContacts.clear();
+        for (Contact contact : Variables.contacts)
+            if(contact.getPhoneDisplayName().contains(query))
+                filteredContacts.add(contact);
+
+        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -105,7 +151,7 @@ public class NewGroupActivity extends AppCompatActivity implements View.OnClickL
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_search) {
             return true;
         }
 

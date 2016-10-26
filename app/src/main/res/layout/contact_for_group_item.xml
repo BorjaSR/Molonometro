@@ -33,15 +33,41 @@
             android:paddingRight="10dp"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/group_name"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Nombre del grupo"
-                android:textColor="@color/charcoal_gray"
-                android:textStyle="bold"
-                android:textSize="17sp"
-                android:singleLine="true"/>
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/group_name_first_part"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Nombre del contacto"
+                    android:textColor="@color/charcoal_gray"
+                    android:textStyle="bold"
+                    android:textSize="17sp"
+                    android:singleLine="true"/>
+                <TextView
+                    android:id="@+id/match_group_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="act"
+                    android:textColor="@color/colorAccent"
+                    android:textStyle="bold"
+                    android:textSize="17sp"
+                    android:singleLine="true"
+                    android:visibility="gone"/>
+                <TextView
+                    android:id="@+id/group_name_second_part"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="o"
+                    android:textColor="@color/charcoal_gray"
+                    android:textStyle="bold"
+                    android:textSize="17sp"
+                    android:singleLine="true"
+                    android:visibility="gone"/>
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/item_detail"
@@ -57,7 +83,8 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <TextView
                 android:layout_width="wrap_content"
