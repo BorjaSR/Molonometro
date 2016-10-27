@@ -6,8 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bsalazar.molonometro.NewGroupActivity;
 import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.entities.Contact;
 import com.bsalazar.molonometro.general.Variables;
@@ -73,6 +75,15 @@ public class ContactsForGroupAdapter extends ArrayAdapter<Contact> {
 
         item_detail.setText(contact.getPhoneNumber());
         group_image.setImageBitmap(contact.getUserIcon());
+
+
+        final LinearLayout contact_for_new_group_layout = (LinearLayout) rootView.findViewById(R.id.contact_for_new_group_layout);
+        contact_for_new_group_layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((NewGroupActivity) mContext).addUserToSelection(position);
+            }
+        });
 
         return rootView;
     }

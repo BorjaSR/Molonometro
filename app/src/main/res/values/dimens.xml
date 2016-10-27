@@ -7,4 +7,7 @@
     <dimen name="imageSize_user_termometer_marco">55dp</dimen>
     <dimen name="general_padding_10">10dp</dimen>
     <dimen name="general_padding_15">15dp</dimen>
+    <dimen name="height_field_contacts_selected_for_group">90dp</dimen>
+    <dimen name="imageSize_contacts_selected_for_group">60dp</dimen>
+    <dimen name="imageSize_deleted_selected_for_group">20dp</dimen>
 </resources>

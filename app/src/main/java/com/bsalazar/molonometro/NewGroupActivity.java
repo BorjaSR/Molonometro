@@ -23,11 +23,15 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.view.Display;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.bsalazar.molonometro.area_home.ContactsAdapter;
 import com.bsalazar.molonometro.area_home.ContactsForGroupAdapter;
@@ -48,6 +52,7 @@ public class NewGroupActivity extends AppCompatActivity implements View.OnClickL
     public Point size;
     private ContactsForGroupAdapter adapter;
     private ArrayList<Contact> filteredContacts = new ArrayList<>();
+    private LinearLayout container_contacts_selected;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,43 +76,33 @@ public class NewGroupActivity extends AppCompatActivity implements View.OnClickL
         size = new Point();
         display.getSize(size);
 
-        getContacts();
         for (Contact contact : Variables.contacts)
             filteredContacts.add(contact);
 
         ListView contact_for_new_group = (ListView) findViewById(R.id.contact_for_new_group);
         adapter = new ContactsForGroupAdapter(this, R.layout.contact_for_group_item, filteredContacts);
         contact_for_new_group.setAdapter(adapter);
+
+        container_contacts_selected = (LinearLayout) findViewById(R.id.container_contacts_selected);
     }
 
-    private void getContacts() {
+    public void addUserToSelection(int indexUser){
 
-        String[] projection = new String[]{ContactsContract.Data._ID, ContactsContract.Data.DISPLAY_NAME, ContactsContract.CommonDataKinds.Phone.NUMBER, ContactsContract.Data.MIMETYPE}; //, ContactsContract.CommonDataKinds.Phone.NUMBER, ContactsContract.CommonDataKinds.Phone.TYPE
+        LayoutInflater inflater = LayoutInflater.from(getApplicationContext());
+        final View my_next_booking = inflater.inflate(R.layout.contact_selected_for_group, container_contacts_selected, false);
 
-        String selectionClause = ContactsContract.Data.MIMETYPE + " = '" +
-                ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE + "' AND " +
-                ContactsContract.CommonDataKinds.Phone.NUMBER + " IS NOT NULL";
-        String sortOrder = ContactsContract.Data.DISPLAY_NAME + " ASC";
+        TextView contact_for_group_user_name = (TextView) my_next_booking.findViewById(R.id.contact_for_group_user_name);
+        contact_for_group_user_name.setText(filteredContacts.get(indexUser).getPhoneDisplayName());
 
+        LinearLayout selected_user_layout = (LinearLayout) my_next_booking.findViewById(R.id.selected_user_layout);
+        selected_user_layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                container_contacts_selected.removeView(my_next_booking);
+            }
+        });
 
-        Cursor contactsCursor = getContentResolver().query(
-                ContactsContract.Data.CONTENT_URI,
-                projection,
-                selectionClause,
-                null,
-                sortOrder);
-
-        Bitmap userIcon = Tools.getRoundedCroppedBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.user_icon));
-        Variables.contacts.clear();
-        while (contactsCursor.moveToNext()) {
-            boolean isInList = false;
-            for (Contact contact : Variables.contacts)
-                if (contact.getPhoneDisplayName().equals(contactsCursor.getString(1)))
-                    isInList = true;
-
-            if (!isInList)
-                Variables.contacts.add(new Contact(userIcon, contactsCursor.getString(1), contactsCursor.getString(2)));
-        }
+        container_contacts_selected.addView(my_next_booking);
     }
 
     @Override

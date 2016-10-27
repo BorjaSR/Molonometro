@@ -9,7 +9,7 @@
     android:elevation="2dp">
 
     <LinearLayout
-        android:id="@+id/group_layout"
+        android:id="@+id/contact_for_new_group_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="10dp"

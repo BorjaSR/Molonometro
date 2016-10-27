@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/selected_user_layout"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="?android:selectableItemBackground"
+    android:layout_marginTop="20dp"
+    android:layout_marginBottom="10dp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:gravity="center">
+
+    <RelativeLayout
+        android:layout_width="@dimen/imageSize_contacts_selected_for_group"
+        android:layout_height="@dimen/imageSize_contacts_selected_for_group"
+        android:visibility="visible">
+
+        <ImageView
+            android:id="@+id/contact_for_group_user_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/user_icon"/>
+
+        <ImageView
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_width="@dimen/imageSize_deleted_selected_for_group"
+            android:layout_height="@dimen/imageSize_deleted_selected_for_group"
+            android:src="@drawable/deleted_user_selected"/>
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/contact_for_group_user_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"/>
+
+</LinearLayout>
