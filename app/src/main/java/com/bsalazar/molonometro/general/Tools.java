@@ -1,12 +1,17 @@
 package com.bsalazar.molonometro.general;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
 
 /**
  * Created by bsalazar on 14/10/2016.
@@ -46,5 +51,23 @@ public class Tools {
         canvas.drawBitmap(finalBitmap, rect, rect, paint);
 
         return output;
+    }
+
+
+
+    public static Bitmap getBitmapFromURL(String src) {
+        try {
+            java.net.URL url = new java.net.URL(src);
+            HttpURLConnection connection = (HttpURLConnection) url
+                    .openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            Bitmap myBitmap = BitmapFactory.decodeStream(input);
+            return myBitmap;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

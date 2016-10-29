@@ -31,6 +31,9 @@ import com.bsalazar.molonometro.entities.Contact;
 import com.bsalazar.molonometro.general.Constants;
 import com.bsalazar.molonometro.general.Tools;
 import com.bsalazar.molonometro.general.Variables;
+import com.bsalazar.molonometro.rest.controllers.UserController;
+import com.bsalazar.molonometro.rest.json.CreateUserJson;
+import com.bsalazar.molonometro.rest.services.RestController;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -54,6 +57,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        Constants.restController = new RestController();
         fragmentManager = getSupportFragmentManager();
         fragmentContainterID = R.id.fragment_container;
 
@@ -170,7 +175,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int id = v.getId();
         switch (id) {
             case R.id.fab:
-                startActivity(new Intent(this, NewGroupActivity.class));
+                CreateUserJson createUserJson = new CreateUserJson();
+                createUserJson.setName("BorjApp");
+                createUserJson.setPhone("600786567");
+                createUserJson.setState("NULL");
+                createUserJson.setImage("NULL");
+
+                new UserController().createUser(this, createUserJson);
+//                startActivity(new Intent(this, NewGroupActivity.class));
                 break;
         }
     }

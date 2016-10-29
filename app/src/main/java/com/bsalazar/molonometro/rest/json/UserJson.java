@@ -1,19 +1,25 @@
-package com.bsalazar.molonometro.entities;
-
-import android.graphics.Bitmap;
+package com.bsalazar.molonometro.rest.json;
 
 /**
- * Created by bsalazar on 14/10/2016.
+ * Created by Borja on 29/10/2016.
  */
-public class User {
+public class UserJson {
 
+    private int UserID;
     private String Name;
     private String Phone;
     private String State;
-    private String ImageURL;
-    private Bitmap Image;
+    private String Image;
 
-    public User() {
+    public UserJson() {
+    }
+
+    public int getUserID() {
+        return UserID;
+    }
+
+    public void setUserID(int userID) {
+        UserID = userID;
     }
 
     public String getName() {
@@ -40,19 +46,11 @@ public class User {
         State = state;
     }
 
-    public String getImageURL() {
-        return ImageURL;
-    }
-
-    public void setImageURL(String imageURL) {
-        ImageURL = imageURL;
-    }
-
-    public Bitmap getImage() {
+    public String getImage() {
         return Image;
     }
 
-    public void setImage(Bitmap image) {
+    public void setImage(String image) {
         Image = image;
     }
 }
