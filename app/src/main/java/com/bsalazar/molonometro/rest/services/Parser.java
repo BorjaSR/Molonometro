@@ -18,7 +18,7 @@ public class Parser {
         user.setPhone(userJson.getPhone());
         user.setState(userJson.getState());
         user.setImageURL(userJson.getImage());
-        user.setImage(Tools.getBitmapFromURL(user.getImageURL()));
+//        user.setImage(Tools.getBitmapFromURL(user.getImageURL()));
 
         return user;
     }
