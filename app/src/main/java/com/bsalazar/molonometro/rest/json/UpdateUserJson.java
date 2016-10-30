@@ -1,18 +1,25 @@
 package com.bsalazar.molonometro.rest.json;
 
 /**
- * Created by Borja on 29/10/2016.
+ * Created by Borja on 30/10/2016.
  */
-public class CreateUserJson {
+public class UpdateUserJson {
 
+    private int UserID;
     private String Name;
-    private String Phone;
     private String State;
     private String Image;
 
-    public CreateUserJson() {
-        State = "";
-        Image = "";
+    public UpdateUserJson() {
+        this.Image = "";
+    }
+
+    public int getUserID() {
+        return UserID;
+    }
+
+    public void setUserID(int userID) {
+        UserID = userID;
     }
 
     public String getName() {
@@ -21,14 +28,6 @@ public class CreateUserJson {
 
     public void setName(String name) {
         Name = name;
-    }
-
-    public String getPhone() {
-        return Phone;
-    }
-
-    public void setPhone(String phone) {
-        Phone = phone;
     }
 
     public String getState() {

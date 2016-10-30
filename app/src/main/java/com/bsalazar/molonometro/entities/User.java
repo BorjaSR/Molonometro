@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
  */
 public class User {
 
+    private int UserID;
     private String Name;
     private String Phone;
     private String State;
@@ -14,6 +15,14 @@ public class User {
     private Bitmap Image;
 
     public User() {
+    }
+
+    public int getUserID() {
+        return UserID;
+    }
+
+    public void setUserID(int userID) {
+        UserID = userID;
     }
 
     public String getName() {

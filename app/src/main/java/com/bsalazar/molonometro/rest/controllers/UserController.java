@@ -1,13 +1,24 @@
 package com.bsalazar.molonometro.rest.controllers;
 
 import android.content.Context;
+import android.content.Intent;
 import android.widget.Toast;
 
+import com.bsalazar.molonometro.MainActivity;
+import com.bsalazar.molonometro.area_register.RegisterActivity;
+import com.bsalazar.molonometro.area_register.SetFirstProfileDataActivity;
+import com.bsalazar.molonometro.entities.User;
 import com.bsalazar.molonometro.general.Constants;
+import com.bsalazar.molonometro.general.Memo;
 import com.bsalazar.molonometro.general.Variables;
+import com.bsalazar.molonometro.rest.json.ContactsListJson;
 import com.bsalazar.molonometro.rest.json.CreateUserJson;
+import com.bsalazar.molonometro.rest.json.UpdateUserJson;
 import com.bsalazar.molonometro.rest.json.UserJson;
 import com.bsalazar.molonometro.rest.services.Parser;
+import com.google.gson.Gson;
+
+import java.util.List;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -28,7 +39,8 @@ public class UserController {
                     @Override
                     public void success(UserJson userJson, Response response) {
                         Variables.User = Parser.parseUser(userJson);
-                        Toast.makeText(mContext, "Exito creando al usuario " + Variables.User.getName(), Toast.LENGTH_SHORT).show();
+                        mContext.startActivity(new Intent(mContext, SetFirstProfileDataActivity.class));
+                        ((RegisterActivity) mContext).finish();
                     }
 
                     @Override
@@ -38,5 +50,47 @@ public class UserController {
                 });
     }
 
+    public void updateUser(final Context mContext, UpdateUserJson updateUserJson) {
 
+        Constants.restController.getService().updateUser(updateUserJson
+                , new Callback<UserJson>() {
+                    @Override
+                    public void success(UserJson userJson, Response response) {
+                        Variables.User = Parser.parseUser(userJson);
+
+                        Gson gson = new Gson();
+                        String userStringJson = gson.toJson(Variables.User);
+                        Memo.rememberMe(mContext, userStringJson);
+
+                        mContext.startActivity(new Intent(mContext, MainActivity.class));
+                        ((SetFirstProfileDataActivity) mContext).finish();
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        Toast.makeText(mContext, "KO actualizando al usuario\n" + error.getResponse().getStatus() + " " + error.getResponse().getReason(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    public void checkContacts(final Context mContext, ContactsListJson contactsListJson) {
+
+        Constants.restController.getService().checkContacts(contactsListJson
+                , new Callback<List<UserJson>>() {
+                    @Override
+                    public void success(List<UserJson> userJsonList, Response response) {
+                        Variables.contacts2.clear();
+                        Variables.contactsWithApp.clear();
+                        for (int i = 0; i < userJsonList.size(); i++){
+                            Variables.contacts2.add(userJsonList.get(i));
+                            if(userJsonList.get(i).isInApp()) Variables.contactsWithApp.add(userJsonList.get(i));
+                        }
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        Toast.makeText(mContext, "KO acheckenado usuarios\n" + error.getResponse().getStatus() + " " + error.getResponse().getReason(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
 }

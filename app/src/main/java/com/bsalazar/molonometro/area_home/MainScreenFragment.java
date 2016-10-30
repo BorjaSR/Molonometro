@@ -88,6 +88,10 @@ public class MainScreenFragment extends Fragment {
         });
     }
 
+    public void updateContacts() {
+        adapter.updateContacts();
+    }
+
 
     public class MainScreenAdapter extends FragmentStatePagerAdapter {
 
@@ -116,6 +120,10 @@ public class MainScreenFragment extends Fragment {
         @Override
         public int getCount() {
             return 2;
+        }
+
+        public void updateContacts() {
+            constantsFragment.update();
         }
     }
 

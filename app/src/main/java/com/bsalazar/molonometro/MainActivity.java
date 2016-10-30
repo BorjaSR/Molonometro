@@ -27,14 +27,20 @@ import android.view.MenuItem;
 import android.view.WindowManager;
 
 import com.bsalazar.molonometro.area_home.MainScreenFragment;
+import com.bsalazar.molonometro.area_register.RegisterActivity;
 import com.bsalazar.molonometro.entities.Contact;
 import com.bsalazar.molonometro.general.Constants;
 import com.bsalazar.molonometro.general.Tools;
 import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.controllers.UserController;
+import com.bsalazar.molonometro.rest.json.ContactsListJson;
 import com.bsalazar.molonometro.rest.json.CreateUserJson;
 import com.bsalazar.molonometro.rest.services.RestController;
+import com.google.gson.Gson;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -58,7 +64,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        Constants.restController = new RestController();
         fragmentManager = getSupportFragmentManager();
         fragmentContainterID = R.id.fragment_container;
 
@@ -106,6 +111,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    public void updateContacts(){
+        ((MainScreenFragment) fragments.get(Constants.FRAG_ID_MAIN_SCREEN)).updateContacts();
+    }
+
     public void changeFragment(int destination_fragment) {
         if (actualFragment != destination_fragment) {
 
@@ -115,6 +124,50 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     .addToBackStack(null)
                     .commit();
             actualFragment = destination_fragment;
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onClick(View v) {
+        int id = v.getId();
+        switch (id) {
+            case R.id.fab:
+                startActivity(new Intent(this, NewGroupActivity.class));
+                break;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_RESULT_READ_CONTACTS:
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    getContacts();
+                } else {
+                    this.finish();
+                }
+                break;
+            default:
+                break;
         }
     }
 
@@ -135,7 +188,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 null,
                 sortOrder);
 
-        Bitmap userIcon = Tools.getRoundedCroppedBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.user_icon));
         Variables.contacts.clear();
         while (contactsCursor.moveToNext()) {
             boolean isInList = false;
@@ -143,64 +195,39 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (contact.getPhoneDisplayName().equals(contactsCursor.getString(1)))
                     isInList = true;
 
+            String phone = contactsCursor.getString(2);
+            phone = phone.replace(" ", "");
+            if (phone.length() > 9) phone = phone.substring(phone.length() - 9);
+
             if (!isInList)
-                Variables.contacts.add(new Contact(userIcon, contactsCursor.getString(1), contactsCursor.getString(2)));
-        }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+                Variables.contacts.add(new Contact(contactsCursor.getString(1), phone));
         }
 
-        return super.onOptionsItemSelected(item);
+        ContactsListJson contactsListJson = new ContactsListJson();
+        contactsListJson.setContacts(Variables.contacts);
+        new UserController().checkContacts(this, contactsListJson);
     }
 
-    @Override
-    public void onClick(View v) {
-        int id = v.getId();
-        switch (id) {
-            case R.id.fab:
-                CreateUserJson createUserJson = new CreateUserJson();
-                createUserJson.setName("BorjApp");
-                createUserJson.setPhone("600786567");
-                createUserJson.setState("NULL");
-                createUserJson.setImage("NULL");
-
-                new UserController().createUser(this, createUserJson);
-//                startActivity(new Intent(this, NewGroupActivity.class));
-                break;
-        }
+    public void shareMolonometro() {
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_TEXT, "Descubre cual de tus amigos mola más con el Molonometro!!");
+        startActivity(Intent.createChooser(intent, "Share with"));
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case PERMISSION_RESULT_READ_CONTACTS:
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    getContacts();
-
-                } else {
-                    this.finish();
-                }
-                break;
-            default:
-                break;
+    public static Bitmap getBitmapFromURL(String src) {
+        try {
+            java.net.URL url = new java.net.URL(src);
+            HttpURLConnection connection = (HttpURLConnection) url
+                    .openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            Bitmap myBitmap = BitmapFactory.decodeStream(input);
+            return myBitmap;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 }

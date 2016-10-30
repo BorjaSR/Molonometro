@@ -10,6 +10,7 @@ public class UserJson {
     private String Phone;
     private String State;
     private String Image;
+    private boolean isInApp;
 
     public UserJson() {
     }
@@ -52,5 +53,13 @@ public class UserJson {
 
     public void setImage(String image) {
         Image = image;
+    }
+
+    public boolean isInApp() {
+        return isInApp;
+    }
+
+    public void setInApp(boolean inApp) {
+        isInApp = inApp;
     }
 }

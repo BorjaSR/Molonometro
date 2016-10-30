@@ -33,10 +33,9 @@ public class ContactsFragment extends Fragment {
         update();
     }
 
-    private void update() {
-
+    public void update() {
         ListView groups_list = (ListView) rootView.findViewById(R.id.contacts_list);
-        ContactsAdapter adapter = new ContactsAdapter(getActivity().getApplicationContext(), R.layout.group_item, Variables.contacts);
+        ContactsAdapter adapter = new ContactsAdapter(getActivity(), R.layout.contact_item, Variables.contacts2);
         groups_list.setAdapter(adapter);
     }
 }

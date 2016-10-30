@@ -1,21 +1,9 @@
 package com.bsalazar.molonometro;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Point;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -30,22 +18,12 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import com.bsalazar.molonometro.area_home.ContactsAdapter;
 import com.bsalazar.molonometro.area_home.ContactsForGroupAdapter;
-import com.bsalazar.molonometro.area_home.MainScreenFragment;
 import com.bsalazar.molonometro.entities.Contact;
-import com.bsalazar.molonometro.general.Constants;
-import com.bsalazar.molonometro.general.Tools;
 import com.bsalazar.molonometro.general.Variables;
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.common.api.GoogleApiClient;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class NewGroupActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -80,7 +58,7 @@ public class NewGroupActivity extends AppCompatActivity implements View.OnClickL
             filteredContacts.add(contact);
 
         ListView contact_for_new_group = (ListView) findViewById(R.id.contact_for_new_group);
-        adapter = new ContactsForGroupAdapter(this, R.layout.contact_for_group_item, filteredContacts);
+        adapter = new ContactsForGroupAdapter(this, R.layout.contact_for_group_item, Variables.contactsWithApp);
         contact_for_new_group.setAdapter(adapter);
 
         container_contacts_selected = (LinearLayout) findViewById(R.id.container_contacts_selected);
@@ -140,9 +118,6 @@ public class NewGroupActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement

@@ -7,25 +7,15 @@ import android.graphics.Bitmap;
  */
 public class Contact {
 
-    private Bitmap userIcon;
     private String phoneDisplayName;
     private String phoneNumber;
 
-    public Contact(Bitmap userIcon, String phoneDisplayName, String phoneNumber) {
-        this.userIcon = userIcon;
+    public Contact(String phoneDisplayName, String phoneNumber) {
         this.phoneDisplayName = phoneDisplayName;
         this.phoneNumber = phoneNumber;
     }
 
     public Contact() {
-    }
-
-    public Bitmap getUserIcon() {
-        return userIcon;
-    }
-
-    public void setUserIcon(Bitmap userIcon) {
-        this.userIcon = userIcon;
     }
 
     public String getPhoneDisplayName() {

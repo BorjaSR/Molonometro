@@ -8,20 +8,20 @@ import android.widget.TextView;
 /**
  * Created by asanz on 27/08/2015.
  */
-public class CustomTextViewDinengsc extends TextView {
+public class CustomTextViewEmmasophia extends TextView {
 
 
-    public CustomTextViewDinengsc(Context context) {
+    public CustomTextViewEmmasophia(Context context) {
         super(context);
         fuente();
     }
 
-    public CustomTextViewDinengsc(Context context, AttributeSet attrs) {
+    public CustomTextViewEmmasophia(Context context, AttributeSet attrs) {
         super(context, attrs);
         fuente();
     }
 
-    public CustomTextViewDinengsc(Context context, AttributeSet attrs, int defStyleAttr) {
+    public CustomTextViewEmmasophia(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         if (!isInEditMode())
             fuente();

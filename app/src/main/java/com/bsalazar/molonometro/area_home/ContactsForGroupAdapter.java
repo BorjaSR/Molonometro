@@ -13,19 +13,20 @@ import com.bsalazar.molonometro.NewGroupActivity;
 import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.entities.Contact;
 import com.bsalazar.molonometro.general.Variables;
+import com.bsalazar.molonometro.rest.json.UserJson;
 
 import java.util.ArrayList;
 
 /**
  * Created by bsalazar on 14/10/2016.
  */
-public class ContactsForGroupAdapter extends ArrayAdapter<Contact> {
+public class ContactsForGroupAdapter extends ArrayAdapter<UserJson> {
 
-    private ArrayList<Contact> contacts = new ArrayList<>();
+    private ArrayList<UserJson> contacts = new ArrayList<>();
     private int resourceId;
     private Context mContext;
 
-    public ContactsForGroupAdapter(Context context, int resource, ArrayList<Contact> contacts) {
+    public ContactsForGroupAdapter(Context context, int resource, ArrayList<UserJson> contacts) {
         super(context, resource, contacts);
         this.contacts = contacts;
         this.resourceId = resource;
@@ -40,7 +41,7 @@ public class ContactsForGroupAdapter extends ArrayAdapter<Contact> {
             rootView = inflater1.inflate(resourceId, null);
         }
 
-        Contact contact = contacts.get(position);
+        UserJson contact = contacts.get(position);
 
         TextView contact_name_first_part = (TextView) rootView.findViewById(R.id.group_name_first_part);
         TextView match_contact_name = (TextView) rootView.findViewById(R.id.match_group_name);
@@ -49,12 +50,12 @@ public class ContactsForGroupAdapter extends ArrayAdapter<Contact> {
         ImageView group_image = (ImageView) rootView.findViewById(R.id.group_image);
 
         if (Variables.search_for_contacts_for_group.equals("")) {
-            contact_name_first_part.setText(contact.getPhoneDisplayName());
+            contact_name_first_part.setText(contact.getName());
             contact_name_first_part.setVisibility(View.VISIBLE);
             match_contact_name.setVisibility(View.GONE);
             contact_name_second_part.setVisibility(View.GONE);
         } else {
-            String[] parts = contact.getPhoneDisplayName().split(Variables.search_for_contacts_for_group);
+            String[] parts = contact.getName().split(Variables.search_for_contacts_for_group);
             if(parts.length == 0){
                 match_contact_name.setText(Variables.search_for_contacts_for_group);
                 contact_name_first_part.setVisibility(View.GONE);
@@ -73,8 +74,8 @@ public class ContactsForGroupAdapter extends ArrayAdapter<Contact> {
             }
         }
 
-        item_detail.setText(contact.getPhoneNumber());
-        group_image.setImageBitmap(contact.getUserIcon());
+        item_detail.setText(contact.getPhone());
+        group_image.setImageResource(R.drawable.user_icon);
 
 
         final LinearLayout contact_for_new_group_layout = (LinearLayout) rootView.findViewById(R.id.contact_for_new_group_layout);

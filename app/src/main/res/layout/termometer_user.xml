@@ -24,7 +24,7 @@
 
     </RelativeLayout>
 
-    <com.bsalazar.molonometro.general.CustomTextViewDinengsc
+    <com.bsalazar.molonometro.general.CustomTextViewEmmasophia
         android:id="@+id/user_name"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
