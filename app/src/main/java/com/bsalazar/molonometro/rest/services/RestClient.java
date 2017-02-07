@@ -11,7 +11,7 @@ import retrofit.client.OkClient;
 
 public class RestClient {
 
-    private static final String URL_REST_SERVICES = "http://192.168.0.158:80/molonometro/v1"; //Localhost
+    private static final String URL_REST_SERVICES = "http://192.168.1.104:80/molonometro/v1"; //Localhost
 
     private RestService restService;
 

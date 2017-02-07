@@ -31,7 +31,8 @@
             android:layout_height="match_parent"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:gravity="center_vertical">
 
             <TextView
                 android:id="@+id/group_name"
@@ -47,14 +48,14 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_marginTop="7dp">
 
                 <TextView
                     android:id="@+id/item_detail"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
                     android:text="Estado o telefono"
                     android:textColor="@color/dark_gray"
                     android:singleLine="true"/>
@@ -64,7 +65,6 @@
                     android:id="@+id/invite_contact_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
                     android:text="@string/invite"
                     android:textSize="13sp"
                     android:textAllCaps="true"

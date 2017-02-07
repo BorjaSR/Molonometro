@@ -16,8 +16,7 @@ import retrofit.http.POST;
  * Created by smesonero on 05/10/2015.
  */
 
-    public interface RestService {
-
+public interface RestService {
 
     @POST("/user/createUser")
     public void createUser(

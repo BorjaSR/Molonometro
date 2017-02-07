@@ -45,7 +45,8 @@ public class UserController {
 
                     @Override
                     public void failure(RetrofitError error) {
-                        Toast.makeText(mContext, "KO creando al usuario\n" + error.getResponse().getStatus() + " " + error.getResponse().getReason(), Toast.LENGTH_SHORT).show();
+                        if (error.getResponse() != null)
+                            Toast.makeText(mContext, "KO creando al usuario\n" + error.getResponse().getStatus() + " " + error.getResponse().getReason(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -68,7 +69,8 @@ public class UserController {
 
                     @Override
                     public void failure(RetrofitError error) {
-                        Toast.makeText(mContext, "KO actualizando al usuario\n" + error.getResponse().getStatus() + " " + error.getResponse().getReason(), Toast.LENGTH_SHORT).show();
+                        if (error.getResponse() != null)
+                            Toast.makeText(mContext, "KO actualizando al usuario\n" + error.getResponse().getStatus() + " " + error.getResponse().getReason(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -81,15 +83,17 @@ public class UserController {
                     public void success(List<UserJson> userJsonList, Response response) {
                         Variables.contacts2.clear();
                         Variables.contactsWithApp.clear();
-                        for (int i = 0; i < userJsonList.size(); i++){
+                        for (int i = 0; i < userJsonList.size(); i++) {
                             Variables.contacts2.add(userJsonList.get(i));
-                            if(userJsonList.get(i).isInApp()) Variables.contactsWithApp.add(userJsonList.get(i));
+                            if (userJsonList.get(i).isInApp())
+                                Variables.contactsWithApp.add(userJsonList.get(i));
                         }
                     }
 
                     @Override
                     public void failure(RetrofitError error) {
-                        Toast.makeText(mContext, "KO acheckenado usuarios\n" + error.getResponse().getStatus() + " " + error.getResponse().getReason(), Toast.LENGTH_SHORT).show();
+                        if (error.getResponse() != null)
+                            Toast.makeText(mContext, "KO checkenado usuarios\n" + error.getResponse().getStatus() + " " + error.getResponse().getReason(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
