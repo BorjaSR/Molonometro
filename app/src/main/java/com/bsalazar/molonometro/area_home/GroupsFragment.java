@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.bsalazar.molonometro.R;
+import com.bsalazar.molonometro.area_home.adapters.GroupsAdapter;
 import com.bsalazar.molonometro.entities.Group;
 import com.bsalazar.molonometro.general.Tools;
 

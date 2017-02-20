@@ -1,7 +1,6 @@
-package com.bsalazar.molonometro.area_home;
+package com.bsalazar.molonometro.area_home.adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,9 +8,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bsalazar.molonometro.MainActivity;
 import com.bsalazar.molonometro.R;
-import com.bsalazar.molonometro.entities.Contact;
+import com.bsalazar.molonometro.area_home.MainActivity;
 import com.bsalazar.molonometro.rest.json.UserJson;
 
 import java.util.ArrayList;

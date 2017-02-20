@@ -7,8 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import com.bsalazar.molonometro.MainActivity;
 import com.bsalazar.molonometro.R;
+import com.bsalazar.molonometro.area_home.adapters.ContactsAdapter;
 import com.bsalazar.molonometro.general.Variables;
 
 /**

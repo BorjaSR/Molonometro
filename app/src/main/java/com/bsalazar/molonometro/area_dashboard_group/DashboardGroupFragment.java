@@ -1,4 +1,4 @@
-package com.bsalazar.molonometro;
+package com.bsalazar.molonometro.area_dashboard_group;
 
 import android.animation.Animator;
 import android.annotation.TargetApi;
@@ -16,6 +16,7 @@ import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.entities.UserGroup;
 import com.bsalazar.molonometro.general.Constants;
 

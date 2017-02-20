@@ -4,10 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.widget.Toast;
 
-import com.bsalazar.molonometro.MainActivity;
+import com.bsalazar.molonometro.area_home.MainActivity;
 import com.bsalazar.molonometro.area_register.RegisterActivity;
 import com.bsalazar.molonometro.area_register.SetFirstProfileDataActivity;
-import com.bsalazar.molonometro.entities.User;
 import com.bsalazar.molonometro.general.Constants;
 import com.bsalazar.molonometro.general.Memo;
 import com.bsalazar.molonometro.general.Variables;

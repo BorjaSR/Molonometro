@@ -1,32 +1,18 @@
 package com.bsalazar.molonometro.area_register;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.graphics.Point;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.view.MenuItemCompat;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.DisplayMetrics;
-import android.view.Display;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.TextView;
 
-import com.bsalazar.molonometro.MainActivity;
+import com.bsalazar.molonometro.area_home.MainActivity;
 import com.bsalazar.molonometro.R;
-import com.bsalazar.molonometro.area_home.ContactsForGroupAdapter;
-import com.bsalazar.molonometro.entities.Contact;
 import com.bsalazar.molonometro.entities.User;
 import com.bsalazar.molonometro.general.Constants;
 import com.bsalazar.molonometro.general.Memo;
@@ -35,8 +21,6 @@ import com.bsalazar.molonometro.rest.controllers.UserController;
 import com.bsalazar.molonometro.rest.json.CreateUserJson;
 import com.bsalazar.molonometro.rest.services.RestController;
 import com.google.gson.Gson;
-
-import java.util.ArrayList;
 
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
 

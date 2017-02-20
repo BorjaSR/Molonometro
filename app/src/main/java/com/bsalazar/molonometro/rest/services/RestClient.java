@@ -6,12 +6,13 @@ import retrofit.RestAdapter;
 import retrofit.client.OkClient;
 
 /**
- * Created by smesonero on 05/10/2015.
+ * Created by Borja on 29/10/2016.
  */
 
 public class RestClient {
 
-    private static final String URL_REST_SERVICES = "http://192.168.1.104:80/molonometro/v1"; //Localhost
+//    private static final String URL_REST_SERVICES = "http://192.168.1.104:80/molonometro/v1"; //Localhost CASA
+    private static final String URL_REST_SERVICES = "http://192.168.1.75:80/molonometro/v1"; //Localhost TRABAJO
 
     private RestService restService;
 

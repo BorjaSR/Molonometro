@@ -1,4 +1,4 @@
-package com.bsalazar.molonometro;
+package com.bsalazar.molonometro.area_new_group;
 
 import android.content.Context;
 import android.content.pm.ActivityInfo;
@@ -19,7 +19,9 @@ import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import com.bsalazar.molonometro.area_home.ContactsForGroupAdapter;
+
+import com.bsalazar.molonometro.R;
+import com.bsalazar.molonometro.area_home.adapters.ContactsForGroupAdapter;
 import com.bsalazar.molonometro.entities.Contact;
 import com.bsalazar.molonometro.general.Variables;
 

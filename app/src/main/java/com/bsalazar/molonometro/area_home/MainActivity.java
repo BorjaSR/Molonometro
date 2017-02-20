@@ -1,4 +1,4 @@
-package com.bsalazar.molonometro;
+package com.bsalazar.molonometro.area_home;
 
 import android.Manifest;
 import android.content.Context;
@@ -16,7 +16,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
@@ -26,22 +25,18 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
 
-import com.bsalazar.molonometro.area_home.MainScreenFragment;
-import com.bsalazar.molonometro.area_register.RegisterActivity;
+import com.bsalazar.molonometro.area_dashboard_group.DashboardGroupFragment;
+import com.bsalazar.molonometro.area_new_group.NewGroupActivity;
+import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.entities.Contact;
 import com.bsalazar.molonometro.general.Constants;
-import com.bsalazar.molonometro.general.Tools;
 import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.controllers.UserController;
 import com.bsalazar.molonometro.rest.json.ContactsListJson;
-import com.bsalazar.molonometro.rest.json.CreateUserJson;
-import com.bsalazar.molonometro.rest.services.RestController;
-import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
