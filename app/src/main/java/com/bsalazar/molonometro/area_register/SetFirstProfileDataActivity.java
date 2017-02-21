@@ -4,9 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
-import android.graphics.Point;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
@@ -17,23 +14,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bsalazar.molonometro.R;
-import com.bsalazar.molonometro.area_home.adapters.ContactsForGroupAdapter;
-import com.bsalazar.molonometro.entities.Contact;
 import com.bsalazar.molonometro.general.Constants;
 import com.bsalazar.molonometro.general.Tools;
 import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.controllers.UserController;
 import com.bsalazar.molonometro.rest.json.UpdateUserJson;
 import com.bsalazar.molonometro.rest.services.RestController;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
 
 public class SetFirstProfileDataActivity extends AppCompatActivity implements View.OnClickListener {
 

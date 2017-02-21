@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.area_home.MainActivity;
+import com.bsalazar.molonometro.general.Tools;
 import com.bsalazar.molonometro.rest.json.UserJson;
 
 import java.util.ArrayList;
@@ -53,7 +54,7 @@ public class ContactsAdapter extends ArrayAdapter<UserJson> {
             invite_contact_button.setVisibility(View.GONE);
 
         } else {
-            item_detail.setText(contact.getPhone());
+            item_detail.setText(Tools.formatPhone(contact.getPhone()));
             group_image.setImageResource(R.drawable.user_icon);
             invite_contact_button.setVisibility(View.VISIBLE);
         }

@@ -10,4 +10,6 @@
     <dimen name="height_field_contacts_selected_for_group">90dp</dimen>
     <dimen name="imageSize_contacts_selected_for_group">60dp</dimen>
     <dimen name="imageSize_deleted_selected_for_group">20dp</dimen>
+    <dimen name="imageSize_profile">150dp</dimen>
+    <dimen name="margin_image_profile">35dp</dimen>
 </resources>

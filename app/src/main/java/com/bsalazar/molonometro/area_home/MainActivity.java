@@ -25,6 +25,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
 
+import com.bsalazar.molonometro.area_adjust.AccountActivity;
 import com.bsalazar.molonometro.area_dashboard_group.DashboardGroupFragment;
 import com.bsalazar.molonometro.area_new_group.NewGroupActivity;
 import com.bsalazar.molonometro.R;
@@ -134,6 +135,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int id = item.getItemId();
 
         if (id == R.id.action_settings) {
+            startActivity(new Intent(this, AccountActivity.class));
             return true;
         }
 

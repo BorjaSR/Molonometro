@@ -10,15 +10,14 @@ import com.bsalazar.molonometro.rest.json.UserJson;
 
 public class Parser {
 
-    public static User parseUser(UserJson userJson){
+    public static User parseUser(UserJson userJson) {
         User user = new User();
 
         user.setUserID(userJson.getUserID());
         user.setName(userJson.getName());
         user.setPhone(userJson.getPhone());
         user.setState(userJson.getState());
-        user.setImageURL(userJson.getImage());
-//        user.setImage(Tools.getBitmapFromURL(user.getImageURL()));
+        user.setImageBase64(userJson.getImage());
 
         return user;
     }

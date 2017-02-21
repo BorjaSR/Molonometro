@@ -21,7 +21,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.bsalazar.molonometro.R;
-import com.bsalazar.molonometro.area_home.adapters.ContactsForGroupAdapter;
 import com.bsalazar.molonometro.entities.Contact;
 import com.bsalazar.molonometro.general.Variables;
 
@@ -39,15 +38,13 @@ public class NewGroupActivity extends AppCompatActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.new_group_activity);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
         // Get a support ActionBar corresponding to this toolbar
-        ActionBar ab = getSupportActionBar();
-
-        // Enable the Up button
-        assert ab != null;
-        ab.setDisplayHomeAsUpEnabled(true);
+//        ActionBar ab = getSupportActionBar();
+//
+//        // Enable the Up button
+//        assert ab != null;
+//        ab.setDisplayHomeAsUpEnabled(true);
 
         // Save the screen size
         Display display = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
@@ -123,7 +120,10 @@ public class NewGroupActivity extends AppCompatActivity implements View.OnClickL
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_search) {
+        if (id == android.R.id.home) {
+            finish();
+            return true;
+        }else if (id == R.id.action_search) {
             return true;
         }
 

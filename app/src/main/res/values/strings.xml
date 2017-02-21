@@ -6,4 +6,6 @@
     <string name="welcome">¡Bienvenido!</string>
     <string name="register_activity">Inicio</string>
     <string name="invite">Invitar</string>
+    <string name="adjust_activity">Ajustes</string>
+    <string name="state_and_phone">Estado y teléfono</string>
 </resources>

@@ -11,7 +11,7 @@ public class User {
     private String Name;
     private String Phone;
     private String State;
-    private String ImageURL;
+    private String ImageBase64;
     private Bitmap Image;
 
     public User() {
@@ -49,12 +49,12 @@ public class User {
         State = state;
     }
 
-    public String getImageURL() {
-        return ImageURL;
+    public String getImageBase64() {
+        return ImageBase64;
     }
 
-    public void setImageURL(String imageURL) {
-        ImageURL = imageURL;
+    public void setImageBase64(String imageBase64) {
+        ImageBase64 = imageBase64;
     }
 
     public Bitmap getImage() {

@@ -1,4 +1,4 @@
-package com.bsalazar.molonometro.area_home.adapters;
+package com.bsalazar.molonometro.area_new_group;
 
 import android.content.Context;
 import android.view.LayoutInflater;

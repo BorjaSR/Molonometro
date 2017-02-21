@@ -55,9 +55,18 @@ public class Tools {
         return output;
     }
 
+    public static String formatPhone(String old_phone){
+        String new_phone = old_phone;
+        if(new_phone.length() == 9){
+            new_phone = new_phone.substring(0,3) + " " + new_phone.substring(3, 6) + " " + new_phone.substring(6,9);
+        }
+
+        return new_phone;
+    }
+
     public static String encodeBitmapToBase64(Bitmap image) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        image.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        image.compress(Bitmap.CompressFormat.JPEG, 25, baos);
 
         return Base64.encodeToString(baos.toByteArray(),Base64.DEFAULT);
     }

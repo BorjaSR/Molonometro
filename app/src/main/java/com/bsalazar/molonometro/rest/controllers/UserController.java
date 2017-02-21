@@ -9,6 +9,7 @@ import com.bsalazar.molonometro.area_register.RegisterActivity;
 import com.bsalazar.molonometro.area_register.SetFirstProfileDataActivity;
 import com.bsalazar.molonometro.general.Constants;
 import com.bsalazar.molonometro.general.Memo;
+import com.bsalazar.molonometro.general.Tools;
 import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.json.ContactsListJson;
 import com.bsalazar.molonometro.rest.json.CreateUserJson;
@@ -61,6 +62,9 @@ public class UserController {
                         Gson gson = new Gson();
                         String userStringJson = gson.toJson(Variables.User);
                         Memo.rememberMe(mContext, userStringJson);
+
+                        if(Variables.User.getImageBase64() != null)
+                            Variables.User.setImage(Tools.decodeBase64(Variables.User.getImageBase64()));
 
                         mContext.startActivity(new Intent(mContext, MainActivity.class));
                         ((SetFirstProfileDataActivity) mContext).finish();

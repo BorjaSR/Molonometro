@@ -16,6 +16,7 @@ import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.entities.User;
 import com.bsalazar.molonometro.general.Constants;
 import com.bsalazar.molonometro.general.Memo;
+import com.bsalazar.molonometro.general.Tools;
 import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.controllers.UserController;
 import com.bsalazar.molonometro.rest.json.CreateUserJson;
@@ -45,6 +46,10 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         if(rememberedUser != null){
             Gson gson = new Gson();
             Variables.User = gson.fromJson(rememberedUser, User.class);
+
+            if(Variables.User.getImageBase64() != null)
+                Variables.User.setImage(Tools.decodeBase64(Variables.User.getImageBase64()));
+
             startActivity(new Intent(this, MainActivity.class));
             finish();
         }
