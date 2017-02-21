@@ -49,8 +49,14 @@ public class ContactsAdapter extends ArrayAdapter<UserJson> {
         group_name.setText(contact.getName());
 
         if (contact.isInApp()){
+
             item_detail.setText(contact.getState());
-            group_image.setImageResource(R.drawable.user_icon);
+            try{
+                group_image.setImageBitmap(Tools.getRoundedCroppedBitmap(Tools.decodeBase64(contact.getImage())));
+            }catch (Exception e){
+                group_image.setImageResource(R.drawable.user_icon);
+            }
+
             invite_contact_button.setVisibility(View.GONE);
 
         } else {
