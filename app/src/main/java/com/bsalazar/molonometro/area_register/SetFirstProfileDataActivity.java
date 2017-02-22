@@ -17,12 +17,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bsalazar.molonometro.R;
+import com.bsalazar.molonometro.area_home.MainActivity;
 import com.bsalazar.molonometro.general.Constants;
 import com.bsalazar.molonometro.general.Tools;
 import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.controllers.UserController;
 import com.bsalazar.molonometro.rest.json.UpdateUserJson;
 import com.bsalazar.molonometro.rest.services.RestController;
+import com.bsalazar.molonometro.rest.services.ServiceCallbackInterface;
 
 public class SetFirstProfileDataActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -87,7 +89,19 @@ public class SetFirstProfileDataActivity extends AppCompatActivity implements Vi
                     updateUserJson.setImage(Tools.encodeBitmapToBase64(profileBitmap));
                 updateUserJson.setState(user_state.getText().toString());
 
-                new UserController().updateUser(this, updateUserJson);
+                new UserController().updateUser(this, updateUserJson, new ServiceCallbackInterface() {
+                    @Override
+                    public void onSuccess(String result) {
+                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                        finish();
+                    }
+
+                    @Override
+                    public void onFailure(String result) {
+
+                    }
+                });
+
                 break;
 
             case R.id.profileImage:

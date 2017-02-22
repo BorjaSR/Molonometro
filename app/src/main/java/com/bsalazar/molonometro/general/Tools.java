@@ -21,18 +21,18 @@ import java.net.HttpURLConnection;
 public class Tools {
 
     public static Bitmap getRoundedCroppedBitmap(Bitmap bitmap) {
-        int radius;
-        if (bitmap.getHeight() > bitmap.getWidth())
-            radius = bitmap.getWidth();
-        else
-            radius = bitmap.getHeight();
 
         Bitmap finalBitmap;
-        if (bitmap.getWidth() != radius || bitmap.getHeight() != radius)
-            finalBitmap = Bitmap.createScaledBitmap(bitmap, radius, radius,
-                    false);
+        if (bitmap.getWidth() >= bitmap.getHeight())
+            finalBitmap = Bitmap.createBitmap(bitmap,
+                    bitmap.getWidth()/2 - bitmap.getHeight()/2, 0,
+                    bitmap.getHeight(), bitmap.getHeight());
+
         else
-            finalBitmap = bitmap;
+            finalBitmap = Bitmap.createBitmap(bitmap,
+                    0, bitmap.getHeight()/2 - bitmap.getWidth()/2,
+                    bitmap.getWidth(), bitmap.getWidth());
+
         Bitmap output = Bitmap.createBitmap(finalBitmap.getWidth(),
                 finalBitmap.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(output);

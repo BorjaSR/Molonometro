@@ -4,20 +4,33 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Base64;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bsalazar.molonometro.R;
+import com.bsalazar.molonometro.general.Constants;
 import com.bsalazar.molonometro.general.Tools;
 import com.bsalazar.molonometro.general.Variables;
+import com.bsalazar.molonometro.rest.controllers.UserController;
+import com.bsalazar.molonometro.rest.json.UpdateUserJson;
+import com.bsalazar.molonometro.rest.json.UserJson;
+import com.bsalazar.molonometro.rest.services.ServiceCallbackInterface;
+import com.bumptech.glide.Glide;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 /**
  * Created by bsalazar on 21/02/2017.
@@ -52,7 +65,17 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void fillFields() {
-        profile_image.setImageBitmap(Tools.getRoundedCroppedBitmap(Variables.User.getImage()));
+
+        byte[] imageByteArray = Base64.decode(Variables.User.getImageBase64(), Base64.DEFAULT);
+
+        Glide.with(this)
+                .load(imageByteArray)
+                .asBitmap()
+                .dontAnimate()
+                .into(profile_image);
+
+//        profile_image.setImageBitmap(Variables.User.getImage());
+
         profile_user_name.setText(Variables.User.getName());
         profile_state.setText(Variables.User.getState());
         profile_phone.setText(Tools.formatPhone(Variables.User.getPhone()));
@@ -88,13 +111,31 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == GALERY_INPUT) {
                 try {
+
                     new_image = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
+                    profile_image.setImageBitmap(null);
+                    
+                    new UserController().updateUserImage(this, new_image, new ServiceCallbackInterface() {
+                        @Override
+                        public void onSuccess(String result) {
 
-                    //compress the image
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    new_image.compress(Bitmap.CompressFormat.JPEG, 25, baos);
+                            //compress the image
+                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                            new_image.compress(Bitmap.CompressFormat.JPEG, 25, baos);
+                            byte[] bitmapdata = baos.toByteArray();
 
-                    profile_image.setImageBitmap(Tools.getRoundedCroppedBitmap(new_image));
+                            Glide.with(getApplicationContext())
+                                    .load(bitmapdata)
+                                    .asBitmap()
+                                    .dontAnimate()
+                                    .into(profile_image);
+                        }
+
+                        @Override
+                        public void onFailure(String result) {
+
+                        }
+                    });
 
                 } catch (Exception e) {
                     e.printStackTrace();

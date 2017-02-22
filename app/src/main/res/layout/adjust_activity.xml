@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -13,42 +14,55 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center">
+                android:layout_height="wrap_content">
 
-
-                <ImageView
-                    android:id="@+id/profile_image"
-                    android:layout_margin="@dimen/margin_image_profile"
+                <LinearLayout
                     android:layout_width="@dimen/imageSize_profile"
                     android:layout_height="@dimen/imageSize_profile"
-                    android:src="@drawable/gradiant_register"/>
+                    android:layout_margin="@dimen/margin_image_profile"
+                    android:background="@drawable/charcoal_gray_circle"
+                    android:layout_centerInParent="true"/>
 
-            </LinearLayout>
+                <ProgressBar
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_centerInParent="true"/>
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/profile_image"
+                    android:layout_width="@dimen/imageSize_profile"
+                    android:layout_height="@dimen/imageSize_profile"
+                    android:layout_margin="@dimen/margin_image_profile"
+                    android:src="@drawable/gradiant_register"
+                    app:civ_border_color="@color/charcoal_gray"
+                    app:civ_border_width="2dp"
+                    android:layout_centerInParent="true"/>
+
+            </RelativeLayout>
 
             <TextView
                 android:id="@+id/profile_user_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="User Name"
-                android:textSize="20sp"
-                android:textColor="@color/charcoal_gray"
                 android:background="@color/white"
                 android:elevation="1dp"
                 android:gravity="center"
-                android:padding="10dp"/>
+                android:padding="10dp"
+                android:text="User Name"
+                android:textColor="@color/charcoal_gray"
+                android:textSize="20sp" />
 
             <TextView
+                android:id="@+id/textView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="45dp"
-                android:text="@string/state_and_phone"
                 android:paddingLeft="@dimen/general_padding_15"
-                android:textSize="17sp"
+                android:text="@string/state_and_phone"
                 android:textColor="@color/colorPrimaryDark"
-                android:id="@+id/textView" />
+                android:textSize="17sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -61,26 +75,26 @@
                     android:id="@+id/profile_state"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Mi estado"
-                    android:textSize="15sp"
-                    android:textColor="@color/charcoal_gray"
                     android:background="@color/white"
-                    android:padding="@dimen/general_padding_15"/>
+                    android:padding="@dimen/general_padding_15"
+                    android:text="Mi estado"
+                    android:textColor="@color/charcoal_gray"
+                    android:textSize="15sp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/light_gray"/>
+                    android:background="@color/light_gray" />
 
                 <TextView
                     android:id="@+id/profile_phone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="622 333 569"
-                    android:textSize="15sp"
-                    android:textColor="@color/charcoal_gray"
                     android:background="@color/white"
-                    android:padding="@dimen/general_padding_15"/>
+                    android:padding="@dimen/general_padding_15"
+                    android:text="622 333 569"
+                    android:textColor="@color/charcoal_gray"
+                    android:textSize="15sp" />
 
             </LinearLayout>
 
