@@ -8,4 +8,6 @@
     <string name="invite">Invitar</string>
     <string name="adjust_activity">Ajustes</string>
     <string name="state_and_phone">Estado y teléfono</string>
+    <string name="refresh">Actualizar</string>
+    <string name="edit_field">Editar</string>
 </resources>

@@ -43,8 +43,8 @@ public class GroupsAdapter extends ArrayAdapter<Group> {
         Group group = groups.get(position);
 
         final LinearLayout group_layout = (LinearLayout) rootView.findViewById(R.id.group_layout);
-        TextView group_name = (TextView) rootView.findViewById(R.id.group_name);
-        final ImageView group_image = (ImageView) rootView.findViewById(R.id.group_image);
+        TextView group_name = (TextView) rootView.findViewById(R.id.contact_name);
+        final ImageView group_image = (ImageView) rootView.findViewById(R.id.contact_image);
 
         group_name.setText(group.getGroupName());
         group_image.setImageBitmap(group.getGroupImage());

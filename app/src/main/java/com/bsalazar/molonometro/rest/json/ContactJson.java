@@ -1,19 +1,18 @@
-package com.bsalazar.molonometro.entities;
+package com.bsalazar.molonometro.rest.json;
 
 /**
- * Created by bsalazar on 23/02/2017.
+ * Created by Borja on 29/10/2016.
  */
-
-public class Contact {
+public class ContactJson {
 
     private int UserID;
     private String Name;
     private String Phone;
     private String State;
-    private String ImageBase64;
+    private String Image;
     private boolean isInApp;
 
-    public Contact() {
+    public ContactJson() {
     }
 
     public int getUserID() {
@@ -48,12 +47,12 @@ public class Contact {
         State = state;
     }
 
-    public String getImageBase64() {
-        return ImageBase64;
+    public String getImage() {
+        return Image;
     }
 
-    public void setImageBase64(String imageBase64) {
-        ImageBase64 = imageBase64;
+    public void setImage(String image) {
+        Image = image;
     }
 
     public boolean isInApp() {

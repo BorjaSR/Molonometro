@@ -32,8 +32,7 @@
 
         <activity
             android:name=".area_home.MainActivity"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:label="@string/app_name">
         </activity>
 
         <activity
@@ -56,6 +55,16 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".area_home.MainActivity" />
+        </activity>
+
+        <activity
+            android:name=".area_adjust.EditFieldActivity"
+            android:label="@string/edit_field"
+            android:parentActivityName=".area_adjust.AccountActivity">
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".area_adjust.AccountActivity" />
         </activity>
     </application>
 

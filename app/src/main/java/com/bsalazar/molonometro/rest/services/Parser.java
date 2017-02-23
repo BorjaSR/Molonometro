@@ -1,7 +1,9 @@
 package com.bsalazar.molonometro.rest.services;
 
+import com.bsalazar.molonometro.entities.Contact;
 import com.bsalazar.molonometro.entities.User;
 import com.bsalazar.molonometro.general.Tools;
+import com.bsalazar.molonometro.rest.json.ContactJson;
 import com.bsalazar.molonometro.rest.json.UserJson;
 
 /**
@@ -20,5 +22,18 @@ public class Parser {
         user.setImageBase64(userJson.getImage());
 
         return user;
+    }
+
+    public static Contact parseContact(ContactJson contactJson) {
+        Contact contact = new Contact();
+
+        contact.setUserID(contactJson.getUserID());
+        contact.setName(contactJson.getName());
+        contact.setPhone(contactJson.getPhone());
+        contact.setState(contactJson.getState());
+        contact.setImageBase64(contactJson.getImage());
+        contact.setInApp(contactJson.isInApp());
+
+        return contact;
     }
 }

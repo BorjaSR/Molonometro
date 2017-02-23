@@ -81,26 +81,24 @@ public class SetFirstProfileDataActivity extends AppCompatActivity implements Vi
         switch (id) {
 
             case R.id.next:
-                EditText user_state = (EditText) findViewById(R.id.user_state);
-                UpdateUserJson updateUserJson = new UpdateUserJson();
-                updateUserJson.setUserID(Variables.User.getUserID());
-                updateUserJson.setName(Variables.User.getName());
-                if(profileBitmap != null)
-                    updateUserJson.setImage(Tools.encodeBitmapToBase64(profileBitmap));
-                updateUserJson.setState(user_state.getText().toString());
+                final EditText user_state = (EditText) findViewById(R.id.user_state);
 
-                new UserController().updateUser(this, updateUserJson, new ServiceCallbackInterface() {
-                    @Override
-                    public void onSuccess(String result) {
-                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                        finish();
-                    }
+                if(profileBitmap == null){
+                    updateUserState(user_state.getText().toString());
 
-                    @Override
-                    public void onFailure(String result) {
+                } else {
+                    new UserController().updateUserImage(this, profileBitmap, new ServiceCallbackInterface() {
+                        @Override
+                        public void onSuccess(String result) {
+                            updateUserState(user_state.getText().toString());
+                        }
 
-                    }
-                });
+                        @Override
+                        public void onFailure(String result) {
+
+                        }
+                    });
+                }
 
                 break;
 
@@ -108,6 +106,21 @@ public class SetFirstProfileDataActivity extends AppCompatActivity implements Vi
                 openGalery();
                 break;
         }
+    }
+
+    private void updateUserState(String state){
+        new UserController().updateUserState(getApplicationContext(), state, new ServiceCallbackInterface() {
+            @Override
+            public void onSuccess(String result) {
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                finish();
+            }
+
+            @Override
+            public void onFailure(String result) {
+
+            }
+        });
     }
 
     public void openGalery() {

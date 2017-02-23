@@ -17,7 +17,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.View;
@@ -29,15 +28,16 @@ import com.bsalazar.molonometro.area_adjust.AccountActivity;
 import com.bsalazar.molonometro.area_dashboard_group.DashboardGroupFragment;
 import com.bsalazar.molonometro.area_new_group.NewGroupActivity;
 import com.bsalazar.molonometro.R;
-import com.bsalazar.molonometro.entities.Contact;
+import com.bsalazar.molonometro.entities.PhoneContact;
 import com.bsalazar.molonometro.general.Constants;
-import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.controllers.UserController;
 import com.bsalazar.molonometro.rest.json.ContactsListJson;
+import com.bsalazar.molonometro.rest.services.ServiceCallbackInterface;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -57,8 +57,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
         fragmentManager = getSupportFragmentManager();
         fragmentContainterID = R.id.fragment_container;
@@ -107,10 +105,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    public void updateContacts(){
-        ((MainScreenFragment) fragments.get(Constants.FRAG_ID_MAIN_SCREEN)).updateContacts();
-    }
-
     public void changeFragment(int destination_fragment) {
         if (actualFragment != destination_fragment) {
 
@@ -136,6 +130,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if (id == R.id.action_settings) {
             startActivity(new Intent(this, AccountActivity.class));
+            return true;
+        } else if (id == R.id.action_refresh) {
+            getContacts();
             return true;
         }
 
@@ -185,11 +182,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 null,
                 sortOrder);
 
-        Variables.contacts.clear();
+        ArrayList<PhoneContact> phoneContacts = new ArrayList<>();
+        phoneContacts.clear();
         while (contactsCursor.moveToNext()) {
             boolean isInList = false;
-            for (Contact contact : Variables.contacts)
-                if (contact.getPhoneDisplayName().equals(contactsCursor.getString(1)))
+            for (PhoneContact phoneContact : phoneContacts)
+                if (phoneContact.getPhoneDisplayName().equals(contactsCursor.getString(1)))
                     isInList = true;
 
             String phone = contactsCursor.getString(2);
@@ -197,12 +195,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (phone.length() > 9) phone = phone.substring(phone.length() - 9);
 
             if (!isInList)
-                Variables.contacts.add(new Contact(contactsCursor.getString(1), phone));
+                phoneContacts.add(new PhoneContact(contactsCursor.getString(1), phone));
         }
 
         ContactsListJson contactsListJson = new ContactsListJson();
-        contactsListJson.setContacts(Variables.contacts);
-        new UserController().checkContacts(this, contactsListJson);
+        contactsListJson.setPhoneContacts(phoneContacts);
+        new UserController().checkContacts(this, contactsListJson, new ServiceCallbackInterface() {
+            @Override
+            public void onSuccess(String result) {
+                updateContacts();
+            }
+
+            @Override
+            public void onFailure(String result) {
+
+            }
+        });
     }
 
     public void shareMolonometro() {
@@ -226,5 +234,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             e.printStackTrace();
             return null;
         }
+    }
+
+    public void updateContacts(){
+        ((MainScreenFragment) fragments.get(Constants.FRAG_ID_MAIN_SCREEN)).updateContacts();
     }
 }

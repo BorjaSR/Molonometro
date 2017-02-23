@@ -51,15 +51,16 @@ class DbHandler {
         return $response;
     }
 
+
     // creating new user if not existed
-    public function updateUser($id, $name, $state, $image) {
+    public function updateUserImage($id, $image) {
         $response = array();
 
         // First check if user already existed in db
         if ($this->isUserExistsById($id)) {
             // update query
-            $stmt = $this->conn->prepare("UPDATE users SET Name = ?, State = ?, Image = ?, LastUpdate = now() WHERE UserID = ?");
-            $stmt->bind_param("sssi", $name, $state, $image, $id);
+            $stmt = $this->conn->prepare("UPDATE users SET Image = ?, LastUpdate = now() WHERE UserID = ?");
+            $stmt->bind_param("si", $image, $id);
 
             $result = $stmt->execute();
 
@@ -70,6 +71,39 @@ class DbHandler {
                 // User successfully inserted
                 $response["status"] = 200;
                 $response["user"] = $this->getUserById($id);
+            } else {
+                // Failed to create user
+                $response["status"] = 430;
+                $response["error"] = "Oops! An error occurred while updating user";
+            }
+        } else {
+            // User with same phone already existed in the db
+            $response["status"] = 432;
+            $response["error"] = "The user doesn't exists";
+        }
+
+        return $response;
+    }
+
+    // creating new user if not existed
+    public function updateUser($id, $name, $state) {
+        $response = array();
+
+        // First check if user already existed in db
+        if ($this->isUserExistsById($id)) {
+            // update query
+            $stmt = $this->conn->prepare("UPDATE users SET Name = ?, State = ?, LastUpdate = now() WHERE UserID = ?");
+            $stmt->bind_param("ssi", $name, $state, $id);
+
+            $result = $stmt->execute();
+
+            $stmt->close();
+
+            // Check for successful insertion
+            if ($result) {
+                // User successfully inserted
+                $response["status"] = 200;
+                $response["user"] = $this->getUserByIdWithoutImage($id);
             } else {
                 // Failed to create user
                 $response["status"] = 430;
@@ -147,6 +181,25 @@ class DbHandler {
             $user["Phone"] = $Phone;
             $user["State"] = $State;
             $user["Image"] = $Image;
+            $stmt->close();
+            return $user;
+        } else {
+            return NULL;
+        }
+    }
+    
+    public function getUserByIdWithoutImage($id) {
+        $stmt = $this->conn->prepare("SELECT UserID, Name, Phone, State FROM users WHERE UserID = ?");
+        $stmt->bind_param("i", $id);
+        
+        if ($stmt->execute()) {
+            $stmt->bind_result($UserID, $Name, $Phone, $State);
+            $stmt->fetch();
+            $user = array();
+            $user["UserID"] = $UserID;
+            $user["Name"] = $Name;
+            $user["Phone"] = $Phone;
+            $user["State"] = $State;
             $stmt->close();
             return $user;
         } else {

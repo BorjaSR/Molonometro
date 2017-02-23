@@ -1,6 +1,6 @@
 package com.bsalazar.molonometro.rest.json;
 
-import com.bsalazar.molonometro.entities.Contact;
+import com.bsalazar.molonometro.entities.PhoneContact;
 
 import java.util.ArrayList;
 
@@ -9,16 +9,16 @@ import java.util.ArrayList;
  */
 public class ContactsListJson {
 
-    private ArrayList<Contact> contacts = new ArrayList<>();
+    private ArrayList<PhoneContact> contacts = new ArrayList<>();
 
     public ContactsListJson() {
     }
 
-    public ArrayList<Contact> getContacts() {
+    public ArrayList<PhoneContact> getPhoneContacts() {
         return contacts;
     }
 
-    public void setContacts(ArrayList<Contact> contacts) {
-        this.contacts = contacts;
+    public void setPhoneContacts(ArrayList<PhoneContact> phoneContacts) {
+        this.contacts = phoneContacts;
     }
 }

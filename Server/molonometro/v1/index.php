@@ -33,6 +33,30 @@ $app->post('/user/createUser', function() use ($app) {
 
 });
 
+
+// User update
+$app->post('/user/updateUserImage', function() use ($app) {
+    // check for required params
+    //verifyRequiredParams(array('Name', 'Phone', 'State', 'Image'));
+
+	$body = $app->request()->getBody(); 
+	$input = json_decode($body);
+
+    // reading post params
+    $UserID = (string)$input->UserID;
+    $Image = (string)$input->Image;
+	
+    $db = new DbHandler();
+    $DBresponse = $db->updateUserImage($UserID, $Image);
+
+    $response = $DBresponse;
+    if($DBresponse["status"] == 200)
+    	echoResponse(200, $DBresponse["user"]);
+    else
+    	echoResponse(455, $DBresponse);
+
+});
+
 // User update
 $app->post('/user/updateUser', function() use ($app) {
     // check for required params
@@ -45,10 +69,9 @@ $app->post('/user/updateUser', function() use ($app) {
     $UserID = (string)$input->UserID;
     $Name = (string)$input->Name;
     $State = (string)$input->State;
-    $Image = (string)$input->Image;
 	
     $db = new DbHandler();
-    $DBresponse = $db->updateUser($UserID, $Name, $State, $Image);
+    $DBresponse = $db->updateUser($UserID, $Name, $State);
 
     $response = $DBresponse;
     if($DBresponse["status"] == 200)

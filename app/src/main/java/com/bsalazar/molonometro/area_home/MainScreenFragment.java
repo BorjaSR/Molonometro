@@ -96,9 +96,8 @@ public class MainScreenFragment extends Fragment {
 
         private GroupsFragment groupsFragment = new GroupsFragment();
         private ContactsFragment constantsFragment = new ContactsFragment();
-
-
-        public MainScreenAdapter(FragmentManager fm) {
+        
+        MainScreenAdapter(FragmentManager fm) {
             super(fm);
         }
 
@@ -121,8 +120,8 @@ public class MainScreenFragment extends Fragment {
             return 2;
         }
 
-        public void updateContacts() {
-            constantsFragment.update();
+        void updateContacts() {
+            constantsFragment.updateContactList();
         }
     }
 

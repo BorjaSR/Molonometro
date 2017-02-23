@@ -1,5 +1,7 @@
 package com.bsalazar.molonometro.rest.services;
 
+import com.bsalazar.molonometro.entities.Contact;
+import com.bsalazar.molonometro.rest.json.ContactJson;
 import com.bsalazar.molonometro.rest.json.ContactsListJson;
 import com.bsalazar.molonometro.rest.json.CreateUserJson;
 import com.bsalazar.molonometro.rest.json.ResponseJson;
@@ -28,10 +30,15 @@ public interface RestService {
             @Body UpdateUserJson updateUserJson,
             Callback<UserJson> callback);
 
+    @POST("/user/updateUserImage")
+    public void updateUserImage(
+            @Body UpdateUserJson updateUserJson,
+            Callback<UserJson> callback);
+
     @POST("/user/checkContacts")
     public void checkContacts(
             @Body ContactsListJson updateUserJson,
-            Callback<List<UserJson>> callback);
+            Callback<List<ContactJson>> callback);
 
 }
 

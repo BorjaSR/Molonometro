@@ -58,23 +58,31 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
         profile_state = (TextView) findViewById(R.id.profile_state);
         profile_phone = (TextView) findViewById(R.id.profile_phone);
 
-        fillFields();
-
         profile_image.setOnClickListener(this);
+        profile_user_name.setOnClickListener(this);
+        profile_state.setOnClickListener(this);
 
+        try {
+            byte[] imageByteArray = Base64.decode(Variables.User.getImageBase64(), Base64.DEFAULT);
+
+            Glide.with(this)
+                    .load(imageByteArray)
+                    .asBitmap()
+                    .dontAnimate()
+                    .into(profile_image);
+
+        } catch (Exception e) {
+            profile_image.setImageDrawable(getResources().getDrawable(R.drawable.user_icon));
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        fillFields();
     }
 
     private void fillFields() {
-
-        byte[] imageByteArray = Base64.decode(Variables.User.getImageBase64(), Base64.DEFAULT);
-
-        Glide.with(this)
-                .load(imageByteArray)
-                .asBitmap()
-                .dontAnimate()
-                .into(profile_image);
-
-//        profile_image.setImageBitmap(Variables.User.getImage());
 
         profile_user_name.setText(Variables.User.getName());
         profile_state.setText(Variables.User.getState());
@@ -98,6 +106,16 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
             case R.id.profile_image:
                 openGalery();
                 break;
+            case R.id.profile_user_name:
+                Intent intent = new Intent(this, EditFieldActivity.class);
+                intent.putExtra(EditFieldActivity.MODE, EditFieldActivity.EDIT_USER_NAME);
+                startActivity(intent);
+                break;
+            case R.id.profile_state:
+                Intent intent2 = new Intent(this, EditFieldActivity.class);
+                intent2.putExtra(EditFieldActivity.MODE, EditFieldActivity.EDIT_USER_STATE);
+                startActivity(intent2);
+                break;
         }
     }
 
@@ -114,15 +132,17 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
 
                     new_image = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
                     profile_image.setImageBitmap(null);
-                    
+
                     new UserController().updateUserImage(this, new_image, new ServiceCallbackInterface() {
                         @Override
                         public void onSuccess(String result) {
 
                             //compress the image
-                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                            new_image.compress(Bitmap.CompressFormat.JPEG, 25, baos);
-                            byte[] bitmapdata = baos.toByteArray();
+//                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//                            new_image.compress(Bitmap.CompressFormat.JPEG, 25, baos);
+//                            byte[] bitmapdata = baos.toByteArray();
+
+                            byte[] bitmapdata = Base64.decode(Variables.User.getImageBase64(), Base64.DEFAULT);
 
                             Glide.with(getApplicationContext())
                                     .load(bitmapdata)
@@ -134,6 +154,18 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
                         @Override
                         public void onFailure(String result) {
 
+                            try {
+                                byte[] imageByteArray = Base64.decode(Variables.User.getImageBase64(), Base64.DEFAULT);
+
+                                Glide.with(getApplicationContext())
+                                        .load(imageByteArray)
+                                        .asBitmap()
+                                        .dontAnimate()
+                                        .into(profile_image);
+
+                            } catch (Exception e) {
+                                profile_image.setImageDrawable(getResources().getDrawable(R.drawable.user_icon));
+                            }
                         }
                     });
 

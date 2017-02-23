@@ -17,6 +17,7 @@ import com.bsalazar.molonometro.general.Variables;
 public class ContactsFragment extends Fragment {
 
     private View rootView;
+    private ContactsAdapter adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -35,7 +36,13 @@ public class ContactsFragment extends Fragment {
 
     public void update() {
         ListView groups_list = (ListView) rootView.findViewById(R.id.contacts_list);
-        ContactsAdapter adapter = new ContactsAdapter(getActivity(), R.layout.contact_item, Variables.contacts2);
+        adapter = new ContactsAdapter(getActivity(), R.layout.contact_item, Variables.contacts);
         groups_list.setAdapter(adapter);
     }
+
+    public void updateContactList(){
+        adapter.notifyDataSetChanged();
+    }
+
+
 }

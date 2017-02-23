@@ -19,7 +19,7 @@
         android:background="?android:selectableItemBackground">
 
         <ImageView
-            android:id="@+id/group_image"
+            android:id="@+id/contact_image"
             android:transitionName="@string/element_shared_dashboard_group"
             android:layout_width="60dp"
             android:layout_height="60dp"

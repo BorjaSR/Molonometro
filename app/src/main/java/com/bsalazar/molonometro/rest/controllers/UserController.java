@@ -5,13 +5,14 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.widget.Toast;
 
-import com.bsalazar.molonometro.area_home.MainActivity;
 import com.bsalazar.molonometro.area_register.RegisterActivity;
 import com.bsalazar.molonometro.area_register.SetFirstProfileDataActivity;
+import com.bsalazar.molonometro.entities.Contact;
 import com.bsalazar.molonometro.general.Constants;
 import com.bsalazar.molonometro.general.Memo;
 import com.bsalazar.molonometro.general.Tools;
 import com.bsalazar.molonometro.general.Variables;
+import com.bsalazar.molonometro.rest.json.ContactJson;
 import com.bsalazar.molonometro.rest.json.ContactsListJson;
 import com.bsalazar.molonometro.rest.json.CreateUserJson;
 import com.bsalazar.molonometro.rest.json.UpdateUserJson;
@@ -53,13 +54,31 @@ public class UserController {
                 });
     }
 
-    public void updateUser(final Context mContext, UpdateUserJson updateUserJson, final ServiceCallbackInterface callback) {
+    public void updateUserName(final Context mContext, String name, final ServiceCallbackInterface callback){
+        UpdateUserJson updateUserJson = getUpdateUserJson();
+        updateUserJson.setImage(null);
+        updateUserJson.setName(name);
+        updateUser(mContext, updateUserJson, callback);
+    }
+
+    public void updateUserState(final Context mContext, String state, final ServiceCallbackInterface callback){
+        UpdateUserJson updateUserJson = getUpdateUserJson();
+        updateUserJson.setImage(null);
+        updateUserJson.setState(state);
+        updateUser(mContext, updateUserJson, callback);
+    }
+
+    private void updateUser(final Context mContext, UpdateUserJson updateUserJson, final ServiceCallbackInterface callback) {
+        updateUserJson.setImage(null);
 
         Constants.restController.getService().updateUser(updateUserJson
                 , new Callback<UserJson>() {
                     @Override
                     public void success(UserJson userJson, Response response) {
+
+                        String user_image = Variables.User.getImageBase64();
                         Variables.User = Parser.parseUser(userJson);
+                        Variables.User.setImageBase64(user_image);
 
                         Gson gson = new Gson();
                         String userStringJson = gson.toJson(Variables.User);
@@ -68,14 +87,48 @@ public class UserController {
                         if (Variables.User.getImageBase64() != null)
                             Variables.User.setImage(Tools.decodeBase64(Variables.User.getImageBase64()));
 
-
-                        callback.onSuccess("Su puta madre ha ido bien, gracias ;)");
+                        callback.onSuccess("");
                     }
 
                     @Override
                     public void failure(RetrofitError error) {
                         if (error.getResponse() != null)
                             Toast.makeText(mContext, "KO actualizando al usuario\n" + error.getResponse().getStatus() + " " + error.getResponse().getReason(), Toast.LENGTH_SHORT).show();
+
+                        callback.onFailure("");
+                    }
+                });
+
+    }
+
+
+    public void updateUserImage(final Context mContext, Bitmap image_profile, final ServiceCallbackInterface callback) {
+
+        UpdateUserJson updateUserJson = getUpdateUserJson();
+        updateUserJson.setImage(Tools.encodeBitmapToBase64(image_profile));
+
+        Constants.restController.getService().updateUserImage(updateUserJson
+                , new Callback<UserJson>() {
+                    @Override
+                    public void success(UserJson userJson, Response response) {
+                        Variables.User = Parser.parseUser(userJson);
+
+                        //Guardar usuario en local
+                        Gson gson = new Gson();
+                        String userStringJson = gson.toJson(Variables.User);
+                        Memo.rememberMe(mContext, userStringJson);
+
+                        if (Variables.User.getImageBase64() != null)
+                            Variables.User.setImage(Tools.decodeBase64(Variables.User.getImageBase64()));
+
+
+                        callback.onSuccess("");
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        if (error.getResponse() != null)
+                            Toast.makeText(mContext, "KO actualizando Imagen de usuario\n" + error.getResponse().getStatus() + " " + error.getResponse().getReason(), Toast.LENGTH_SHORT).show();
 
 
                         callback.onFailure("");
@@ -84,34 +137,33 @@ public class UserController {
 
     }
 
-    public void checkContacts(final Context mContext, ContactsListJson contactsListJson) {
+    public void checkContacts(final Context mContext, ContactsListJson contactsListJson, final ServiceCallbackInterface callback) {
 
         Constants.restController.getService().checkContacts(contactsListJson
-                , new Callback<List<UserJson>>() {
+                , new Callback<List<ContactJson>>() {
                     @Override
-                    public void success(List<UserJson> userJsonList, Response response) {
-                        Variables.contacts2.clear();
+                    public void success(List<ContactJson> contactListJson, Response response) {
+
+                        Variables.contacts.clear();
                         Variables.contactsWithApp.clear();
-                        for (int i = 0; i < userJsonList.size(); i++) {
-                            Variables.contacts2.add(userJsonList.get(i));
-                            if (userJsonList.get(i).isInApp())
-                                Variables.contactsWithApp.add(userJsonList.get(i));
+
+                        for (int i = 0; i < contactListJson.size(); i++) {
+                            Variables.contacts.add(Parser.parseContact(contactListJson.get(i)));
+
+                            if (contactListJson.get(i).isInApp())
+                                Variables.contactsWithApp.add(Parser.parseContact(contactListJson.get(i)));
                         }
+
+                        callback.onSuccess("");
                     }
 
                     @Override
                     public void failure(RetrofitError error) {
                         if (error.getResponse() != null)
                             Toast.makeText(mContext, "KO checkenado usuarios\n" + error.getResponse().getStatus() + " " + error.getResponse().getReason(), Toast.LENGTH_SHORT).show();
+                        callback.onSuccess("");
                     }
                 });
-    }
-
-    public void updateUserImage(Context context, Bitmap image_profile, ServiceCallbackInterface callback) {
-        UpdateUserJson updateUserJson = getUpdateUserJson();
-        updateUserJson.setImage(Tools.encodeBitmapToBase64(image_profile));
-
-        updateUser(context, updateUserJson, callback);
     }
 
     private UpdateUserJson getUpdateUserJson() {

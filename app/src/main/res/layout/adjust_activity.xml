@@ -26,8 +26,8 @@
                     android:layout_centerInParent="true"/>
 
                 <ProgressBar
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="65dp"
+                    android:layout_height="65dp"
                     android:layout_centerInParent="true"/>
 
                 <de.hdodenhof.circleimageview.CircleImageView
@@ -42,17 +42,33 @@
 
             </RelativeLayout>
 
-            <TextView
-                android:id="@+id/profile_user_name"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
-                android:elevation="1dp"
-                android:gravity="center"
-                android:padding="10dp"
-                android:text="User Name"
-                android:textColor="@color/charcoal_gray"
-                android:textSize="20sp" />
+                android:elevation="1dp">
+
+                <TextView
+                    android:id="@+id/profile_user_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:text="User Name"
+                    android:background="?android:selectableItemBackground"
+                    android:textColor="@color/charcoal_gray"
+                    android:textSize="20sp" />
+
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/edit_orange"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="@dimen/general_padding_15"/>
+
+            </RelativeLayout>
+
 
             <TextView
                 android:id="@+id/textView"
@@ -68,16 +84,47 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
+                android:background="@color/white"
                 android:elevation="1dp"
                 android:orientation="vertical">
 
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/profile_state"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="?android:selectableItemBackground"
+                        android:padding="@dimen/general_padding_15"
+                        android:text="Mi estado"
+                        android:textColor="@color/charcoal_gray"
+                        android:textSize="15sp" />
+
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:src="@drawable/edit_orange"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="@dimen/general_padding_15"/>
+
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/light_gray"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"/>
+
                 <TextView
-                    android:id="@+id/profile_state"
+                    android:id="@+id/profile_phone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/white"
                     android:padding="@dimen/general_padding_15"
-                    android:text="Mi estado"
+                    android:text="622 333 569"
                     android:textColor="@color/charcoal_gray"
                     android:textSize="15sp" />
 
@@ -85,16 +132,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/light_gray" />
-
-                <TextView
-                    android:id="@+id/profile_phone"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/white"
-                    android:padding="@dimen/general_padding_15"
-                    android:text="622 333 569"
-                    android:textColor="@color/charcoal_gray"
-                    android:textSize="15sp" />
 
             </LinearLayout>
 
