@@ -6,9 +6,12 @@ ini_set('display_errors', 'On');
 require_once '../include/db_handler.php';
 require '.././libs/Slim/Slim.php';
 
-\Slim\Slim::registerAutoloader();
 
+\Slim\Slim::registerAutoloader();
 $app = new \Slim\Slim();
+
+
+include 'controllers/GroupController.php';
 
 // User login
 $app->post('/user/createUser', function() use ($app) {

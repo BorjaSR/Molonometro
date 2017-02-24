@@ -228,4 +228,38 @@ class DbHandler {
     }
 }
 
+
+/////////////////////////////////////////////////////////////////
+
+                    //  GROUPS  //
+
+/////////////////////////////////////////////////////////////////
+
+
+    // creating new user if not existed
+    public function createGroup($name, $image) {
+        $response = array();
+
+        // insert query
+        $stmt = $this->conn->prepare("INSERT INTO groups(Name, Image, Created, LastUpdate, Deleted) values(?, ?, now(), now(), 0)");
+        $stmt->bind_param("ss", $name, $image);
+
+        $result = $stmt->execute();
+
+        $stmt->close();
+
+        // Check for successful insertion
+        if ($result) {
+            // User successfully inserted
+            $response["status"] = 200;
+            $response["group"] = "OK";
+        } else {
+            // Failed to create user
+            $response["status"] = 430;
+            $response["error"] = "Oops! An error occurred while create group";
+        }
+
+        return $response;
+    }
+
 ?>
