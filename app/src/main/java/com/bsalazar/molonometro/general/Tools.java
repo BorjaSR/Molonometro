@@ -20,6 +20,21 @@ import java.net.HttpURLConnection;
  */
 public class Tools {
 
+    public static Bitmap getBitmapFromURL(String src) {
+        try {
+            java.net.URL url = new java.net.URL(src);
+            HttpURLConnection connection = (HttpURLConnection) url
+                    .openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            return BitmapFactory.decodeStream(input);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public static Bitmap getRoundedCroppedBitmap(Bitmap bitmap) {
 
         Bitmap finalBitmap;

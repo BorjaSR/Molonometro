@@ -10,4 +10,8 @@
     <string name="state_and_phone">Estado y teléfono</string>
     <string name="refresh">Actualizar</string>
     <string name="edit_field">Editar</string>
+    <string name="no_groups">Todavia no estas en ningún grupo</string>
+    <string name="no_contacts">No hay contactos</string>
+    <string name="next">Siguiente</string>
+    <string name="finish_group">Finalizar grupo</string>
 </resources>

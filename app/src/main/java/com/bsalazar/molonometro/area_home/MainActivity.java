@@ -30,6 +30,7 @@ import com.bsalazar.molonometro.area_new_group.NewGroupActivity;
 import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.entities.PhoneContact;
 import com.bsalazar.molonometro.general.Constants;
+import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.controllers.UserController;
 import com.bsalazar.molonometro.rest.json.ContactsListJson;
 import com.bsalazar.molonometro.rest.services.ServiceCallbackInterface;
@@ -144,6 +145,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int id = v.getId();
         switch (id) {
             case R.id.fab:
+                Variables.createGroupJson = null;
                 startActivity(new Intent(this, NewGroupActivity.class));
                 break;
         }
@@ -218,22 +220,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         intent.setType("text/plain");
         intent.putExtra(Intent.EXTRA_TEXT, "Descubre cual de tus amigos mola más con el Molonometro!!");
         startActivity(Intent.createChooser(intent, "Share with"));
-    }
-
-    public static Bitmap getBitmapFromURL(String src) {
-        try {
-            java.net.URL url = new java.net.URL(src);
-            HttpURLConnection connection = (HttpURLConnection) url
-                    .openConnection();
-            connection.setDoInput(true);
-            connection.connect();
-            InputStream input = connection.getInputStream();
-            Bitmap myBitmap = BitmapFactory.decodeStream(input);
-            return myBitmap;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 
     public void updateContacts(){

@@ -12,4 +12,8 @@
     <dimen name="imageSize_deleted_selected_for_group">20dp</dimen>
     <dimen name="imageSize_profile">150dp</dimen>
     <dimen name="margin_image_profile">35dp</dimen>
+    <dimen name="imageSize_empty_list">150dp</dimen>
+    <dimen name="marginTop_emptyList">100dp</dimen>
+    <dimen name="height_bottom_button">50dp</dimen>
+    <dimen name="textSize_button_bottom">16sp</dimen>
 </resources>

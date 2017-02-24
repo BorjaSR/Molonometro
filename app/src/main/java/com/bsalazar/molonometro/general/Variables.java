@@ -2,6 +2,7 @@ package com.bsalazar.molonometro.general;
 
 import com.bsalazar.molonometro.entities.Contact;
 import com.bsalazar.molonometro.entities.User;
+import com.bsalazar.molonometro.rest.json.CreateGroupJson;
 
 import java.util.ArrayList;
 
@@ -15,4 +16,6 @@ public class Variables {
 
     public static ArrayList<Contact> contacts = new ArrayList<>();
     public static ArrayList<Contact> contactsWithApp = new ArrayList<>();
+
+    public static CreateGroupJson createGroupJson;
 }

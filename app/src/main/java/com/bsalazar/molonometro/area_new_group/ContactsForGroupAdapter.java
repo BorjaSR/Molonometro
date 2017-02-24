@@ -26,6 +26,8 @@ public class ContactsForGroupAdapter extends ArrayAdapter<Contact> {
     private int resourceId;
     private Context mContext;
 
+    private ArrayList<Contact> contacts_selected = new ArrayList<>();
+
     public ContactsForGroupAdapter(Context context, int resource, ArrayList<Contact> contacts) {
         super(context, resource, contacts);
         this.contacts = contacts;
@@ -41,13 +43,15 @@ public class ContactsForGroupAdapter extends ArrayAdapter<Contact> {
             rootView = inflater1.inflate(resourceId, null);
         }
 
-        Contact contact = contacts.get(position);
+        final Contact contact = contacts.get(position);
 
         TextView contact_name_first_part = (TextView) rootView.findViewById(R.id.group_name_first_part);
         TextView match_contact_name = (TextView) rootView.findViewById(R.id.match_group_name);
         TextView contact_name_second_part = (TextView) rootView.findViewById(R.id.group_name_second_part);
         TextView item_detail = (TextView) rootView.findViewById(R.id.item_detail);
         ImageView group_image = (ImageView) rootView.findViewById(R.id.contact_image);
+
+
 
         if (Variables.search_for_contacts_for_group.equals("")) {
             contact_name_first_part.setText(contact.getName());
@@ -73,6 +77,7 @@ public class ContactsForGroupAdapter extends ArrayAdapter<Contact> {
                 contact_name_second_part.setVisibility(View.VISIBLE);
             }
         }
+
 
         item_detail.setText(contact.getState());
         group_image.setImageResource(R.drawable.user_icon);

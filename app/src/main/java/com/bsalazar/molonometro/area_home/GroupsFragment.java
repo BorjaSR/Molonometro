@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.bsalazar.molonometro.R;
@@ -39,12 +40,19 @@ public class GroupsFragment extends Fragment {
 
     private void update() {
 
-        ArrayList<Group> groups = new ArrayList<>();
-        for (int i = 0; i < 10; i++)
-            groups.add(new Group(i, "Mi grupo " + (i + 1), Tools.getRoundedCroppedBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.group_icon))));
+        LinearLayout empty_list = (LinearLayout) rootView.findViewById(R.id.empty_list);
 
-        ListView groups_list = (ListView) rootView.findViewById(R.id.groups_list);
-        GroupsAdapter adapter = new GroupsAdapter(getActivity(), R.layout.group_item, groups);
-        groups_list.setAdapter(adapter);
+        ArrayList<Group> groups = new ArrayList<>();
+
+        if(groups.size() > 0){
+            ListView groups_list = (ListView) rootView.findViewById(R.id.groups_list);
+            GroupsAdapter adapter = new GroupsAdapter(getActivity(), R.layout.group_item, groups);
+            groups_list.setAdapter(adapter);
+
+            empty_list.setVisibility(View.GONE);
+
+        } else {
+            empty_list.setVisibility(View.VISIBLE);
+        }
     }
 }

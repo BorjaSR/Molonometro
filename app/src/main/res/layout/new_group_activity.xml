@@ -21,8 +21,30 @@
     <ListView
         android:id="@+id/contact_for_new_group"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="1dp"
+        android:layout_weight="1"
         android:divider="@color/transparent"
         android:dividerHeight="5dp" />
+
+    <LinearLayout
+        android:id="@+id/container_next"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorAccent"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/next"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/height_bottom_button"
+            android:background="?android:selectableItemBackground"
+            android:text="@string/next"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textAllCaps="true"
+            android:textStyle="bold"
+            android:textSize="@dimen/textSize_button_bottom"/>
+
+    </LinearLayout>
 
 </LinearLayout>

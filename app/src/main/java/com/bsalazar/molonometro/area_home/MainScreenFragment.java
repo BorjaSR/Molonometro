@@ -96,7 +96,7 @@ public class MainScreenFragment extends Fragment {
 
         private GroupsFragment groupsFragment = new GroupsFragment();
         private ContactsFragment constantsFragment = new ContactsFragment();
-        
+
         MainScreenAdapter(FragmentManager fm) {
             super(fm);
         }

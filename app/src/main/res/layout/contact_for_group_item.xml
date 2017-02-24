@@ -8,91 +8,105 @@
     android:background="@color/white"
     android:elevation="2dp">
 
-    <LinearLayout
-        android:id="@+id/contact_for_new_group_layout"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
-        android:background="?android:selectableItemBackground">
-
-        <ImageView
-            android:id="@+id/contact_image"
-            android:transitionName="@string/element_shared_dashboard_group"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:src="@drawable/group_icon"/>
+        android:layout_height="85dp">
 
         <LinearLayout
-            android:layout_width="0dp"
-            android:layout_weight="1"
+            android:id="@+id/contact_for_new_group_layout"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:orientation="vertical">
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:background="?android:selectableItemBackground"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/contact_image"
+                android:transitionName="@string/element_shared_dashboard_group"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:src="@drawable/group_icon"/>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/group_name_first_part"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Nombre del contacto"
+                        android:textColor="@color/charcoal_gray"
+                        android:textStyle="bold"
+                        android:textSize="17sp"
+                        android:singleLine="true"/>
+                    <TextView
+                        android:id="@+id/match_group_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="act"
+                        android:textColor="@color/colorAccent"
+                        android:textStyle="bold"
+                        android:textSize="17sp"
+                        android:singleLine="true"
+                        android:visibility="gone"/>
+                    <TextView
+                        android:id="@+id/group_name_second_part"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="o"
+                        android:textColor="@color/charcoal_gray"
+                        android:textStyle="bold"
+                        android:textSize="17sp"
+                        android:singleLine="true"
+                        android:visibility="gone"/>
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/item_detail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="Ultimo evento"
+                    android:textColor="@color/dark_gray"
+                    android:singleLine="true"/>
+
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:visibility="gone">
 
                 <TextView
-                    android:id="@+id/group_name_first_part"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Nombre del contacto"
-                    android:textColor="@color/charcoal_gray"
-                    android:textStyle="bold"
-                    android:textSize="17sp"
-                    android:singleLine="true"/>
-                <TextView
-                    android:id="@+id/match_group_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="act"
-                    android:textColor="@color/colorAccent"
-                    android:textStyle="bold"
-                    android:textSize="17sp"
-                    android:singleLine="true"
-                    android:visibility="gone"/>
-                <TextView
-                    android:id="@+id/group_name_second_part"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="o"
-                    android:textColor="@color/charcoal_gray"
-                    android:textStyle="bold"
-                    android:textSize="17sp"
-                    android:singleLine="true"
-                    android:visibility="gone"/>
+                    android:textColor="@color/dark_gray"
+                    android:text="13:03"/>
+
             </LinearLayout>
-
-            <TextView
-                android:id="@+id/item_detail"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text="Ultimo evento"
-                android:textColor="@color/dark_gray"
-                android:singleLine="true"/>
 
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:id="@+id/contact_selected_shadow"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:visibility="gone">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/dark_gray"
-                android:text="13:03"/>
-
-        </LinearLayout>
-
-    </LinearLayout>
+            android:background="@color/alpha_white"
+            android:orientation="horizontal"
+            android:visibility="gone"/>
+    </RelativeLayout>
 </LinearLayout>

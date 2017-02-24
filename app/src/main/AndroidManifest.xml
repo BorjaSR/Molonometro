@@ -45,6 +45,16 @@
                 android:value=".area_home.MainActivity" />
         </activity>
 
+        <activity
+            android:name=".area_new_group.FinishGroupActivity"
+            android:label="@string/finish_group"
+            android:parentActivityName=".area_new_group.NewGroupActivity">
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".area_new_group.NewGroupActivity" />
+        </activity>
+
         <!--android:theme="@style/AppTheme.NoActionBar"-->
 
         <activity
