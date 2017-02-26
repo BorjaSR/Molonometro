@@ -125,7 +125,7 @@ class DbHandler {
      */
 
     private function isUserExistsByPhone($phone) {
-        $stmt = $this->conn->prepare("SELECT UserID from users WHERE Phone = ?");
+        $stmt = $this->conn->prepare("SELECT UserID from users WHERE Phone = ? and Deleted = 0");
         $stmt->bind_param("s", $phone);
         $stmt->execute();
         $stmt->store_result();
@@ -135,7 +135,7 @@ class DbHandler {
     }
 
     private function isUserExistsById($id) {
-        $stmt = $this->conn->prepare("SELECT UserID from users WHERE UserID = ?");
+        $stmt = $this->conn->prepare("SELECT UserID from users WHERE UserID = ? and Deleted = 0");
         $stmt->bind_param("i", $id);
         $stmt->execute();
         $stmt->store_result();
@@ -149,7 +149,7 @@ class DbHandler {
      * @param String $email User email id
      */
     public function getUserByPhone($phone) {
-        $stmt = $this->conn->prepare("SELECT UserID, Name, Phone, State, Image FROM users WHERE Phone = ?");
+        $stmt = $this->conn->prepare("SELECT UserID, Name, Phone, State, Image FROM users WHERE Phone = ? and Deleted = 0");
         $stmt->bind_param("s", $phone);
         
         if ($stmt->execute()) {
@@ -169,7 +169,7 @@ class DbHandler {
     }
 
     public function checkUserByPhone($phone) {
-        $stmt = $this->conn->prepare("SELECT UserID, Name, Phone, State, Image FROM users WHERE Phone = ?");
+        $stmt = $this->conn->prepare("SELECT UserID, Name, Phone, State, Image FROM users WHERE Phone = ? and Deleted = 0");
         $stmt->bind_param("s", $phone);
         
         if ($stmt->execute()) {
@@ -189,7 +189,7 @@ class DbHandler {
     }
     
     public function getUserByIdWithoutImage($id) {
-        $stmt = $this->conn->prepare("SELECT UserID, Name, Phone, State FROM users WHERE UserID = ?");
+        $stmt = $this->conn->prepare("SELECT UserID, Name, Phone, State FROM users WHERE UserID = ? and Deleted = 0");
         $stmt->bind_param("i", $id);
         
         if ($stmt->execute()) {
@@ -208,7 +208,7 @@ class DbHandler {
     }
 	
     public function getUserById($id) {
-        $stmt = $this->conn->prepare("SELECT UserID, Name, Phone, State, Image FROM users WHERE UserID = ?");
+        $stmt = $this->conn->prepare("SELECT UserID, Name, Phone, State, Image FROM users WHERE UserID = ? and Deleted = 0");
         $stmt->bind_param("i", $id);
         
         if ($stmt->execute()) {
@@ -226,8 +226,6 @@ class DbHandler {
             return NULL;
         }
     }
-}
-
 
 /////////////////////////////////////////////////////////////////
 
@@ -237,29 +235,76 @@ class DbHandler {
 
 
     // creating new user if not existed
-    public function createGroup($name, $image) {
-        $response = array();
+    public function createGroup($createdBy, $name, $image) {
+
+        if ($this->isUserExistsById($createdBy)) {
+		    $response = array();
+
+		    // insert query
+		    $stmt = $this->conn->prepare("INSERT INTO groups(Name, Image, CreatedBy, Created, LastUpdate, Deleted) values(?, ?, ?, now(), now(), 0)");
+		    $stmt->bind_param("ssi", $name, $image, $createdBy);
+
+		    $result = $stmt->execute();
+
+		    $stmt->close();
+
+		    // Check for successful insertion
+		    if ($result) {
+
+		        // User successfully inserted
+		        $response["status"] = 200;
+		        $response["group"] = $this->getLastGroupByUser($createdBy);
+		    } else {
+		        // Failed to create user
+		        $response["status"] = 430;
+		        $response["error"] = "Oops! An error occurred while create group";
+		    }
+		} else {
+	        $response["status"] = 432;
+	        $response["error"] = "The user doesn't exists";
+		}
+
+        return $response;
+    }
+
+
+    public function addUserToGroup($userId, $groupId) {
 
         // insert query
-        $stmt = $this->conn->prepare("INSERT INTO groups(Name, Image, Created, LastUpdate, Deleted) values(?, ?, now(), now(), 0)");
-        $stmt->bind_param("ss", $name, $image);
-
+        $stmt = $this->conn->prepare("INSERT INTO groupuser(GroupID, UserID, Created, LastUpdate, Deleted) values(?, ?, now(), now(), 0)");
+        $stmt->bind_param("ss", $groupId, $userId);
         $result = $stmt->execute();
-
         $stmt->close();
 
-        // Check for successful insertion
+        
         if ($result) {
-            // User successfully inserted
-            $response["status"] = 200;
-            $response["group"] = "OK";
+	        $response["status"] = 200;
+	        $response["message"] = "User add correctly to group";
         } else {
-            // Failed to create user
-            $response["status"] = 430;
-            $response["error"] = "Oops! An error occurred while create group";
+	        $response["status"] = 433;
+		    $response["error"] = "Oops! An error occurred while add user to group";
         }
 
         return $response;
     }
 
+
+    public function getLastGroupByUser($userId) {
+        $stmt = $this->conn->prepare("SELECT GroupID, Name, Image From groups where CreatedBy = ? and Deleted = 0 order by Created Desc");
+        $stmt->bind_param("i", $userId);
+        
+        if ($stmt->execute()) {
+            $stmt->bind_result($GroupID, $Name, $Image);
+            $stmt->fetch();
+            $lastGroup = array();
+            $lastGroup["GroupID"] = $GroupID;
+            $lastGroup["Name"] = $Name;
+            $lastGroup["Image"] = $Image;
+            $stmt->close();
+            return $lastGroup;
+        } else {
+            return NULL;
+        }
+    }
+}
 ?>

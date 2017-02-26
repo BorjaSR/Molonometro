@@ -7,18 +7,40 @@ $app->post('/group/createGroup', function() use ($app) {
     $input = json_decode($body);
 
     // reading post params
-    $userID = (string)$input->userID;
+    $userID = (int)$input->userID;
     $groupName = (string)$input->groupName;
     $groupImage = (string)$input->groupImage;
-    
-    $db = new DbHandler();
-    $DBresponse = $db->createGroup($groupName, $groupImage);
 
-    $response = $DBresponse;
-    if($DBresponse["status"] == 200)
+    $contacts = (array)$input->contacts;
+
+    $db = new DbHandler();
+    $DBresponse = $db->createGroup($userID, $groupName, $groupImage);
+
+    if($DBresponse["status"] == 200){
+
+        $group = $DBresponse["group"];
+        
+        foreach ($contacts as $contact) {
+            addUserToGroup($contact, $group["GroupID"]);
+        }
         echoResponse(200, $DBresponse["group"]);
-    else
+
+    }else{
         echoResponse(455, $DBresponse);
+    }
 });
+
+
+function addUserToGroup($userID, $groupID) {
+
+    $db = new DbHandler();
+    $DBresponse = $db->addUserToGroup($userID, $groupID);
+
+    if($DBresponse["status"] == 200){
+        return true;
+    } else {
+        return false;
+    }
+}
 
 ?>
