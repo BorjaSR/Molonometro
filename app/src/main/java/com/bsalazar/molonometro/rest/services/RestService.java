@@ -3,6 +3,7 @@ package com.bsalazar.molonometro.rest.services;
 import com.bsalazar.molonometro.entities.Contact;
 import com.bsalazar.molonometro.rest.json.ContactJson;
 import com.bsalazar.molonometro.rest.json.ContactsListJson;
+import com.bsalazar.molonometro.rest.json.CreateGroupJson;
 import com.bsalazar.molonometro.rest.json.CreateUserJson;
 import com.bsalazar.molonometro.rest.json.ResponseJson;
 import com.bsalazar.molonometro.rest.json.UpdateUserJson;
@@ -21,24 +22,29 @@ import retrofit.http.POST;
 public interface RestService {
 
     @POST("/user/createUser")
-    public void createUser(
+    void createUser(
             @Body CreateUserJson createUserJson,
             Callback<UserJson> callback);
 
     @POST("/user/updateUser")
-    public void updateUser(
+    void updateUser(
             @Body UpdateUserJson updateUserJson,
             Callback<UserJson> callback);
 
     @POST("/user/updateUserImage")
-    public void updateUserImage(
+    void updateUserImage(
             @Body UpdateUserJson updateUserJson,
             Callback<UserJson> callback);
 
     @POST("/user/checkContacts")
-    public void checkContacts(
+    void checkContacts(
             @Body ContactsListJson updateUserJson,
             Callback<List<ContactJson>> callback);
+
+    @POST("/group/createGroup")
+    void createGroup(
+            @Body CreateGroupJson createGroupJson,
+            Callback<CreateGroupJson> callback);
 
 }
 

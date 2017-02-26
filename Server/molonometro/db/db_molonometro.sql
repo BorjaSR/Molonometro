@@ -66,8 +66,8 @@ CREATE TABLE `users` (
   `Phone` varchar(25) COLLATE utf8_spanish_ci NOT NULL,
   `State` varchar(200) COLLATE utf8_spanish_ci DEFAULT NULL,
   `Image` longblob,
-  `Created` date NOT NULL,
-  `LastUpdate` date NOT NULL,
+  `Created` datetime NOT NULL,
+  `LastUpdate` datetime NOT NULL,
   `Deleted` tinyint(1) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 

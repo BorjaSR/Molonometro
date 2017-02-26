@@ -68,6 +68,8 @@ public class NewGroupActivity extends AppCompatActivity implements View.OnClickL
                 Variables.createGroupJson.setUserID(Variables.User.getUserID());
 
                 ArrayList<Integer> contacts_selected_id = new ArrayList<>();
+                contacts_selected_id.add(Variables.User.getUserID());
+
                 for (Contact contact : contacts_selected)
                     contacts_selected_id.add(contact.getUserID());
 

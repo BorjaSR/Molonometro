@@ -10,6 +10,8 @@ import android.widget.TextView;
 
 import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.general.Variables;
+import com.bsalazar.molonometro.rest.controllers.GroupController;
+import com.bsalazar.molonometro.rest.services.ServiceCallbackInterface;
 
 /**
  * Created by bsalazar on 24/02/2017.
@@ -59,7 +61,17 @@ public class FinishGroupActivity extends AppCompatActivity {
                     Variables.createGroupJson.setGroupName(group_name.getText().toString());
                     Variables.createGroupJson.setGroupImage("");
 
+                    new GroupController().createGroup(this, Variables.createGroupJson, new ServiceCallbackInterface() {
+                        @Override
+                        public void onSuccess(String result) {
+                            finish();
+                        }
 
+                        @Override
+                        public void onFailure(String result) {
+
+                        }
+                    });
                 }
                 break;
         }

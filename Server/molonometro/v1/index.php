@@ -1,5 +1,14 @@
 <?php
 
+/**
+# Set access permission
+<Directory "${INSTALL_DIR}/www/molonometro/v1">
+        DirectoryIndex index.php
+        AllowOverride All
+	Require all granted
+</Directory>
+*/
+
 error_reporting(-1);
 ini_set('display_errors', 'On');
 
