@@ -10,8 +10,9 @@ import java.util.ArrayList;
 public class Group {
 
     private int id;
-    private Bitmap GroupImage;
-    private String GroupName;
+    private Bitmap image;
+    private String imageBase64;
+    private String name;
     private ArrayList<User> users;
     private String lastEvent;
 
@@ -20,13 +21,13 @@ public class Group {
 
     public Group(int id, String groupName) {
         this.id = id;
-        GroupName = groupName;
+        name = groupName;
     }
 
     public Group(int id, String groupName, Bitmap groupImage) {
         this.id = id;
-        GroupImage = groupImage;
-        GroupName = groupName;
+        image = groupImage;
+        name = groupName;
     }
 
     public int getId() {
@@ -37,20 +38,28 @@ public class Group {
         this.id = id;
     }
 
-    public Bitmap getGroupImage() {
-        return GroupImage;
+    public Bitmap getImage() {
+        return image;
     }
 
-    public void setGroupImage(Bitmap groupImage) {
-        GroupImage = groupImage;
+    public void setImage(Bitmap image) {
+        this.image = image;
     }
 
-    public String getGroupName() {
-        return GroupName;
+    public String getImageBase64() {
+        return imageBase64;
     }
 
-    public void setGroupName(String groupName) {
-        GroupName = groupName;
+    public void setImageBase64(String imageBase64) {
+        this.imageBase64 = imageBase64;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public ArrayList<User> getUsers() {

@@ -15,7 +15,9 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.view.Display;
@@ -23,16 +25,21 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.bsalazar.molonometro.area_adjust.AccountActivity;
 import com.bsalazar.molonometro.area_dashboard_group.DashboardGroupFragment;
+import com.bsalazar.molonometro.area_home.adapters.GroupsAdapter;
 import com.bsalazar.molonometro.area_new_group.NewGroupActivity;
 import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.entities.PhoneContact;
 import com.bsalazar.molonometro.general.Constants;
 import com.bsalazar.molonometro.general.Variables;
+import com.bsalazar.molonometro.rest.controllers.GroupController;
 import com.bsalazar.molonometro.rest.controllers.UserController;
 import com.bsalazar.molonometro.rest.json.ContactsListJson;
+import com.bsalazar.molonometro.rest.json.UserIdJson;
 import com.bsalazar.molonometro.rest.services.ServiceCallbackInterface;
 
 import java.io.IOException;
@@ -43,13 +50,16 @@ import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private int actualFragment = Constants.FRAG_ID_MAIN_SCREEN;
-    private HashMap<Integer, Fragment> fragments = new HashMap<>();
+//    private int actualFragment = Constants.FRAG_ID_MAIN_SCREEN;
+//    private HashMap<Integer, Fragment> fragments = new HashMap<>();
     private FragmentManager fragmentManager;
     public FloatingActionButton fab;
     public float initialFabPosition;
-    private int fragmentContainterID;
+//    private int fragmentContainterID;
     public Point size;
+
+    private ViewPager main_view_pager;
+    private MainScreenAdapter adapter;
 
     private final int PERMISSION_RESULT_READ_CONTACTS = 1;
 
@@ -59,20 +69,68 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-        fragmentManager = getSupportFragmentManager();
-        fragmentContainterID = R.id.fragment_container;
+//        fragmentManager = getSupportFragmentManager();
+//        fragmentContainterID = R.id.fragment_container;
+
+
+        TextView groups_button = (TextView) findViewById(R.id.groups_button);
+        TextView contacts_button = (TextView) findViewById(R.id.contacts_button);
+        final LinearLayout indicator_current_page = (LinearLayout) findViewById(R.id.indicator_current_page);
+
+        main_view_pager = (ViewPager) findViewById(R.id.main_view_pager);
+        adapter = new MainScreenAdapter(getSupportFragmentManager());
+        main_view_pager.setAdapter(adapter);
+
+        groups_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (main_view_pager.getCurrentItem() != 0)
+                    main_view_pager.setCurrentItem(0);
+            }
+        });
+
+        contacts_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (main_view_pager.getCurrentItem() != 1)
+                    main_view_pager.setCurrentItem(1);
+            }
+        });
+
+
+        main_view_pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+                fab.setTranslationX(positionOffsetPixels / 3);
+                indicator_current_page.setX(positionOffsetPixels / 2);
+                if (position == 1 && positionOffsetPixels == 0) {
+                    indicator_current_page.setX(size.x / 2);
+                    fab.setX(size.x);
+                }
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
         initialFabPosition = fab.getTranslationX();
         fab.setOnClickListener(this);
 
-        fragments.put(Constants.FRAG_ID_MAIN_SCREEN, new MainScreenFragment());
-        fragments.put(Constants.FRAG_ID_DASHBOARD_GROUP, new DashboardGroupFragment());
-
-        fragmentManager.beginTransaction()
-                .addToBackStack(null)
-                .replace(fragmentContainterID, fragments.get(actualFragment))
-                .commit();
+//        fragments.put(Constants.FRAG_ID_MAIN_SCREEN, new MainScreenFragment());
+//        fragments.put(Constants.FRAG_ID_DASHBOARD_GROUP, new DashboardGroupFragment());
+//
+//        fragmentManager.beginTransaction()
+//                .addToBackStack(null)
+//                .replace(fragmentContainterID, fragments.get(actualFragment))
+//                .commit();
 
         int permissionCheck = ContextCompat.checkSelfPermission(this,
                 Manifest.permission.READ_CONTACTS);
@@ -83,6 +141,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     new String[]{Manifest.permission.READ_CONTACTS},
                     PERMISSION_RESULT_READ_CONTACTS);
         }
+
+        new GroupController().getGroupsByUser(this, new UserIdJson(Variables.User.getUserID()), new ServiceCallbackInterface() {
+            @Override
+            public void onSuccess(String result) {
+//                updateGroups();
+            }
+
+            @Override
+            public void onFailure(String result) {
+
+            }
+        });
 
 
         // Save the screen size
@@ -95,28 +165,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onBackPressed() {
-        switch (actualFragment) {
-            case Constants.FRAG_ID_DASHBOARD_GROUP:
-                actualFragment = Constants.FRAG_ID_MAIN_SCREEN;
-                super.onBackPressed();
-                break;
-            case Constants.FRAG_ID_MAIN_SCREEN:
-                finish();
-                break;
-        }
+        super.onBackPressed();
+//        switch (actualFragment) {
+//            case Constants.FRAG_ID_DASHBOARD_GROUP:
+//                actualFragment = Constants.FRAG_ID_MAIN_SCREEN;
+//                super.onBackPressed();
+//                break;
+//            case Constants.FRAG_ID_MAIN_SCREEN:
+//                finish();
+//                break;
+//        }
     }
 
-    public void changeFragment(int destination_fragment) {
-        if (actualFragment != destination_fragment) {
-
-            fragmentManager.beginTransaction()
-                    .setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
-                    .replace(R.id.fragment_container, fragments.get(destination_fragment))
-                    .addToBackStack(null)
-                    .commit();
-            actualFragment = destination_fragment;
-        }
-    }
+//    public void changeFragment(int destination_fragment) {
+//        if (actualFragment != destination_fragment) {
+//
+//            fragmentManager.beginTransaction()
+//                    .setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
+//                    .replace(R.id.fragment_container, fragments.get(destination_fragment))
+//                    .addToBackStack(null)
+//                    .commit();
+//            actualFragment = destination_fragment;
+//        }
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -205,7 +276,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         new UserController().checkContacts(this, contactsListJson, new ServiceCallbackInterface() {
             @Override
             public void onSuccess(String result) {
-                updateContacts();
+//                updateContacts();
             }
 
             @Override
@@ -222,7 +293,51 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         startActivity(Intent.createChooser(intent, "Share with"));
     }
 
-    public void updateContacts(){
-        ((MainScreenFragment) fragments.get(Constants.FRAG_ID_MAIN_SCREEN)).updateContacts();
+//    public void updateCurrentList(){
+//        ((MainScreenFragment) fragments.get(Constants.FRAG_ID_MAIN_SCREEN)).updateCurrentList();
+//    }
+//
+//    public void updateContacts(){
+//        ((MainScreenFragment) fragments.get(Constants.FRAG_ID_MAIN_SCREEN)).updateContacts();
+//    }
+//    public void updateGroups(){
+//        ((MainScreenFragment) fragments.get(Constants.FRAG_ID_MAIN_SCREEN)).updateGroups();
+//    }
+
+    public class MainScreenAdapter extends FragmentStatePagerAdapter {
+
+        private GroupsFragment groupsFragment = new GroupsFragment();
+        private ContactsFragment constantsFragment = new ContactsFragment();
+
+        MainScreenAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            Fragment fragment = null;
+            switch (position){
+                case 0:
+                    fragment = groupsFragment;
+                    break;
+                case 1:
+                    fragment = constantsFragment;
+                    break;
+            }
+            return fragment;
+        }
+
+        @Override
+        public int getCount() {
+            return 2;
+        }
+
+        void updateContacts() {
+            constantsFragment.updateContactList();
+        }
+
+        void updateGroups() {
+            groupsFragment.updateGroupList();
+        }
     }
 }

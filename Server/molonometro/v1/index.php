@@ -13,6 +13,8 @@ error_reporting(-1);
 ini_set('display_errors', 'On');
 
 require_once '../include/db_handler.php';
+require_once './DAOs/GroupDAO.php';
+
 require '.././libs/Slim/Slim.php';
 
 

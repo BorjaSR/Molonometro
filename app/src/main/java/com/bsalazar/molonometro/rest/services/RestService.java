@@ -5,8 +5,10 @@ import com.bsalazar.molonometro.rest.json.ContactJson;
 import com.bsalazar.molonometro.rest.json.ContactsListJson;
 import com.bsalazar.molonometro.rest.json.CreateGroupJson;
 import com.bsalazar.molonometro.rest.json.CreateUserJson;
+import com.bsalazar.molonometro.rest.json.GroupJson;
 import com.bsalazar.molonometro.rest.json.ResponseJson;
 import com.bsalazar.molonometro.rest.json.UpdateUserJson;
+import com.bsalazar.molonometro.rest.json.UserIdJson;
 import com.bsalazar.molonometro.rest.json.UserJson;
 
 import java.util.List;
@@ -41,10 +43,17 @@ public interface RestService {
             @Body ContactsListJson updateUserJson,
             Callback<List<ContactJson>> callback);
 
+
+
     @POST("/group/createGroup")
     void createGroup(
             @Body CreateGroupJson createGroupJson,
             Callback<CreateGroupJson> callback);
+
+    @POST("/group/getGroupsByUser")
+    void getGroupsByUser(
+            @Body UserIdJson userIdJson,
+            Callback<List<GroupJson>> callback);
 
 }
 

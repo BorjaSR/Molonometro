@@ -87,10 +87,21 @@ public class MainScreenFragment extends Fragment {
         });
     }
 
-    public void updateContacts() {
+    public void updateCurrentList() {
+        if(main_view_pager.getCurrentItem() == 0){
+            adapter.updateGroups();
+        } else {
+            adapter.updateContacts();
+        }
+    }
+
+    public void updateContacts(){
         adapter.updateContacts();
     }
 
+    public void updateGroups(){
+        adapter.updateGroups();
+    }
 
     public class MainScreenAdapter extends FragmentStatePagerAdapter {
 
@@ -122,6 +133,10 @@ public class MainScreenFragment extends Fragment {
 
         void updateContacts() {
             constantsFragment.updateContactList();
+        }
+
+        void updateGroups() {
+            groupsFragment.updateGroupList();
         }
     }
 

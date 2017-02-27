@@ -7,7 +7,7 @@
     android:fitsSystemWindows="true"
     tools:context="com.bsalazar.molonometro.area_home.MainActivity">
 
-    <include layout="@layout/content_main" />
+    <include layout="@layout/main_screen_fragment" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"

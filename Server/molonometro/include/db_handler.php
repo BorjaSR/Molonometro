@@ -134,7 +134,7 @@ class DbHandler {
         return $num_rows > 0;
     }
 
-    private function isUserExistsById($id) {
+    public function isUserExistsById($id) {
         $stmt = $this->conn->prepare("SELECT UserID from users WHERE UserID = ? and Deleted = 0");
         $stmt->bind_param("i", $id);
         $stmt->execute();
@@ -235,7 +235,7 @@ class DbHandler {
 
 
     // creating new user if not existed
-    public function createGroup($createdBy, $name, $image) {
+   /** public function createGroup($createdBy, $name, $image) {
 
         if ($this->isUserExistsById($createdBy)) {
 		    $response = array();
@@ -305,6 +305,6 @@ class DbHandler {
         } else {
             return NULL;
         }
-    }
+    }*/
 }
 ?>

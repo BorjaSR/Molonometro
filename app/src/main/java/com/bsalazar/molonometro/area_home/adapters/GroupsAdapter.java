@@ -1,6 +1,7 @@
 package com.bsalazar.molonometro.area_home.adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.area_home.MainActivity;
 import com.bsalazar.molonometro.entities.Group;
 import com.bsalazar.molonometro.general.Constants;
+import com.bsalazar.molonometro.general.Tools;
 
 import java.util.ArrayList;
 
@@ -35,7 +37,7 @@ public class GroupsAdapter extends ArrayAdapter<Group> {
     @Override
     public View getView(final int position, View rootView, ViewGroup parent) {
 
-        if(rootView == null){
+        if (rootView == null) {
             LayoutInflater inflater1 = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             rootView = inflater1.inflate(resourceId, null);
         }
@@ -46,13 +48,23 @@ public class GroupsAdapter extends ArrayAdapter<Group> {
         TextView group_name = (TextView) rootView.findViewById(R.id.contact_name);
         final ImageView group_image = (ImageView) rootView.findViewById(R.id.contact_image);
 
-        group_name.setText(group.getGroupName());
-        group_image.setImageBitmap(group.getGroupImage());
+        group_name.setText(group.getName());
+
+        try {
+            Bitmap bitmap = Tools.decodeBase64(group.getImageBase64());
+            if (bitmap != null)
+                group_image.setImageBitmap(bitmap);
+            else
+                group_image.setImageResource(R.drawable.group_icon);
+
+        } catch (Exception e) {
+            group_image.setImageResource(R.drawable.group_icon);
+        }
 
         group_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((MainActivity) mContext).changeFragment(Constants.FRAG_ID_DASHBOARD_GROUP);
+//                ((MainActivity) mContext).changeFragment(Constants.FRAG_ID_DASHBOARD_GROUP);
             }
         });
 

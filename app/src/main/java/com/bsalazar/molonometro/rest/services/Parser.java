@@ -1,10 +1,13 @@
 package com.bsalazar.molonometro.rest.services;
 
 import com.bsalazar.molonometro.entities.Contact;
+import com.bsalazar.molonometro.entities.Group;
 import com.bsalazar.molonometro.entities.User;
-import com.bsalazar.molonometro.general.Tools;
 import com.bsalazar.molonometro.rest.json.ContactJson;
+import com.bsalazar.molonometro.rest.json.GroupJson;
 import com.bsalazar.molonometro.rest.json.UserJson;
+
+import java.util.ArrayList;
 
 /**
  * Created by Borja on 29/10/2016.
@@ -35,5 +38,17 @@ public class Parser {
         contact.setInApp(contactJson.isInApp());
 
         return contact;
+    }
+
+
+    public static Group parseGroup(GroupJson groupJson) {
+        Group group = new Group();
+        group.setId(groupJson.getGroupID());
+        group.setName(groupJson.getName());
+        group.setImageBase64(groupJson.getImage());
+
+        group.setUsers(new ArrayList<User>());
+
+        return group;
     }
 }

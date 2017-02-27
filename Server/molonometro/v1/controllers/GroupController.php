@@ -13,8 +13,8 @@ $app->post('/group/createGroup', function() use ($app) {
 
     $contacts = (array)$input->contacts;
 
-    $db = new DbHandler();
-    $DBresponse = $db->createGroup($userID, $groupName, $groupImage);
+    $groupDAO = new GroupDAO();
+    $DBresponse = $groupDAO->createGroup($userID, $groupName, $groupImage);
 
     if($DBresponse["status"] == 200){
 
@@ -31,10 +31,30 @@ $app->post('/group/createGroup', function() use ($app) {
 });
 
 
+// User login
+$app->post('/group/getGroupsByUser', function() use ($app) {
+
+    $body = $app->request()->getBody(); 
+    $input = json_decode($body);
+
+    // reading post params
+    $userID = (int)$input->userID;
+
+    $groupDAO = new GroupDAO();
+    $DBresponse = $groupDAO->getGroupsByUser($userID);
+
+    if($DBresponse["status"] == 200){
+        echoResponse(200, $DBresponse["groups"]);
+
+    }else{
+        echoResponse(455, $DBresponse["groups"]);
+    }
+});
+
 function addUserToGroup($userID, $groupID) {
 
-    $db = new DbHandler();
-    $DBresponse = $db->addUserToGroup($userID, $groupID);
+    $groupDAO = new GroupDAO();
+    $DBresponse = $groupDAO->addUserToGroup($userID, $groupID);
 
     if($DBresponse["status"] == 200){
         return true;
