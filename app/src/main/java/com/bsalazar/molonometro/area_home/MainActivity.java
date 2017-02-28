@@ -50,12 +50,8 @@ import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-//    private int actualFragment = Constants.FRAG_ID_MAIN_SCREEN;
-//    private HashMap<Integer, Fragment> fragments = new HashMap<>();
-    private FragmentManager fragmentManager;
     public FloatingActionButton fab;
     public float initialFabPosition;
-//    private int fragmentContainterID;
     public Point size;
 
     private ViewPager main_view_pager;
@@ -68,9 +64,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
-//        fragmentManager = getSupportFragmentManager();
-//        fragmentContainterID = R.id.fragment_container;
 
 
         TextView groups_button = (TextView) findViewById(R.id.groups_button);
@@ -124,14 +117,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         initialFabPosition = fab.getTranslationX();
         fab.setOnClickListener(this);
 
-//        fragments.put(Constants.FRAG_ID_MAIN_SCREEN, new MainScreenFragment());
-//        fragments.put(Constants.FRAG_ID_DASHBOARD_GROUP, new DashboardGroupFragment());
-//
-//        fragmentManager.beginTransaction()
-//                .addToBackStack(null)
-//                .replace(fragmentContainterID, fragments.get(actualFragment))
-//                .commit();
-
         int permissionCheck = ContextCompat.checkSelfPermission(this,
                 Manifest.permission.READ_CONTACTS);
         if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
@@ -166,28 +151,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-//        switch (actualFragment) {
-//            case Constants.FRAG_ID_DASHBOARD_GROUP:
-//                actualFragment = Constants.FRAG_ID_MAIN_SCREEN;
-//                super.onBackPressed();
-//                break;
-//            case Constants.FRAG_ID_MAIN_SCREEN:
-//                finish();
-//                break;
-//        }
     }
-
-//    public void changeFragment(int destination_fragment) {
-//        if (actualFragment != destination_fragment) {
-//
-//            fragmentManager.beginTransaction()
-//                    .setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
-//                    .replace(R.id.fragment_container, fragments.get(destination_fragment))
-//                    .addToBackStack(null)
-//                    .commit();
-//            actualFragment = destination_fragment;
-//        }
-//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -292,17 +256,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         intent.putExtra(Intent.EXTRA_TEXT, "Descubre cual de tus amigos mola más con el Molonometro!!");
         startActivity(Intent.createChooser(intent, "Share with"));
     }
-
-//    public void updateCurrentList(){
-//        ((MainScreenFragment) fragments.get(Constants.FRAG_ID_MAIN_SCREEN)).updateCurrentList();
-//    }
-//
-//    public void updateContacts(){
-//        ((MainScreenFragment) fragments.get(Constants.FRAG_ID_MAIN_SCREEN)).updateContacts();
-//    }
-//    public void updateGroups(){
-//        ((MainScreenFragment) fragments.get(Constants.FRAG_ID_MAIN_SCREEN)).updateGroups();
-//    }
 
     public class MainScreenAdapter extends FragmentStatePagerAdapter {
 

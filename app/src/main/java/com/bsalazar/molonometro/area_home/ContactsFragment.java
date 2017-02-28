@@ -2,14 +2,15 @@ package com.bsalazar.molonometro.area_home;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 
 import com.bsalazar.molonometro.R;
-import com.bsalazar.molonometro.area_home.adapters.ContactsAdapter;
+import com.bsalazar.molonometro.area_home.adapters.ContactsRecyclerAdapter;
 import com.bsalazar.molonometro.general.Variables;
 
 /**
@@ -18,7 +19,7 @@ import com.bsalazar.molonometro.general.Variables;
 public class ContactsFragment extends Fragment {
 
     private View rootView;
-    private ContactsAdapter adapter;
+    private ContactsRecyclerAdapter adapterRecycler;
 
     LinearLayout empty_list;
 
@@ -41,9 +42,11 @@ public class ContactsFragment extends Fragment {
 
         empty_list = (LinearLayout) rootView.findViewById(R.id.empty_list);
 
-        ListView groups_list = (ListView) rootView.findViewById(R.id.contacts_list);
-        adapter = new ContactsAdapter(getActivity(), R.layout.contact_item, Variables.contacts);
-        groups_list.setAdapter(adapter);
+        RecyclerView contacts_recycler = (RecyclerView) rootView.findViewById(R.id.contacts_recycler);
+        contacts_recycler.setHasFixedSize(true);
+        contacts_recycler.setLayoutManager(new LinearLayoutManager(getActivity()));
+        adapterRecycler = new ContactsRecyclerAdapter(getActivity(), Variables.contacts);
+        contacts_recycler.setAdapter(adapterRecycler);
 
         if (Variables.contacts.size() > 0)
             empty_list.setVisibility(View.GONE);
@@ -53,8 +56,8 @@ public class ContactsFragment extends Fragment {
     }
 
     public void updateContactList() {
-        if (adapter != null)
-            adapter.notifyDataSetChanged();
+        if (adapterRecycler != null)
+            adapterRecycler.notifyDataSetChanged();
 
 
         if (Variables.contacts.size() > 0)

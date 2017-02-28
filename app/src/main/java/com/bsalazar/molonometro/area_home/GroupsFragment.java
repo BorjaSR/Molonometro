@@ -1,24 +1,18 @@
 package com.bsalazar.molonometro.area_home;
 
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 
 import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.area_home.adapters.GroupsAdapter;
-import com.bsalazar.molonometro.entities.Group;
-import com.bsalazar.molonometro.general.Tools;
+import com.bsalazar.molonometro.area_home.adapters.GroupsRecyclerAdapter;
 import com.bsalazar.molonometro.general.Variables;
-import com.bsalazar.molonometro.rest.controllers.GroupController;
-import com.bsalazar.molonometro.rest.json.UserIdJson;
-import com.bsalazar.molonometro.rest.services.ServiceCallbackInterface;
-
-import java.util.ArrayList;
 
 /**
  * Created by bsalazar on 18/10/2016.
@@ -26,9 +20,11 @@ import java.util.ArrayList;
 public class GroupsFragment extends Fragment {
 
     private View rootView;
-    private GroupsAdapter adapter;
+//    private GroupsAdapter adapter;
     private LinearLayout empty_list;
-    private ListView groups_list;
+//    private ListView groups_list;
+    private GroupsRecyclerAdapter adapterRecycler;
+    private RecyclerView groups_recycler;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -49,9 +45,16 @@ public class GroupsFragment extends Fragment {
 
         empty_list = (LinearLayout) rootView.findViewById(R.id.empty_list);
 
-        groups_list = (ListView) rootView.findViewById(R.id.groups_list);
-        adapter = new GroupsAdapter(getActivity(), R.layout.group_item, Variables.groups);
-        groups_list.setAdapter(adapter);
+
+        groups_recycler = (RecyclerView) rootView.findViewById(R.id.groups_recycler);
+        groups_recycler.setHasFixedSize(true);
+        groups_recycler.setLayoutManager(new LinearLayoutManager(getActivity()));
+        adapterRecycler = new GroupsRecyclerAdapter(getActivity(), Variables.groups);
+        groups_recycler.setAdapter(adapterRecycler);
+
+        //groups_list = (ListView) rootView.findViewById(R.id.groups_list);
+//        adapter = new GroupsAdapter(getActivity(), R.layout.group_item, Variables.groups);
+//        groups_list.setAdapter(adapter);
 
         if (Variables.groups.size() > 0)
             empty_list.setVisibility(View.GONE);
@@ -60,12 +63,16 @@ public class GroupsFragment extends Fragment {
     }
 
     public void updateGroupList() {
-        if (adapter != null)
-            adapter.notifyDataSetChanged();
+//        if (adapter != null)
+//            adapter.notifyDataSetChanged();
+        if (adapterRecycler != null)
+            adapterRecycler.notifyDataSetChanged();
 
         if (Variables.groups.size() > 0) {
-            adapter = new GroupsAdapter(getActivity(), R.layout.group_item, Variables.groups);
-            groups_list.setAdapter(adapter);
+//            adapter = new GroupsAdapter(getActivity(), R.layout.group_item, Variables.groups);
+//            groups_list.setAdapter(adapter);
+            adapterRecycler = new GroupsRecyclerAdapter(getActivity(), Variables.groups);
+            groups_recycler.setAdapter(adapterRecycler);
 
             empty_list.setVisibility(View.GONE);
         } else

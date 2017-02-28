@@ -1,5 +1,7 @@
 <?php
 
+require_once './DAOs/ContactDAO.php';
+
 // User update
 $app->post('/contact/checkContacts', function() use ($app) {
     // check for required params

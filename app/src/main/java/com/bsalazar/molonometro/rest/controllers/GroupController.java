@@ -8,6 +8,7 @@ import com.bsalazar.molonometro.general.Constants;
 import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.json.CreateGroupJson;
 import com.bsalazar.molonometro.rest.json.GroupJson;
+import com.bsalazar.molonometro.rest.json.UpdateGroupJson;
 import com.bsalazar.molonometro.rest.json.UserIdJson;
 import com.bsalazar.molonometro.rest.services.Parser;
 import com.bsalazar.molonometro.rest.services.ServiceCallbackInterface;
@@ -29,11 +30,31 @@ public class GroupController {
     public void createGroup(final Context mContext, CreateGroupJson createGroupJson, final ServiceCallbackInterface callback) {
 
         Constants.restController.getService().createGroup(createGroupJson
-                , new Callback<CreateGroupJson>() {
+                , new Callback<GroupJson>() {
                     @Override
-                    public void success(CreateGroupJson userJson, Response response) {
-                        Toast.makeText(mContext, "OK !!", Toast.LENGTH_SHORT).show();
+                    public void success(GroupJson groupJson, Response response) {
                         Variables.createGroupJson = null;
+
+                        callback.onSuccess("");
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        if (error.getResponse() != null)
+                            Toast.makeText(mContext, "KO creando el grupo\n" + error.getResponse().getStatus() + " " + error.getResponse().getReason(), Toast.LENGTH_SHORT).show();
+
+                        callback.onFailure("");
+                    }
+                });
+    }
+
+    public void updateGroupImage(final Context mContext, UpdateGroupJson updateGroupJson, final ServiceCallbackInterface callback) {
+
+        Constants.restController.getService().updateGroupImage(updateGroupJson
+                , new Callback<GroupJson>() {
+                    @Override
+                    public void success(GroupJson groupJson, Response response) {
+
 
                         callback.onSuccess("");
                     }

@@ -12,12 +12,7 @@
 error_reporting(-1);
 ini_set('display_errors', 'On');
 
-require_once './DAOs/ContactDAO.php';
-require_once './DAOs/GroupDAO.php';
-require_once './DAOs/UserDAO.php';
-
 require '.././libs/Slim/Slim.php';
-
 
 \Slim\Slim::registerAutoloader();
 $app = new \Slim\Slim();

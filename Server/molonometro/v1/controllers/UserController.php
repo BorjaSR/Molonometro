@@ -1,5 +1,7 @@
 <?php
 
+require_once './DAOs/UserDAO.php';
+
 // User creation
 $app->post('/user/createUser', function() use ($app) {
     // check for required params
@@ -60,7 +62,7 @@ $app->post('/user/updateUser', function() use ($app) {
     $Name = (string)$input->Name;
     $State = (string)$input->State;
 	
-    $duserDAOb = new UserDAO();
+    $userDAO = new UserDAO();
     $DBresponse = $userDAO->updateUser($UserID, $Name, $State);
 
     $response = $DBresponse;

@@ -27,15 +27,15 @@ class GroupDAO {
 
 
     // creating new user if not existed
-    public function createGroup($createdBy, $name, $image) {
+    public function createGroup($createdBy, $name) {
 
         $userDAO = new DbHandler();
         if ($userDAO->isUserExistsById($createdBy)) {
 		    $response = array();
 
 		    // insert query
-		    $stmt = $this->conn->prepare("INSERT INTO groups(Name, Image, CreatedBy, Created, LastUpdate, Deleted) values(?, ?, ?, now(), now(), 0)");
-		    $stmt->bind_param("ssi", $name, $image, $createdBy);
+		    $stmt = $this->conn->prepare("INSERT INTO groups(Name, CreatedBy, Created, LastUpdate, Deleted) values(?, ?, now(), now(), 0)");
+		    $stmt->bind_param("si", $name, $createdBy);
 
 		    $result = $stmt->execute();
 
@@ -61,6 +61,70 @@ class GroupDAO {
     }
 
 
+
+    // creating new user if not existed
+    public function updateGroup($groupID, $name) {
+
+        $userDAO = new DbHandler();
+        if ($userDAO->isUserExistsById($createdBy)) {
+            $response = array();
+            
+            // update query
+            $stmt = $this->conn->prepare("UPDATE groups SET Name = ?, LastUpdate = now() WHERE GroupID = ?");
+            $stmt->bind_param("si", $name, $groupID);
+
+            $result = $stmt->execute();
+            $stmt->close();
+
+            if ($result) {
+                // Group successfully updated
+                $response["status"] = 200;
+                $response["group"] = $this->getGroupByIdWithoutImage($groupID);
+            } else {
+                // Failed to update group
+                $response["status"] = 430;
+                $response["error"] = "Oops! An error occurred while update group";
+            }
+        } else {
+            $response["status"] = 432;
+            $response["error"] = "The user doesn't exists";
+        }
+
+        return $response;
+    }
+
+    // creating new user if not existed
+    public function updateGroupImage($groupID, $image) {
+
+        $userDAO = new DbHandler();
+        if ($userDAO->isUserExistsById($createdBy)) {
+            $response = array();
+            
+            // update query
+            $stmt = $this->conn->prepare("UPDATE groups SET Image = ?, LastUpdate = now() WHERE GroupID = ?");
+            $stmt->bind_param("si", $image, $groupID);
+
+            $result = $stmt->execute();
+            $stmt->close();
+
+            if ($result) {
+                // Group successfully updated
+                $response["status"] = 200;
+                $response["group"] = $this->getGroupById($groupID);
+            } else {
+                // Failed to update group
+                $response["status"] = 430;
+                $response["error"] = "Oops! An error occurred while update group";
+            }
+        } else {
+            $response["status"] = 432;
+            $response["error"] = "The user doesn't exists";
+        }
+
+        return $response;
+    }
+
+
     public function addUserToGroup($userId, $groupId) {
 
         // insert query
@@ -81,6 +145,40 @@ class GroupDAO {
         return $response;
     }
 
+    public function getGroupById($groupID) {
+        $stmt = $this->conn->prepare("SELECT GroupID, Name, Image From groups where GroupID = ? and Deleted = 0");
+        $stmt->bind_param("i", $groupID);
+        
+        if ($stmt->execute()) {
+            $stmt->bind_result($GroupID, $Name, $Image);
+            $stmt->fetch();
+            $group = array();
+            $group["GroupID"] = $GroupID;
+            $group["Name"] = $Name;
+            $group["Image"] = $Image;
+            $stmt->close();
+            return $group;
+        } else {
+            return NULL;
+        }
+    }
+
+    public function getGroupByIdWithoutImage($groupID) {
+        $stmt = $this->conn->prepare("SELECT GroupID, Name From groups where GroupID = ? and Deleted = 0");
+        $stmt->bind_param("i", $groupID);
+        
+        if ($stmt->execute()) {
+            $stmt->bind_result($GroupID, $Name);
+            $stmt->fetch();
+            $group = array();
+            $group["GroupID"] = $GroupID;
+            $group["Name"] = $Name;
+            $stmt->close();
+            return $group;
+        } else {
+            return NULL;
+        }
+    }
 
     public function getLastGroupByUser($userId) {
         $stmt = $this->conn->prepare("SELECT GroupID, Name, Image From groups where CreatedBy = ? and Deleted = 0 order by Created Desc");

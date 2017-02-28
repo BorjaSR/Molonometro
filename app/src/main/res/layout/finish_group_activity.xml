@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/group_image"
         android:layout_width="@dimen/imageSize_profile"
         android:layout_height="@dimen/imageSize_profile"
         android:layout_gravity="center_horizontal"
         android:layout_margin="@dimen/general_padding_15"
+        app:civ_border_color="@color/charcoal_gray"
+        app:civ_border_width="2dp"
         android:src="@drawable/group_icon"/>
     
     <EditText

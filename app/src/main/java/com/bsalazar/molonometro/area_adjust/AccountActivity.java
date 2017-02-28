@@ -45,8 +45,6 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
     private TextView profile_state;
     private TextView profile_phone;
 
-    private Bitmap new_image;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -130,17 +128,12 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
             if (requestCode == GALERY_INPUT) {
                 try {
 
-                    new_image = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
+                    Bitmap new_image = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
                     profile_image.setImageBitmap(null);
 
                     new UserController().updateUserImage(this, new_image, new ServiceCallbackInterface() {
                         @Override
                         public void onSuccess(String result) {
-
-                            //compress the image
-//                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//                            new_image.compress(Bitmap.CompressFormat.JPEG, 25, baos);
-//                            byte[] bitmapdata = baos.toByteArray();
 
                             byte[] bitmapdata = Base64.decode(Variables.User.getImageBase64(), Base64.DEFAULT);
 

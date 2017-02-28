@@ -7,6 +7,7 @@ import com.bsalazar.molonometro.rest.json.CreateGroupJson;
 import com.bsalazar.molonometro.rest.json.CreateUserJson;
 import com.bsalazar.molonometro.rest.json.GroupJson;
 import com.bsalazar.molonometro.rest.json.ResponseJson;
+import com.bsalazar.molonometro.rest.json.UpdateGroupJson;
 import com.bsalazar.molonometro.rest.json.UpdateUserJson;
 import com.bsalazar.molonometro.rest.json.UserIdJson;
 import com.bsalazar.molonometro.rest.json.UserJson;
@@ -50,7 +51,12 @@ public interface RestService {
     @POST("/group/createGroup")
     void createGroup(
             @Body CreateGroupJson createGroupJson,
-            Callback<CreateGroupJson> callback);
+            Callback<GroupJson> callback);
+
+    @POST("/group/updateGroupImage")
+    void updateGroupImage(
+            @Body UpdateGroupJson updateGroupJson,
+            Callback<GroupJson> callback);
 
     @POST("/group/getGroupsByUser")
     void getGroupsByUser(

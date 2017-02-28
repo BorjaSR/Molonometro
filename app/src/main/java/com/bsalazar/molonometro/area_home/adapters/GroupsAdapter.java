@@ -1,6 +1,7 @@
 package com.bsalazar.molonometro.area_home.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bsalazar.molonometro.R;
+import com.bsalazar.molonometro.area_dashboard_group.DashboardGroupActivity;
 import com.bsalazar.molonometro.area_home.MainActivity;
 import com.bsalazar.molonometro.entities.Group;
 import com.bsalazar.molonometro.general.Constants;
@@ -64,7 +66,7 @@ public class GroupsAdapter extends ArrayAdapter<Group> {
         group_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                ((MainActivity) mContext).changeFragment(Constants.FRAG_ID_DASHBOARD_GROUP);
+                mContext.startActivity(new Intent(mContext, DashboardGroupActivity.class));
             }
         });
 

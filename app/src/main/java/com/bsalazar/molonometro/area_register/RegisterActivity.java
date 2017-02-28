@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.bsalazar.molonometro.area_home.MainActivity;
 import com.bsalazar.molonometro.R;
@@ -32,15 +33,17 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.register_activity);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+
         Constants.restController = new RestController();
 
         phone_for_register = (EditText) findViewById(R.id.phone_for_register);
         user_name_for_register = (EditText) findViewById(R.id.user_name_for_register);
-
+        TextView continue_button = (TextView) findViewById(R.id.continue_button);
         FloatingActionButton next = (FloatingActionButton) findViewById(R.id.next);
+        next.setVisibility(View.GONE);
+
         next.setOnClickListener(this);
+        continue_button.setOnClickListener(this);
 
         String rememberedUser = Memo.doYouRemember(this);
         if(rememberedUser != null){
@@ -80,9 +83,16 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onClick(View v) {
         int id = v.getId();
+        CreateUserJson createUserJson = new CreateUserJson();
+
         switch (id) {
             case R.id.next:
-                CreateUserJson createUserJson = new CreateUserJson();
+                createUserJson.setName(user_name_for_register.getText().toString());
+                createUserJson.setPhone(phone_for_register.getText().toString());
+
+                new UserController().createUser(this, createUserJson);
+                break;
+            case R.id.continue_button:
                 createUserJson.setName(user_name_for_register.getText().toString());
                 createUserJson.setPhone(phone_for_register.getText().toString());
 

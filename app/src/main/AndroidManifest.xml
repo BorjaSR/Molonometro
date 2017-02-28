@@ -36,6 +36,16 @@
         </activity>
 
         <activity
+            android:name=".area_dashboard_group.DashboardGroupActivity"
+            android:label="@string/group_activity"
+            android:parentActivityName=".area_home.MainActivity">
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".area_home.MainActivity" />
+        </activity>
+
+        <activity
             android:name=".area_new_group.NewGroupActivity"
             android:label="@string/new_group"
             android:parentActivityName=".area_home.MainActivity">
