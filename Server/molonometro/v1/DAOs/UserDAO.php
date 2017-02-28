@@ -7,12 +7,12 @@
  * @author Ravi Tamada
  * @link URL Tutorial link
  */
-class DbHandler {
+class UserDAO {
 
     private $conn;
 
     function __construct() {
-        require_once dirname(__FILE__) . '/db_connect.php';
+        require_once dirname(__FILE__) . '/../../include/db_connect.php';
         // opening db connection
         $db = new DbConnect();
         $this->conn = $db->connect();
@@ -167,26 +167,6 @@ class DbHandler {
             return NULL;
         }
     }
-
-    public function checkUserByPhone($phone) {
-        $stmt = $this->conn->prepare("SELECT UserID, Name, Phone, State, Image FROM users WHERE Phone = ? and Deleted = 0");
-        $stmt->bind_param("s", $phone);
-        
-        if ($stmt->execute()) {
-            $stmt->bind_result($UserID, $Name, $Phone, $State, $Image);
-            $stmt->fetch();
-            $user = array();
-            $user["UserID"] = $UserID;
-            $user["Name"] = $Name;
-            $user["Phone"] = $Phone;
-            $user["State"] = $State;
-            $user["Image"] = $Image;
-            $stmt->close();
-            return $user;
-        } else {
-            return NULL;
-        }
-    }
     
     public function getUserByIdWithoutImage($id) {
         $stmt = $this->conn->prepare("SELECT UserID, Name, Phone, State FROM users WHERE UserID = ? and Deleted = 0");
@@ -206,7 +186,7 @@ class DbHandler {
             return NULL;
         }
     }
-	
+    
     public function getUserById($id) {
         $stmt = $this->conn->prepare("SELECT UserID, Name, Phone, State, Image FROM users WHERE UserID = ? and Deleted = 0");
         $stmt->bind_param("i", $id);
@@ -226,85 +206,5 @@ class DbHandler {
             return NULL;
         }
     }
-
-/////////////////////////////////////////////////////////////////
-
-                    //  GROUPS  //
-
-/////////////////////////////////////////////////////////////////
-
-
-    // creating new user if not existed
-   /** public function createGroup($createdBy, $name, $image) {
-
-        if ($this->isUserExistsById($createdBy)) {
-		    $response = array();
-
-		    // insert query
-		    $stmt = $this->conn->prepare("INSERT INTO groups(Name, Image, CreatedBy, Created, LastUpdate, Deleted) values(?, ?, ?, now(), now(), 0)");
-		    $stmt->bind_param("ssi", $name, $image, $createdBy);
-
-		    $result = $stmt->execute();
-
-		    $stmt->close();
-
-		    // Check for successful insertion
-		    if ($result) {
-
-		        // User successfully inserted
-		        $response["status"] = 200;
-		        $response["group"] = $this->getLastGroupByUser($createdBy);
-		    } else {
-		        // Failed to create user
-		        $response["status"] = 430;
-		        $response["error"] = "Oops! An error occurred while create group";
-		    }
-		} else {
-	        $response["status"] = 432;
-	        $response["error"] = "The user doesn't exists";
-		}
-
-        return $response;
-    }
-
-
-    public function addUserToGroup($userId, $groupId) {
-
-        // insert query
-        $stmt = $this->conn->prepare("INSERT INTO groupuser(GroupID, UserID, Created, LastUpdate, Deleted) values(?, ?, now(), now(), 0)");
-        $stmt->bind_param("ss", $groupId, $userId);
-        $result = $stmt->execute();
-        $stmt->close();
-
-        
-        if ($result) {
-	        $response["status"] = 200;
-	        $response["message"] = "User add correctly to group";
-        } else {
-	        $response["status"] = 433;
-		    $response["error"] = "Oops! An error occurred while add user to group";
-        }
-
-        return $response;
-    }
-
-
-    public function getLastGroupByUser($userId) {
-        $stmt = $this->conn->prepare("SELECT GroupID, Name, Image From groups where CreatedBy = ? and Deleted = 0 order by Created Desc");
-        $stmt->bind_param("i", $userId);
-        
-        if ($stmt->execute()) {
-            $stmt->bind_result($GroupID, $Name, $Image);
-            $stmt->fetch();
-            $lastGroup = array();
-            $lastGroup["GroupID"] = $GroupID;
-            $lastGroup["Name"] = $Name;
-            $lastGroup["Image"] = $Image;
-            $stmt->close();
-            return $lastGroup;
-        } else {
-            return NULL;
-        }
-    }*/
 }
 ?>

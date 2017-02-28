@@ -145,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         new GroupController().getGroupsByUser(this, new UserIdJson(Variables.User.getUserID()), new ServiceCallbackInterface() {
             @Override
             public void onSuccess(String result) {
-//                updateGroups();
+                adapter.updateGroups();
             }
 
             @Override
@@ -276,7 +276,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         new UserController().checkContacts(this, contactsListJson, new ServiceCallbackInterface() {
             @Override
             public void onSuccess(String result) {
-//                updateContacts();
+                adapter.updateContacts();
             }
 
             @Override

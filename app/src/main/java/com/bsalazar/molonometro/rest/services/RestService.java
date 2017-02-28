@@ -38,7 +38,9 @@ public interface RestService {
             @Body UpdateUserJson updateUserJson,
             Callback<UserJson> callback);
 
-    @POST("/user/checkContacts")
+
+
+    @POST("/contact/checkContacts")
     void checkContacts(
             @Body ContactsListJson updateUserJson,
             Callback<List<ContactJson>> callback);

@@ -13,7 +13,7 @@ class GroupDAO {
 
     function __construct() {
         require_once dirname(__FILE__) . '/../../include/db_connect.php';
-        require_once dirname(__FILE__) . '/../../include/db_handler.php';
+        require_once dirname(__FILE__) . '/./UserDAO.php';
         // opening db connection
         $db = new DbConnect();
         $this->conn = $db->connect();

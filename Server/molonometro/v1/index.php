@@ -12,8 +12,9 @@
 error_reporting(-1);
 ini_set('display_errors', 'On');
 
-require_once '../include/db_handler.php';
+require_once './DAOs/ContactDAO.php';
 require_once './DAOs/GroupDAO.php';
+require_once './DAOs/UserDAO.php';
 
 require '.././libs/Slim/Slim.php';
 
@@ -23,111 +24,9 @@ $app = new \Slim\Slim();
 
 
 include 'controllers/GroupController.php';
+include 'controllers/UserController.php';
+include 'controllers/ContactController.php';
 
-// User login
-$app->post('/user/createUser', function() use ($app) {
-    // check for required params
-    //verifyRequiredParams(array('Name', 'Phone', 'State', 'Image'));
-
-	$body = $app->request()->getBody(); 
-	$input = json_decode($body);
-
-    // reading post params
-    $Name = (string)$input->Name;
-    $Phone = (string)$input->Phone;
-	
-    $db = new DbHandler();
-    $DBresponse = $db->createUser($Name, $Phone);
-
-    $response = $DBresponse;
-    if($DBresponse["status"] == 200)
-    	echoResponse(200, $DBresponse["user"]);
-    else
-    	echoResponse(455, $DBresponse);
-
-});
-
-
-// User update
-$app->post('/user/updateUserImage', function() use ($app) {
-    // check for required params
-    //verifyRequiredParams(array('Name', 'Phone', 'State', 'Image'));
-
-	$body = $app->request()->getBody(); 
-	$input = json_decode($body);
-
-    // reading post params
-    $UserID = (string)$input->UserID;
-    $Image = (string)$input->Image;
-	
-    $db = new DbHandler();
-    $DBresponse = $db->updateUserImage($UserID, $Image);
-
-    $response = $DBresponse;
-    if($DBresponse["status"] == 200)
-    	echoResponse(200, $DBresponse["user"]);
-    else
-    	echoResponse(455, $DBresponse);
-
-});
-
-// User update
-$app->post('/user/updateUser', function() use ($app) {
-    // check for required params
-    //verifyRequiredParams(array('Name', 'Phone', 'State', 'Image'));
-
-	$body = $app->request()->getBody(); 
-	$input = json_decode($body);
-
-    // reading post params
-    $UserID = (string)$input->UserID;
-    $Name = (string)$input->Name;
-    $State = (string)$input->State;
-	
-    $db = new DbHandler();
-    $DBresponse = $db->updateUser($UserID, $Name, $State);
-
-    $response = $DBresponse;
-    if($DBresponse["status"] == 200)
-    	echoResponse(200, $DBresponse["user"]);
-    else
-    	echoResponse(455, $DBresponse);
-
-});
-
-
-// User update
-$app->post('/user/checkContacts', function() use ($app) {
-    // check for required params
-    //verifyRequiredParams(array('Name', 'Phone', 'State', 'Image'));
-
-	$body = $app->request()->getBody(); 
-	$input = json_decode($body);
-
-    // reading post params
-    $contacts = (array)$input->contacts;
-    $users = array();
-
-    $db = new DbHandler();
-    $i = 0;
-    foreach ($contacts as $contact) {
-    	$user = $db->checkUserByPhone($contact -> phoneNumber);
-
-    	if($user["UserID"] != NULL){
-    		$user["Name"] = $contact -> phoneDisplayName;
-    		$user["isInApp"] = true;
-    	} else {
-            $user["Name"] = $contact -> phoneDisplayName;
-            $user["Phone"] = $contact -> phoneNumber;
-            $user["isInApp"] = false;
-		}
-
-    	$users[$i] = $user;
-		$i++;
-    }
-
-	echoResponse(200, $users);
-});
 
 /**
  * Verifying required params posted or not
@@ -166,6 +65,7 @@ function verifyRequiredParams($required_fields) {
  * @param String $status_code Http response code
  * @param Int $response Json response
  */
+
 function echoResponse($status_code, $response) {
     $app = \Slim\Slim::getInstance();
     // Http response code
