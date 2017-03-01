@@ -36,6 +36,7 @@ import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.entities.PhoneContact;
 import com.bsalazar.molonometro.general.Constants;
 import com.bsalazar.molonometro.general.Variables;
+import com.bsalazar.molonometro.rest.controllers.ContactController;
 import com.bsalazar.molonometro.rest.controllers.GroupController;
 import com.bsalazar.molonometro.rest.controllers.UserController;
 import com.bsalazar.molonometro.rest.json.ContactsListJson;
@@ -237,7 +238,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         ContactsListJson contactsListJson = new ContactsListJson();
         contactsListJson.setPhoneContacts(phoneContacts);
-        new UserController().checkContacts(this, contactsListJson, new ServiceCallbackInterface() {
+        new ContactController().checkContacts(this, contactsListJson, new ServiceCallbackInterface() {
             @Override
             public void onSuccess(String result) {
                 adapter.updateContacts();

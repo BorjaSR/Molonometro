@@ -3,8 +3,8 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="5dp"
-    android:layout_marginTop="5dp"
+    android:layout_marginBottom="3dp"
+    android:layout_marginTop="3dp"
     android:background="@color/white"
     android:elevation="2dp">
 
@@ -23,7 +23,7 @@
             android:background="?android:selectableItemBackground"
             android:gravity="center">
 
-            <ImageView
+            <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/contact_image"
                 android:transitionName="@string/element_shared_dashboard_group"
                 android:layout_width="60dp"

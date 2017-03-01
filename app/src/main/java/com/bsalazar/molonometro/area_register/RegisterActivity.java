@@ -45,6 +45,17 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         next.setOnClickListener(this);
         continue_button.setOnClickListener(this);
 
+        // Load User ID:1
+//        User user = new User();
+//        user.setUserID(1);
+//        user.setPhone("123456789");
+//        user.setName("Borja Salazar Rey");
+//        user.setState("I don't wanna waste my time");
+//
+//        Gson gson2 = new Gson();
+//        String userStringJson = gson2.toJson(user);
+//        Memo.rememberMe(this, userStringJson);
+
         String rememberedUser = Memo.doYouRemember(this);
         if(rememberedUser != null){
             Gson gson = new Gson();

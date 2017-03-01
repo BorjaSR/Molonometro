@@ -57,10 +57,12 @@ public class EditFieldActivity extends AppCompatActivity {
 
         switch (SELECTED_MODE){
             case EDIT_USER_NAME:
+                setTitle(getString(R.string.edit_name));
                 edit_text.setText(Variables.User.getName());
                 initial_String = Variables.User.getName();
                 break;
             case EDIT_USER_STATE:
+                setTitle(getString(R.string.edit_state));
                 edit_text.setText(Variables.User.getState());
                 initial_String = Variables.User.getState();
                 break;

@@ -16,7 +16,7 @@
         android:layout_height="@dimen/imageSize_contacts_selected_for_group"
         android:visibility="visible">
 
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/contact_for_group_user_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

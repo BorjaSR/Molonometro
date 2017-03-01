@@ -33,8 +33,6 @@ import retrofit.client.Response;
 
 public class UserController {
 
-    private String RESULT_OK = "200";
-
     public void createUser(final Context mContext, CreateUserJson createUserJson) {
 
         Constants.restController.getService().createUser(createUserJson
@@ -137,34 +135,6 @@ public class UserController {
 
     }
 
-    public void checkContacts(final Context mContext, ContactsListJson contactsListJson, final ServiceCallbackInterface callback) {
-
-        Constants.restController.getService().checkContacts(contactsListJson
-                , new Callback<List<ContactJson>>() {
-                    @Override
-                    public void success(List<ContactJson> contactListJson, Response response) {
-
-                        Variables.contacts.clear();
-                        Variables.contactsWithApp.clear();
-
-                        for (int i = 0; i < contactListJson.size(); i++) {
-                            Variables.contacts.add(Parser.parseContact(contactListJson.get(i)));
-
-                            if (contactListJson.get(i).isInApp())
-                                Variables.contactsWithApp.add(Parser.parseContact(contactListJson.get(i)));
-                        }
-
-                        callback.onSuccess("");
-                    }
-
-                    @Override
-                    public void failure(RetrofitError error) {
-                        if (error.getResponse() != null)
-                            Toast.makeText(mContext, "KO checkenado usuarios\n" + error.getResponse().getStatus() + " " + error.getResponse().getReason(), Toast.LENGTH_SHORT).show();
-                        callback.onSuccess("");
-                    }
-                });
-    }
 
     private UpdateUserJson getUpdateUserJson() {
         UpdateUserJson userJson = new UpdateUserJson();

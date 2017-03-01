@@ -71,9 +71,12 @@ public class Tools {
     }
 
     public static String formatPhone(String old_phone){
-        String new_phone = old_phone;
-        if(new_phone.length() == 9){
-            new_phone = new_phone.substring(0,3) + " " + new_phone.substring(3, 6) + " " + new_phone.substring(6,9);
+        String new_phone = "NOT_FORMAT";
+        if(old_phone != null){
+            new_phone = old_phone;
+            if(new_phone.length() == 9){
+                new_phone = new_phone.substring(0,3) + " " + new_phone.substring(3, 6) + " " + new_phone.substring(6,9);
+            }
         }
 
         return new_phone;

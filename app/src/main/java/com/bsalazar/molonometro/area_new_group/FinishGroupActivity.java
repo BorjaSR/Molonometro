@@ -12,16 +12,19 @@ import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.area_adjust.EditFieldActivity;
+import com.bsalazar.molonometro.entities.Contact;
 import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.controllers.GroupController;
 import com.bsalazar.molonometro.rest.controllers.UserController;
@@ -49,20 +52,65 @@ public class FinishGroupActivity extends AppCompatActivity implements View.OnCli
         setContentView(R.layout.finish_group_activity);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
+        TextView participants_text = (TextView) findViewById(R.id.participants_text);
         group_image = (ImageView) findViewById(R.id.group_image);
-        TextView contacts_in_group = (TextView) findViewById(R.id.contacts_in_group);
         group_name = (EditText) findViewById(R.id.group_name);
 
+        participants_text.setText(getString(R.string.participants) + " (" + Variables.createGroupJson.getContacts().size() + ")");
         group_image.setOnClickListener(this);
 
-        String contacts_in_group_txt = "";
-        for(Integer id : Variables.createGroupJson.getContacts())
-            contacts_in_group_txt += id + ", ";
+        LinearLayout participants_container = (LinearLayout) findViewById(R.id.participants_container);
+        for (Integer id : Variables.createGroupJson.getContacts()) {
+            LayoutInflater inflater = LayoutInflater.from(getApplicationContext());
+            final View participant = inflater.inflate(R.layout.contact_for_group_item, participants_container, false);
 
-        contacts_in_group.setText(contacts_in_group_txt);
+            ImageView contact_image = (ImageView) participant.findViewById(R.id.contact_image);
+            TextView contact_name = (TextView) participant.findViewById(R.id.group_name_first_part);
+            TextView contact_state = (TextView) participant.findViewById(R.id.item_detail);
+
+            String image64 = "";
+            String Name = "";
+            String State = "";
+
+            if (id == Variables.User.getUserID()) {
+                image64 = Variables.User.getImageBase64();
+                Name = getString(R.string.you);
+                State = Variables.User.getState();
+
+            } else {
+                Contact contact = getContactByID(id);
+                if (contact != null){
+                    image64 = contact.getImageBase64();
+                    Name = contact.getName();
+                    State = contact.getState();
+                }
+            }
+
+            try {
+                Glide.with(this)
+                        .load(Base64.decode(image64, Base64.DEFAULT))
+                        .asBitmap()
+                        .into(contact_image);
+
+            } catch (Exception e) {
+                contact_image.setImageResource(R.drawable.user_icon);
+            }
+
+            contact_name.setText(Name);
+            contact_state.setText(State);
+
+            participants_container.addView(participant);
+        }
+
     }
 
 
+    private Contact getContactByID(int id) {
+        for (Contact contact : Variables.contactsWithApp)
+            if (contact.getUserID() == id)
+                return contact;
+        return null;
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -81,9 +129,9 @@ public class FinishGroupActivity extends AppCompatActivity implements View.OnCli
                 return true;
 
             case R.id.action_finish:
-                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
-                if(group_name.getText().toString().length() != 0){
+                if (group_name.getText().toString().length() != 0) {
                     imm.hideSoftInputFromWindow(group_name.getWindowToken(), 0);
                     Variables.createGroupJson.setGroupName(group_name.getText().toString());
                     Variables.createGroupJson.setGroupImage("");
@@ -131,7 +179,7 @@ public class FinishGroupActivity extends AppCompatActivity implements View.OnCli
                 try {
 
                     group_image_bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
-                    
+
                     group_image.setImageBitmap(group_image_bitmap);
                     //TODO
 //

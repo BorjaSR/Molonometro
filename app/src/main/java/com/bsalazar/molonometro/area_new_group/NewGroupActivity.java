@@ -6,33 +6,39 @@ import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.entities.Contact;
-import com.bsalazar.molonometro.entities.User;
 import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.json.CreateGroupJson;
+import com.bumptech.glide.Glide;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class NewGroupActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private ContactsForGroupAdapter adapter;
     private ActionBar ab;
 
     private ArrayList<Contact> filteredContacts = new ArrayList<>();
     private LinearLayout container_contacts_selected;
     private LinearLayout container_next;
     private TextView next;
+
+    private ContactsForGroupRecyclerAdapter adapterRecycler;
+    private RecyclerView contacts_recycler;
 
     private ArrayList<Contact> contacts_selected = new ArrayList<>();
 
@@ -57,9 +63,15 @@ public class NewGroupActivity extends AppCompatActivity implements View.OnClickL
             //TODO añadir los contactos cuando venga de onBack
         }
 
-        ListView contact_for_new_group = (ListView) findViewById(R.id.contact_for_new_group);
-        adapter = new ContactsForGroupAdapter(this, R.layout.contact_for_group_item, filteredContacts);
-        contact_for_new_group.setAdapter(adapter);
+
+        contacts_recycler = (RecyclerView) findViewById(R.id.groups_recycler);
+        contacts_recycler.setHasFixedSize(true);
+        contacts_recycler.setLayoutManager(new LinearLayoutManager(this));
+        adapterRecycler = new ContactsForGroupRecyclerAdapter(this, filteredContacts);
+        contacts_recycler.setAdapter(adapterRecycler);
+
+
+
 
         next.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,10 +80,10 @@ public class NewGroupActivity extends AppCompatActivity implements View.OnClickL
                 Variables.createGroupJson.setUserID(Variables.User.getUserID());
 
                 ArrayList<Integer> contacts_selected_id = new ArrayList<>();
-                contacts_selected_id.add(Variables.User.getUserID());
 
                 for (Contact contact : contacts_selected)
                     contacts_selected_id.add(contact.getUserID());
+                contacts_selected_id.add(Variables.User.getUserID());
 
                 Variables.createGroupJson.setContacts(contacts_selected_id);
 
@@ -81,25 +93,40 @@ public class NewGroupActivity extends AppCompatActivity implements View.OnClickL
 
     }
 
-    public void addUserToSelection(int indexUser) {
+    private HashMap<Integer, View> views_selected_contacts = new HashMap<>();
+    public void addUserToSelection(final int indexUser) {
         if (isNotSelected(indexUser)) {
             LayoutInflater inflater = LayoutInflater.from(getApplicationContext());
             final View user_for_group = inflater.inflate(R.layout.contact_selected_for_group, container_contacts_selected, false);
 
+            ImageView contact_for_group_user_image = (ImageView) user_for_group.findViewById(R.id.contact_for_group_user_image);
             TextView contact_for_group_user_name = (TextView) user_for_group.findViewById(R.id.contact_for_group_user_name);
             contact_for_group_user_name.setText(filteredContacts.get(indexUser).getName());
 
-            final int UserID = filteredContacts.get(indexUser).getUserID();
+            try{
+                Glide.with(this)
+                        .load(Base64.decode(filteredContacts.get(indexUser).getImageBase64(), Base64.DEFAULT))
+                        .asBitmap()
+                        .into(contact_for_group_user_image);
+
+            }catch (Exception e){
+                contact_for_group_user_image.setImageResource(R.drawable.user_icon);
+            }
+
+            final int contactsID = filteredContacts.get(indexUser).getUserID();
 
             LinearLayout selected_user_layout = (LinearLayout) user_for_group.findViewById(R.id.selected_user_layout);
             selected_user_layout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     container_contacts_selected.removeView(user_for_group);
+                    views_selected_contacts.remove(contactsID);
 
                     for (int i = 0; i < contacts_selected.size(); i++)
-                        if (contacts_selected.get(i).getUserID() == UserID){
+                        if (contacts_selected.get(i).getUserID() == contactsID){
                             contacts_selected.remove(contacts_selected.get(i));
+                            adapterRecycler.setContacts_selected(contacts_selected);
+                            adapterRecycler.notifyItemChanged(indexUser);
                             i--;
                         }
 
@@ -108,10 +135,29 @@ public class NewGroupActivity extends AppCompatActivity implements View.OnClickL
             });
 
             container_contacts_selected.addView(user_for_group);
+            views_selected_contacts.put(contactsID, user_for_group);
+
             contacts_selected.add(filteredContacts.get(indexUser));
+            adapterRecycler.setContacts_selected(contacts_selected);
+            adapterRecycler.notifyItemChanged(indexUser);
 
             actualizeButton();
         }
+    }
+
+    public void removeUserToSelection(final int indexUser){
+        final int contactsID = filteredContacts.get(indexUser).getUserID();
+
+        container_contacts_selected.removeView(views_selected_contacts.get(contactsID));
+        views_selected_contacts.remove(contactsID);
+
+        for (int i = 0; i < contacts_selected.size(); i++)
+            if (contacts_selected.get(i).getUserID() == contactsID){
+                contacts_selected.remove(contacts_selected.get(i));
+                adapterRecycler.setContacts_selected(contacts_selected);
+                adapterRecycler.notifyItemChanged(indexUser);
+                i--;
+            }
     }
 
     private void actualizeButton() {
@@ -130,10 +176,10 @@ public class NewGroupActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private boolean isNotSelected(int indexUser) {
-        final int UserID = filteredContacts.get(indexUser).getUserID();
+        final int contactID = filteredContacts.get(indexUser).getUserID();
 
         for (Contact contact : contacts_selected)
-            if (contact.getUserID() == UserID)
+            if (contact.getUserID() == contactID)
                 return false;
         return true;
     }
@@ -168,7 +214,7 @@ public class NewGroupActivity extends AppCompatActivity implements View.OnClickL
             if (contact.getName().contains(query))
                 filteredContacts.add(contact);
 
-        adapter.notifyDataSetChanged();
+        adapterRecycler.notifyDataSetChanged();
     }
 
     @Override

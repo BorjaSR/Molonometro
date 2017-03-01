@@ -15,4 +15,8 @@
     <string name="next">Siguiente</string>
     <string name="finish_group">Finalizar grupo</string>
     <string name="group_activity">Grupo</string>
+    <string name="edit_state">Editar estado</string>
+    <string name="edit_name">Editar nombre</string>
+    <string name="you">Tú</string>
+    <string name="participants">Participantes</string>
 </resources>

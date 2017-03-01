@@ -1,54 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/group_image"
-        android:layout_width="@dimen/imageSize_profile"
-        android:layout_height="@dimen/imageSize_profile"
-        android:layout_gravity="center_horizontal"
-        android:layout_margin="@dimen/general_padding_15"
-        app:civ_border_color="@color/charcoal_gray"
-        app:civ_border_width="2dp"
-        android:src="@drawable/group_icon"/>
-    
-    <EditText
-        android:id="@+id/group_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/charcoal_gray"
-        android:hint="Nombre para el grupo"
-        android:layout_margin="@dimen/general_padding_15"
-        android:gravity="center"/>
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_marginTop="@dimen/general_padding_15"
         android:layout_height="0dp"
         android:layout_weight="1">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/general_padding_15"
             android:orientation="vertical">
 
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Participantes"
-                android:textColor="@color/colorPrimaryDark"
-                android:layout_marginBottom="@dimen/general_padding_15"/>
+                android:orientation="vertical"
+                android:paddingTop="@dimen/general_padding_15"
+                android:paddingLeft="@dimen/general_padding_15"
+                android:paddingRight="@dimen/general_padding_15">
 
-            <TextView
-                android:id="@+id/contacts_in_group"
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/group_image"
+                    android:layout_width="@dimen/imageSize_profile"
+                    android:layout_height="@dimen/imageSize_profile"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_margin="@dimen/general_padding_15"
+                    android:src="@drawable/group_icon"
+                    app:civ_border_color="@color/charcoal_gray"
+                    app:civ_border_width="2dp" />
+
+                <EditText
+                    android:id="@+id/group_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/general_padding_15"
+                    android:gravity="center"
+                    android:hint="Nombre para el grupo"
+                    android:textColor="@color/charcoal_gray" />
+
+                <TextView
+                    android:id="@+id/participants_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/general_padding_15"
+                    android:text="Participantes"
+                    android:textColor="@color/colorPrimaryDark" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/participants_container"
+                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/charcoal_gray"
-                android:text="1, 2, 3, 4, 5, 6, 7, 8"/>
+                android:layout_height="wrap_content"/>
 
         </LinearLayout>
     </ScrollView>
