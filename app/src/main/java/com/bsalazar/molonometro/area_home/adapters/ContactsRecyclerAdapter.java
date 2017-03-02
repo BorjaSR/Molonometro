@@ -50,30 +50,11 @@ public class ContactsRecyclerAdapter  extends RecyclerView.Adapter<ContactsRecyc
             try{
                 byte[] imageByteArray = Base64.decode(contact.getImageBase64(), Base64.DEFAULT);
 
-//                imageViews.put(contact.getUserID(), contact_image);
-
                 Glide.with(mContext)
                         .load(imageByteArray)
                         .asBitmap()
-//                        .dontAnimate()
-//                        .listener(new RequestListener<byte[], Bitmap>() {
-//                            @Override
-//                            public boolean onException(Exception e, byte[] model, Target<Bitmap> target, boolean isFirstResource) {
-//                                return false;
-//                            }
-//
-//                            @Override
-//                            public boolean onResourceReady(Bitmap resource, byte[] model, Target<Bitmap> target, boolean isFromMemoryCache, boolean isFirstResource) {
-//                                contador++;
-//                                Log.e("[RESOURCE READY]", " " + contador + " " + contact.getName());
-//                                imageViews.get(contact.getUserID()).setImageBitmap(resource);
-////                                contact_image.setImageBitmap(resource);
-//                                return false;
-//                            }
-//                        })
                         .into(holder.contact_image);
 
-//                contact_image.setImageBitmap(Tools.decodeBase64(contact.getImageBase64()));
             }catch (Exception e){
                 holder.contact_image.setImageResource(R.drawable.user_icon);
             }

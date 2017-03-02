@@ -18,7 +18,7 @@
         android:paddingRight="15dp"
         android:background="?android:selectableItemBackground">
 
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/contact_image"
             android:transitionName="@string/element_shared_dashboard_group"
             android:layout_width="60dp"

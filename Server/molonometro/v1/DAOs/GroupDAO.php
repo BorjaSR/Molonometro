@@ -29,7 +29,7 @@ class GroupDAO {
     // creating new user if not existed
     public function createGroup($createdBy, $name) {
 
-        $userDAO = new DbHandler();
+        $userDAO = new UserDAO();
         if ($userDAO->isUserExistsById($createdBy)) {
 		    $response = array();
 
@@ -65,8 +65,7 @@ class GroupDAO {
     // creating new user if not existed
     public function updateGroup($groupID, $name) {
 
-        $userDAO = new DbHandler();
-        if ($userDAO->isUserExistsById($createdBy)) {
+        if ($this->isGroupExistsById($groupID)) {
             $response = array();
             
             // update query
@@ -96,8 +95,7 @@ class GroupDAO {
     // creating new user if not existed
     public function updateGroupImage($groupID, $image) {
 
-        $userDAO = new DbHandler();
-        if ($userDAO->isUserExistsById($createdBy)) {
+        if ($this->isGroupExistsById($groupID) != NULL) {
             $response = array();
             
             // update query
@@ -118,7 +116,7 @@ class GroupDAO {
             }
         } else {
             $response["status"] = 432;
-            $response["error"] = "The user doesn't exists";
+            $response["error"] = "The group doesn't exists";
         }
 
         return $response;
@@ -143,6 +141,16 @@ class GroupDAO {
         }
 
         return $response;
+    }
+
+    public function isGroupExistsById($id) {
+        $stmt = $this->conn->prepare("SELECT GroupID from groups WHERE GroupID = ? and Deleted = 0");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $stmt->store_result();
+        $num_rows = $stmt->num_rows;
+        $stmt->close();
+        return $num_rows > 0;
     }
 
     public function getGroupById($groupID) {

@@ -20,9 +20,7 @@ import com.bsalazar.molonometro.general.Variables;
 public class GroupsFragment extends Fragment {
 
     private View rootView;
-//    private GroupsAdapter adapter;
     private LinearLayout empty_list;
-//    private ListView groups_list;
     private GroupsRecyclerAdapter adapterRecycler;
     private RecyclerView groups_recycler;
 
@@ -52,9 +50,6 @@ public class GroupsFragment extends Fragment {
         adapterRecycler = new GroupsRecyclerAdapter(getActivity(), Variables.groups);
         groups_recycler.setAdapter(adapterRecycler);
 
-        //groups_list = (ListView) rootView.findViewById(R.id.groups_list);
-//        adapter = new GroupsAdapter(getActivity(), R.layout.group_item, Variables.groups);
-//        groups_list.setAdapter(adapter);
 
         if (Variables.groups.size() > 0)
             empty_list.setVisibility(View.GONE);
@@ -63,14 +58,10 @@ public class GroupsFragment extends Fragment {
     }
 
     public void updateGroupList() {
-//        if (adapter != null)
-//            adapter.notifyDataSetChanged();
         if (adapterRecycler != null)
             adapterRecycler.notifyDataSetChanged();
 
         if (Variables.groups.size() > 0) {
-//            adapter = new GroupsAdapter(getActivity(), R.layout.group_item, Variables.groups);
-//            groups_list.setAdapter(adapter);
             adapterRecycler = new GroupsRecyclerAdapter(getActivity(), Variables.groups);
             groups_recycler.setAdapter(adapterRecycler);
 
