@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "1046585210122",
+    "firebase_url": "https://molonometro.firebaseio.com",
+    "project_id": "molonometro",
+    "storage_bucket": "molonometro.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1046585210122:android:8d2f827fe192d682",
+        "android_client_info": {
+          "package_name": "com.bsalazar.molonometro"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1046585210122-p6ktk1sv3nh78n9t3leknsrkvagj43j8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDa44ihTUqqnyQmYuycIsBztpp_gkr-lLE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
