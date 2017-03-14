@@ -20,6 +20,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.Menu;
@@ -27,6 +28,7 @@ import android.view.MenuItem;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bsalazar.molonometro.area_adjust.AccountActivity;
 import com.bsalazar.molonometro.area_dashboard_group.DashboardGroupFragment;
@@ -42,6 +44,7 @@ import com.bsalazar.molonometro.rest.controllers.UserController;
 import com.bsalazar.molonometro.rest.json.ContactsListJson;
 import com.bsalazar.molonometro.rest.json.UserIdJson;
 import com.bsalazar.molonometro.rest.services.ServiceCallbackInterface;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -50,6 +53,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+
+    private static final String TAG = "MainActivity";
 
     public FloatingActionButton fab;
     public float initialFabPosition;
@@ -65,7 +70,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
 
         TextView groups_button = (TextView) findViewById(R.id.groups_button);
         TextView contacts_button = (TextView) findViewById(R.id.contacts_button);
@@ -147,6 +151,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         display.getMetrics(metrics);
         size = new Point();
         display.getSize(size);
+
+        getFirebaseToken();
     }
 
     @Override
@@ -293,5 +299,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         void updateGroups() {
             groupsFragment.updateGroupList();
         }
+    }
+
+    public void getFirebaseToken(){
+
+        // Get token
+        String token = FirebaseInstanceId.getInstance().getToken();
+
+        // Log and toast
+        String msg = " Token del dispositivo: " + token;
+        Log.d(TAG, msg);
+        Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+
+        if(Variables.User != null) Variables.User.setFirebaseToken(token);
     }
 }

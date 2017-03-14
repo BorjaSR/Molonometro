@@ -13,6 +13,7 @@ public class User {
     private String State;
     private String ImageBase64;
     private Bitmap Image;
+    private String FirebaseToken;
 
     public User() {
     }
@@ -63,5 +64,13 @@ public class User {
 
     public void setImage(Bitmap image) {
         Image = image;
+    }
+
+    public String getFirebaseToken() {
+        return FirebaseToken;
+    }
+
+    public void setFirebaseToken(String firebaseToken) {
+        FirebaseToken = firebaseToken;
     }
 }
