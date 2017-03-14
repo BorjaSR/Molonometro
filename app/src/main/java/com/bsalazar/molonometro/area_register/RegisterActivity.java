@@ -48,7 +48,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         // Load User ID:1
 //        User user = new User();
 //        user.setUserID(1);
-//        user.setPhone("123456789");
+//        user.setPhone("600788622");
 //        user.setName("Borja Salazar Rey");
 //        user.setState("I don't wanna waste my time");
 //

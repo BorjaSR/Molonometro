@@ -12,10 +12,19 @@ class FCM {
 
     // sending push message to single user by gcm registration id
     public function send($to, $message) {
-        $fields = array(
+
+    	$fields = array (
+            'to' => $to,
+            'notification' => array (
+                    "title" => "Titulo",
+                    "text" => $message
+            )
+    	);
+
+        /*$fields = array(
             'to' => $to,
             'data' => $message,
-        );
+        );*/
         return $this->sendPushNotification($fields);
     }
 
@@ -23,7 +32,7 @@ class FCM {
     public function sendToTopic($to, $message) {
         $fields = array(
             'to' => '/topics/' . $to,
-            'data' => $message,
+            'notification' => $message,
         );
         return $this->sendPushNotification($fields);
     }
@@ -32,7 +41,7 @@ class FCM {
     public function sendMultiple($registration_ids, $message) {
         $fields = array(
             'registration_ids' => $registration_ids,
-            'data' => $message,
+            'notification' => $message,
         );
 
         return $this->sendPushNotification($fields);

@@ -12,6 +12,7 @@
 error_reporting(-1);
 ini_set('display_errors', 'On');
 
+require '.././libs/fcm/fcm.php';
 require '.././libs/Slim/Slim.php';
 
 \Slim\Slim::registerAutoloader();
@@ -71,6 +72,22 @@ function echoResponse($status_code, $response) {
 
     echo json_encode($response);
 }
+
+
+
+// User login
+$app->post('/fcm/sendPushTo', function() use ($app) {
+
+    $body = $app->request()->getBody(); 
+    $input = json_decode($body);
+
+    // reading post params
+    $token = (string)$input->token;
+
+    $fcm = new FCM();
+
+    echo $fcm->send($token, "Mensaje automatico");
+});
 
 $app->run();
 ?>
