@@ -25,9 +25,12 @@ import android.widget.TextView;
 import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.area_adjust.EditFieldActivity;
 import com.bsalazar.molonometro.entities.Contact;
+import com.bsalazar.molonometro.general.Tools;
 import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.controllers.GroupController;
 import com.bsalazar.molonometro.rest.controllers.UserController;
+import com.bsalazar.molonometro.rest.json.GroupJson;
+import com.bsalazar.molonometro.rest.json.UpdateGroupJson;
 import com.bsalazar.molonometro.rest.services.ServiceCallbackInterface;
 import com.bumptech.glide.Glide;
 
@@ -55,6 +58,7 @@ public class FinishGroupActivity extends AppCompatActivity implements View.OnCli
         TextView participants_text = (TextView) findViewById(R.id.participants_text);
         group_image = (ImageView) findViewById(R.id.group_image);
         group_name = (EditText) findViewById(R.id.group_name);
+        group_image_bitmap = null;
 
         participants_text.setText(getString(R.string.participants) + " (" + Variables.createGroupJson.getContacts().size() + ")");
         group_image.setOnClickListener(this);
@@ -134,12 +138,27 @@ public class FinishGroupActivity extends AppCompatActivity implements View.OnCli
                 if (group_name.getText().toString().length() != 0) {
                     imm.hideSoftInputFromWindow(group_name.getWindowToken(), 0);
                     Variables.createGroupJson.setGroupName(group_name.getText().toString());
-                    Variables.createGroupJson.setGroupImage("");
+                    Variables.createGroupJson.setGroupImage(null);
 
                     new GroupController().createGroup(this, Variables.createGroupJson, new ServiceCallbackInterface() {
                         @Override
                         public void onSuccess(String result) {
-                            finish();
+                            if(group_image_bitmap != null){
+                                UpdateGroupJson groupJson = new UpdateGroupJson();
+                                groupJson.setGroupID(Integer.parseInt(result));
+                                groupJson.setImage(Tools.encodeBitmapToBase64(group_image_bitmap));
+                                new GroupController().updateGroupImage(getApplicationContext(), groupJson, new ServiceCallbackInterface() {
+                                    @Override
+                                    public void onSuccess(String result) {
+                                        finish();
+                                    }
+
+                                    @Override
+                                    public void onFailure(String result) {
+
+                                    }
+                                });
+                            }
                         }
 
                         @Override

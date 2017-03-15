@@ -19,14 +19,14 @@ class UserDAO {
     }
 
     // creating new user if not existed
-    public function createUser($name, $phone) {
+    public function createUser($name, $phone, $firebaseToken) {
         $response = array();
 
         // First check if user already existed in db
         if (!$this->isUserExistsByPhone($phone)) {
             // insert query
-            $stmt = $this->conn->prepare("INSERT INTO users(Name, Phone, Created, LastUpdate, Deleted) values(?, ?, now(), now(), 0)");
-            $stmt->bind_param("ss", $name, $phone);
+            $stmt = $this->conn->prepare("INSERT INTO users(Name, Phone, FirebaseToken, Created, LastUpdate, Deleted) values(?, ?, ?, now(), now(), 0)");
+            $stmt->bind_param("sss", $name, $phone, $firebaseToken);
 
             $result = $stmt->execute();
 
@@ -202,6 +202,22 @@ class UserDAO {
             $user["Image"] = $Image;
             $stmt->close();
             return $user;
+        } else {
+            return NULL;
+        }
+    }
+
+
+    public function getFirebaseTokenByUser($id) {
+        $stmt = $this->conn->prepare("SELECT FirebaseToken FROM users WHERE UserID = ? and Deleted = 0");
+        $stmt->bind_param("i", $id);
+        
+        if ($stmt->execute()) {
+            $stmt->bind_result($FirebaseToken);
+            $stmt->fetch();
+            $firebaseToken = $FirebaseToken;
+            $stmt->close();
+            return $firebaseToken;
         } else {
             return NULL;
         }

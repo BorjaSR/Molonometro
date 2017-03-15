@@ -309,7 +309,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Log and toast
         String msg = " Token del dispositivo: " + token;
         Log.d(TAG, msg);
-        Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
 
         if(Variables.User != null) Variables.User.setFirebaseToken(token);
     }

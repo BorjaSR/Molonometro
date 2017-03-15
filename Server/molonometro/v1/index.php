@@ -86,7 +86,7 @@ $app->post('/fcm/sendPushTo', function() use ($app) {
 
     $fcm = new FCM();
 
-    echo $fcm->send($token, "Mensaje automatico");
+    echo $fcm->send($token, "Titulo", "Mensaje automatico");
 });
 
 $app->run();

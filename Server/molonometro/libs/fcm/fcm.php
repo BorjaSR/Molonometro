@@ -11,12 +11,12 @@ class FCM {
     }
 
     // sending push message to single user by gcm registration id
-    public function send($to, $message) {
+    public function send($to, $title, $message) {
 
     	$fields = array (
             'to' => $to,
             'notification' => array (
-                    "title" => "Titulo",
+                    "title" => $title,
                     "text" => $message
             )
     	);

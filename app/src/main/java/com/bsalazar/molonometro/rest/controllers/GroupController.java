@@ -35,13 +35,34 @@ public class GroupController {
                     public void success(GroupJson groupJson, Response response) {
                         Variables.createGroupJson = null;
 
-                        callback.onSuccess("");
+                        callback.onSuccess(groupJson.getGroupID()+"");
                     }
 
                     @Override
                     public void failure(RetrofitError error) {
                         if (error.getResponse() != null)
                             Toast.makeText(mContext, "KO creando el grupo\n" + error.getResponse().getStatus() + " " + error.getResponse().getReason(), Toast.LENGTH_SHORT).show();
+
+                        callback.onFailure("");
+                    }
+                });
+    }
+
+    public void updateGroup(final Context mContext, UpdateGroupJson updateGroupJson, final ServiceCallbackInterface callback) {
+
+        Constants.restController.getService().updateGroup(updateGroupJson
+                , new Callback<GroupJson>() {
+                    @Override
+                    public void success(GroupJson groupJson, Response response) {
+
+
+                        callback.onSuccess("");
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        if (error.getResponse() != null)
+                            Toast.makeText(mContext, "KO updateGroup\n" + error.getResponse().getStatus() + " " + error.getResponse().getReason(), Toast.LENGTH_SHORT).show();
 
                         callback.onFailure("");
                     }
@@ -62,7 +83,7 @@ public class GroupController {
                     @Override
                     public void failure(RetrofitError error) {
                         if (error.getResponse() != null)
-                            Toast.makeText(mContext, "KO creando el grupo\n" + error.getResponse().getStatus() + " " + error.getResponse().getReason(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mContext, "KO updateGroupImage\n" + error.getResponse().getStatus() + " " + error.getResponse().getReason(), Toast.LENGTH_SHORT).show();
 
                         callback.onFailure("");
                     }

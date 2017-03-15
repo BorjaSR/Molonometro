@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,11 +23,15 @@ import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.controllers.UserController;
 import com.bsalazar.molonometro.rest.json.CreateUserJson;
 import com.bsalazar.molonometro.rest.services.RestController;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
 
     private EditText phone_for_register, user_name_for_register;
+    private static final String TAG = "RegisterActivity";
+
+    String firebaseToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +60,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 //        Gson gson2 = new Gson();
 //        String userStringJson = gson2.toJson(user);
 //        Memo.rememberMe(this, userStringJson);
+
+        firebaseToken = getFirebaseToken();
 
         String rememberedUser = Memo.doYouRemember(this);
         if(rememberedUser != null){
@@ -100,15 +107,29 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             case R.id.next:
                 createUserJson.setName(user_name_for_register.getText().toString());
                 createUserJson.setPhone(phone_for_register.getText().toString());
+                createUserJson.setFirebaseToken(firebaseToken);
 
                 new UserController().createUser(this, createUserJson);
                 break;
             case R.id.continue_button:
                 createUserJson.setName(user_name_for_register.getText().toString());
                 createUserJson.setPhone(phone_for_register.getText().toString());
+                createUserJson.setFirebaseToken(firebaseToken);
 
                 new UserController().createUser(this, createUserJson);
                 break;
         }
+    }
+
+    public String getFirebaseToken(){
+
+        // Get token
+        String token = FirebaseInstanceId.getInstance().getToken();
+
+        // Log and toast
+        String msg = "FirebaseToken: " + token;
+        Log.d(TAG, msg);
+
+        return token;
     }
 }

@@ -9,6 +9,7 @@ public class CreateUserJson {
     private String Phone;
     private String State;
     private String Image;
+    private String FirebaseToken;
 
     public CreateUserJson() {
         State = "";
@@ -45,5 +46,13 @@ public class CreateUserJson {
 
     public void setImage(String image) {
         Image = image;
+    }
+
+    public String getFirebaseToken() {
+        return FirebaseToken;
+    }
+
+    public void setFirebaseToken(String firebaseToken) {
+        FirebaseToken = firebaseToken;
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
 require_once './DAOs/GroupDAO.php';
+require_once './DAOs/UserDAO.php';
 
 // User login
 $app->post('/group/createGroup', function() use ($app) {
@@ -22,7 +23,7 @@ $app->post('/group/createGroup', function() use ($app) {
         $group = $DBresponse["group"];
         
         foreach ($contacts as $contact) {
-            addUserToGroup($contact, $group["GroupID"]);
+            addUserToGroup($contact, $group["GroupID"], $userID);
         }
         
         echoResponse(200, $DBresponse["group"]);
@@ -97,10 +98,22 @@ $app->post('/group/getGroupsByUser', function() use ($app) {
     }
 });
 
-function addUserToGroup($userID, $groupID) {
+function addUserToGroup($userID, $groupID, $creater) {
 
     $groupDAO = new GroupDAO();
     $DBresponse = $groupDAO->addUserToGroup($userID, $groupID);
+
+
+    if($creater != $userID){
+
+        $userDAO = new UserDAO();
+        $contactFirebaseToken = $userDAO->getFirebaseTokenByUser($userID);
+
+        if ($contactFirebaseToken != null) {
+            $fcm = new FCM();
+            $fcm->send($contactFirebaseToken, "Nuevo grupo", "Te han añadido a un grupo nuevo");
+        }
+    }
 
     if($DBresponse["status"] == 200){
         return true;

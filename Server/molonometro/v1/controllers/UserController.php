@@ -13,9 +13,10 @@ $app->post('/user/createUser', function() use ($app) {
     // reading post params
     $Name = (string)$input->Name;
     $Phone = (string)$input->Phone;
+    $FirebaseToken = (string)$input->FirebaseToken;
 	
     $userDAO = new UserDAO();
-    $DBresponse = $userDAO->createUser($Name, $Phone);
+    $DBresponse = $userDAO->createUser($Name, $Phone, $FirebaseToken);
 
     $response = $DBresponse;
     if($DBresponse["status"] == 200)

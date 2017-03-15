@@ -53,6 +53,11 @@ public interface RestService {
             @Body CreateGroupJson createGroupJson,
             Callback<GroupJson> callback);
 
+    @POST("/group/updateGroup")
+    void updateGroup(
+            @Body UpdateGroupJson updateGroupJson,
+            Callback<GroupJson> callback);
+
     @POST("/group/updateGroupImage")
     void updateGroupImage(
             @Body UpdateGroupJson updateGroupJson,
