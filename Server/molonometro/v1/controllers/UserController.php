@@ -74,4 +74,28 @@ $app->post('/user/updateUser', function() use ($app) {
 
 });
 
+
+// FirebaseToken User update
+$app->post('/user/updateFirebaseToken', function() use ($app) {
+    // check for required params
+    //verifyRequiredParams(array('Name', 'Phone', 'State', 'Image'));
+
+    $body = $app->request()->getBody(); 
+    $input = json_decode($body);
+
+    // reading post params
+    $UserID = (string)$input->UserID;
+    $FirebaseToken = (string)$input->FirebaseToken;
+    
+    $userDAO = new UserDAO();
+    $DBresponse = $userDAO->updateFirebaseToken($UserID, $FirebaseToken);
+
+    $response = $DBresponse;
+    if($DBresponse["status"] == 200)
+        echoResponse(200, true);
+    else
+        echoResponse(455, $DBresponse);
+
+});
+
 ?>

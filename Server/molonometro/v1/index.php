@@ -83,10 +83,14 @@ $app->post('/fcm/sendPushTo', function() use ($app) {
 
     // reading post params
     $token = (string)$input->token;
+    $type = (string)$input->type;
 
     $fcm = new FCM();
 
-    echo $fcm->send($token, "Titulo", "Mensaje automatico");
+    if ($type == 0) {
+        $fcm->sendNewGroupNotification($token, 1);
+        echoResponse(200, true);
+    }
 });
 
 $app->run();

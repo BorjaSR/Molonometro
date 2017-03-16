@@ -9,6 +9,7 @@ public class UpdateUserJson {
     private String Name;
     private String State;
     private String Image;
+    private String FirebaseToken;
 
     public UpdateUserJson() {
         this.Image = "";
@@ -44,5 +45,13 @@ public class UpdateUserJson {
 
     public void setImage(String image) {
         Image = image;
+    }
+
+    public String getFirebaseToken() {
+        return FirebaseToken;
+    }
+
+    public void setFirebaseToken(String firebaseToken) {
+        FirebaseToken = firebaseToken;
     }
 }

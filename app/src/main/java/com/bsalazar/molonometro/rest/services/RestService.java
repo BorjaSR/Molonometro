@@ -1,13 +1,11 @@
 package com.bsalazar.molonometro.rest.services;
 
-import com.bsalazar.molonometro.entities.Contact;
 import com.bsalazar.molonometro.rest.json.ContactJson;
 import com.bsalazar.molonometro.rest.json.ContactsListJson;
 import com.bsalazar.molonometro.rest.json.CreateGroupJson;
 import com.bsalazar.molonometro.rest.json.CreateUserJson;
 import com.bsalazar.molonometro.rest.json.GroupJson;
-import com.bsalazar.molonometro.rest.json.ResponseJson;
-import com.bsalazar.molonometro.rest.json.UpdateGroupJson;
+import com.bsalazar.molonometro.rest.json.PushTestJson;
 import com.bsalazar.molonometro.rest.json.UpdateUserJson;
 import com.bsalazar.molonometro.rest.json.UserIdJson;
 import com.bsalazar.molonometro.rest.json.UserJson;
@@ -39,6 +37,11 @@ public interface RestService {
             @Body UpdateUserJson updateUserJson,
             Callback<UserJson> callback);
 
+    @POST("/user/updateFirebaseToken")
+    void updateFirebaseToken(
+            @Body UpdateUserJson updateUserJson,
+            Callback<Boolean> callback);
+
 
 
     @POST("/contact/checkContacts")
@@ -55,18 +58,30 @@ public interface RestService {
 
     @POST("/group/updateGroup")
     void updateGroup(
-            @Body UpdateGroupJson updateGroupJson,
+            @Body GroupJson updateGroupJson,
             Callback<GroupJson> callback);
 
     @POST("/group/updateGroupImage")
     void updateGroupImage(
-            @Body UpdateGroupJson updateGroupJson,
+            @Body GroupJson updateGroupJson,
             Callback<GroupJson> callback);
 
     @POST("/group/getGroupsByUser")
     void getGroupsByUser(
             @Body UserIdJson userIdJson,
             Callback<List<GroupJson>> callback);
+
+    @POST("/group/getGroupByID")
+    void getGroupByID(
+            @Body GroupJson userIdJson,
+            Callback<GroupJson> callback);
+
+
+
+    @POST("/fcm/sendPushTo")
+    void sendPushTest(
+            @Body PushTestJson userIdJson,
+            Callback<Boolean> callback);
 
 }
 

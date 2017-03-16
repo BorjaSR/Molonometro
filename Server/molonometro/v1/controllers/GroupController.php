@@ -98,6 +98,22 @@ $app->post('/group/getGroupsByUser', function() use ($app) {
     }
 });
 
+// User login
+$app->post('/group/getGroupByID', function() use ($app) {
+
+    $body = $app->request()->getBody(); 
+    $input = json_decode($body);
+
+    // reading post params
+    $groupID = (int)$input->GroupID;
+
+    $groupDAO = new GroupDAO();
+    $group = $groupDAO->getGroupById($groupID);
+
+    echoResponse(200, $group);
+
+});
+
 function addUserToGroup($userID, $groupID, $creater) {
 
     $groupDAO = new GroupDAO();
@@ -111,7 +127,7 @@ function addUserToGroup($userID, $groupID, $creater) {
 
         if ($contactFirebaseToken != null) {
             $fcm = new FCM();
-            $fcm->send($contactFirebaseToken, "Nuevo grupo", "Te han añadido a un grupo nuevo");
+            $fcm->sendNewGroupNotification($contactFirebaseToken, $groupID);
         }
     }
 

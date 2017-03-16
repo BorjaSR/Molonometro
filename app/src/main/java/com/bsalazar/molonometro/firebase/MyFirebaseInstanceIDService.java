@@ -2,6 +2,9 @@ package com.bsalazar.molonometro.firebase;
 
 import android.util.Log;
 
+import com.bsalazar.molonometro.general.Variables;
+import com.bsalazar.molonometro.rest.controllers.UserController;
+import com.bsalazar.molonometro.rest.json.UpdateUserJson;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 
 import static com.google.firebase.iid.FirebaseInstanceId.*;
@@ -42,6 +45,8 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService{
      * @param token The new token.
      */
     private void sendRegistrationToServer(String token) {
-        // TODO: Implement this method to send token to your app server.
+        if(Variables.User != null)
+            new UserController().updateFirebaseToken(getApplicationContext(), token, null);
+
     }
 }

@@ -107,6 +107,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             case R.id.next:
                 createUserJson.setName(user_name_for_register.getText().toString());
                 createUserJson.setPhone(phone_for_register.getText().toString());
+                if(firebaseToken == null) firebaseToken = "";
                 createUserJson.setFirebaseToken(firebaseToken);
 
                 new UserController().createUser(this, createUserJson);
@@ -114,6 +115,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             case R.id.continue_button:
                 createUserJson.setName(user_name_for_register.getText().toString());
                 createUserJson.setPhone(phone_for_register.getText().toString());
+                if(firebaseToken == null) firebaseToken = "";
                 createUserJson.setFirebaseToken(firebaseToken);
 
                 new UserController().createUser(this, createUserJson);

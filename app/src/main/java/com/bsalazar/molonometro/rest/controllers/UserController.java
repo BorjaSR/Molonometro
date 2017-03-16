@@ -52,14 +52,14 @@ public class UserController {
                 });
     }
 
-    public void updateUserName(final Context mContext, String name, final ServiceCallbackInterface callback){
+    public void updateUserName(final Context mContext, String name, final ServiceCallbackInterface callback) {
         UpdateUserJson updateUserJson = getUpdateUserJson();
         updateUserJson.setImage(null);
         updateUserJson.setName(name);
         updateUser(mContext, updateUserJson, callback);
     }
 
-    public void updateUserState(final Context mContext, String state, final ServiceCallbackInterface callback){
+    public void updateUserState(final Context mContext, String state, final ServiceCallbackInterface callback) {
         UpdateUserJson updateUserJson = getUpdateUserJson();
         updateUserJson.setImage(null);
         updateUserJson.setState(state);
@@ -130,6 +130,31 @@ public class UserController {
 
 
                         callback.onFailure("");
+                    }
+                });
+
+    }
+
+    public void updateFirebaseToken(final Context mContext, String firebaseToken, final ServiceCallbackInterface callback) {
+
+        UpdateUserJson updateUserJson = new UpdateUserJson();
+        updateUserJson.setUserID(Variables.User.getUserID());
+        updateUserJson.setFirebaseToken(firebaseToken);
+
+        Constants.restController.getService().updateFirebaseToken(updateUserJson
+                , new Callback<Boolean>() {
+                    @Override
+                    public void success(Boolean userJson, Response response) {
+
+                        if (callback != null)
+                            callback.onSuccess("");
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+
+                        if (callback != null)
+                            callback.onFailure("");
                     }
                 });
 

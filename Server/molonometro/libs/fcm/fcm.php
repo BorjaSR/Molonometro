@@ -7,7 +7,8 @@ class FCM {
 
     // constructor
     function __construct() {
-        
+        // include config
+        include_once __DIR__ . '/../../include/config.php';
     }
 
     // sending push message to single user by gcm registration id
@@ -25,6 +26,21 @@ class FCM {
             'to' => $to,
             'data' => $message,
         );*/
+        return $this->sendPushNotification($fields);
+    }
+
+
+    // sending push message to single user by gcm registration id
+    public function sendNewGroupNotification($to, $groupID) {
+
+        $fields = array (
+            'to' => $to,
+            'data' => array (
+                    "tipo" => PUSH_FLAG_NEW_GROUP,
+                    "GroupID" => $groupID
+            )
+        );
+
         return $this->sendPushNotification($fields);
     }
 
@@ -50,8 +66,6 @@ class FCM {
     // function makes curl request to gcm servers
     private function sendPushNotification($fields) {
 
-        // include config
-        include_once __DIR__ . '/../../include/config.php';
 
         // Set POST variables
         $url = 'https://fcm.googleapis.com/fcm/send';

@@ -158,6 +158,8 @@ public class NewGroupActivity extends AppCompatActivity implements View.OnClickL
                 adapterRecycler.notifyItemChanged(indexUser);
                 i--;
             }
+
+        actualizeButton();
     }
 
     private void actualizeButton() {

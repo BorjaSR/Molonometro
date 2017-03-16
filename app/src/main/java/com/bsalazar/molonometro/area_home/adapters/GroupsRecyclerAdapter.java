@@ -50,9 +50,18 @@ public class GroupsRecyclerAdapter extends RecyclerView.Adapter<GroupsRecyclerAd
         holder.group_name.setText(group.getName());
 
         try {
-            Bitmap bitmap = Tools.decodeBase64(group.getImageBase64());
-            if (bitmap != null)
-                holder.group_image.setImageBitmap(bitmap);
+            if (group.getImageBase64() != null)
+                try{
+                    byte[] imageByteArray = Base64.decode(group.getImageBase64(), Base64.DEFAULT);
+
+                    Glide.with(mContext)
+                            .load(imageByteArray)
+                            .asBitmap()
+                            .into(holder.group_image);
+
+                }catch (Exception e){
+                    holder.group_image.setImageResource(R.drawable.user_icon);
+                }
             else
                 holder.group_image.setImageResource(R.drawable.group_icon);
 

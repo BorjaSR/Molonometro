@@ -6,12 +6,11 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -28,11 +27,8 @@ import android.view.MenuItem;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bsalazar.molonometro.area_adjust.AccountActivity;
-import com.bsalazar.molonometro.area_dashboard_group.DashboardGroupFragment;
-import com.bsalazar.molonometro.area_home.adapters.GroupsAdapter;
 import com.bsalazar.molonometro.area_new_group.NewGroupActivity;
 import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.entities.PhoneContact;
@@ -42,15 +38,18 @@ import com.bsalazar.molonometro.rest.controllers.ContactController;
 import com.bsalazar.molonometro.rest.controllers.GroupController;
 import com.bsalazar.molonometro.rest.controllers.UserController;
 import com.bsalazar.molonometro.rest.json.ContactsListJson;
+import com.bsalazar.molonometro.rest.json.PushTestJson;
+import com.bsalazar.molonometro.rest.json.UpdateUserJson;
 import com.bsalazar.molonometro.rest.json.UserIdJson;
+import com.bsalazar.molonometro.rest.json.UserJson;
 import com.bsalazar.molonometro.rest.services.ServiceCallbackInterface;
 import com.google.firebase.iid.FirebaseInstanceId;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.util.ArrayList;
-import java.util.HashMap;
+
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -132,17 +131,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     PERMISSION_RESULT_READ_CONTACTS);
         }
 
-        new GroupController().getGroupsByUser(this, new UserIdJson(Variables.User.getUserID()), new ServiceCallbackInterface() {
-            @Override
-            public void onSuccess(String result) {
-                adapter.updateGroups();
-            }
-
-            @Override
-            public void onFailure(String result) {
-
-            }
-        });
+        refreshGroups();
 
 
         // Save the screen size
@@ -152,7 +141,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         size = new Point();
         display.getSize(size);
 
-        getFirebaseToken();
+        new UserController().updateFirebaseToken(this, getFirebaseToken(), null);
     }
 
     @Override
@@ -175,18 +164,55 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             startActivity(new Intent(this, AccountActivity.class));
             return true;
         } else if (id == R.id.action_refresh) {
-            getContacts();
+            if (main_view_pager.getCurrentItem() == 0)
+                refreshGroups();
+            else if (main_view_pager.getCurrentItem() == 1)
+                getContacts();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
+    public void refreshGroups() {
+        new GroupController().getGroupsByUser(this, new UserIdJson(Variables.User.getUserID()), new ServiceCallbackInterface() {
+            @Override
+            public void onSuccess(String result) {
+                adapter.updateGroups();
+            }
+
+            @Override
+            public void onFailure(String result) {
+
+            }
+        });
+    }
+
     @Override
-    public void onClick(View v) {
+    public void onClick(final View v) {
         int id = v.getId();
         switch (id) {
             case R.id.fab:
+
+//                PushTestJson pushTestJson = new PushTestJson();
+//                pushTestJson.setToken(Variables.User.getFirebaseToken());
+//                pushTestJson.setType(0);
+//
+//                Constants.restController.getService().sendPushTest(pushTestJson
+//                        , new Callback<Boolean>() {
+//                            @Override
+//                            public void success(Boolean result, Response response) {
+//                                    Snackbar.make(v, result.toString(), Snackbar.LENGTH_SHORT).show();
+//                            }
+//
+//                            @Override
+//                            public void failure(RetrofitError error) {
+//                                Snackbar.make(v, error.toString(), Snackbar.LENGTH_SHORT).show();
+//
+//                            }
+//                        });
+
+
                 Variables.createGroupJson = null;
                 startActivity(new Intent(this, NewGroupActivity.class));
                 break;
@@ -238,7 +264,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             phone = phone.replace(" ", "");
             if (phone.length() > 9) phone = phone.substring(phone.length() - 9);
 
-            if (!isInList)
+            if (!isInList && !phone.equals(Variables.User.getPhone()))
                 phoneContacts.add(new PhoneContact(contactsCursor.getString(1), phone));
         }
 
@@ -276,7 +302,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public Fragment getItem(int position) {
             Fragment fragment = null;
-            switch (position){
+            switch (position) {
                 case 0:
                     fragment = groupsFragment;
                     break;
@@ -301,7 +327,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    public void getFirebaseToken(){
+    public String getFirebaseToken() {
 
         // Get token
         String token = FirebaseInstanceId.getInstance().getToken();
@@ -310,6 +336,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String msg = " Token del dispositivo: " + token;
         Log.d(TAG, msg);
 
-        if(Variables.User != null) Variables.User.setFirebaseToken(token);
+        if (Variables.User != null) Variables.User.setFirebaseToken(token);
+
+        return token;
     }
 }

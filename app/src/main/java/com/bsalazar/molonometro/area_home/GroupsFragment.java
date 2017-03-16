@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.bsalazar.molonometro.R;
-import com.bsalazar.molonometro.area_home.adapters.GroupsAdapter;
 import com.bsalazar.molonometro.area_home.adapters.GroupsRecyclerAdapter;
 import com.bsalazar.molonometro.general.Variables;
 
@@ -45,7 +44,7 @@ public class GroupsFragment extends Fragment {
 
 
         groups_recycler = (RecyclerView) rootView.findViewById(R.id.groups_recycler);
-        groups_recycler.setHasFixedSize(true);
+        groups_recycler.setHasFixedSize(false);
         groups_recycler.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapterRecycler = new GroupsRecyclerAdapter(getActivity(), Variables.groups);
         groups_recycler.setAdapter(adapterRecycler);

@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 15-03-2017 a las 17:42:22
+-- Tiempo de generación: 16-03-2017 a las 17:34:23
 -- Versión del servidor: 5.6.17
 -- Versión de PHP: 5.5.12
 
@@ -20,6 +20,59 @@ SET time_zone = "+00:00";
 -- Base de datos: `db_molonometro`
 --
 
+DELIMITER $$
+--
+-- Procedimientos
+--
+CREATE DEFINER=`root`@`localhost` PROCEDURE `coolpoints_recalculation`()
+    NO SQL
+BEGIN
+
+	DECLARE m_GroupID BIGINT;
+	DECLARE m_UserID BIGINT;
+    DECLARE m_Molopuntos BIGINT;
+    
+    DECLARE pointsToDecrease BIGINT;
+    
+	-- Variable para controlar el fin del bucle
+  	DECLARE fin INTEGER DEFAULT 0;
+    
+    -- El SELECT que vamos a ejecutar
+  	DECLARE groupuser_cursor CURSOR FOR 
+    	SELECT GroupID, UserID, Molopuntos FROM groupuser;
+        
+    -- Condición de salida
+  	DECLARE CONTINUE HANDLER FOR NOT FOUND SET fin=1;
+        
+    OPEN groupuser_cursor;
+  	get_groupuser: LOOP
+    
+    	
+    	FETCH groupuser_cursor INTO m_GroupID, m_UserID, m_Molopuntos;
+        
+        IF fin = 1 THEN
+       		LEAVE get_groupuser;
+    	END IF;
+        
+        IF m_Molopuntos <> 0 THEN
+        
+        	SET pointsToDecrease = ((m_Molopuntos * 3)/100);
+            
+            IF pointsToDecrease < 1 THEN
+            	SET pointsToDecrease = 1;
+            END IF;
+        
+        	UPDATE groupuser SET Molopuntos = Molopuntos - pointsToDecrease WHERE GroupID = m_GroupID AND UserID = m_UserID;
+        
+        END IF;
+    
+  	END LOOP get_groupuser;
+  	CLOSE groupuser_cursor;
+
+END$$
+
+DELIMITER ;
+
 -- --------------------------------------------------------
 
 --
@@ -35,7 +88,7 @@ CREATE TABLE IF NOT EXISTS `groups` (
   `LastUpdate` datetime NOT NULL,
   `Deleted` tinyint(1) NOT NULL,
   PRIMARY KEY (`GroupID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 -- --------------------------------------------------------
 
@@ -66,12 +119,21 @@ CREATE TABLE IF NOT EXISTS `users` (
   `Phone` varchar(25) COLLATE utf8_spanish_ci NOT NULL,
   `State` varchar(200) COLLATE utf8_spanish_ci DEFAULT NULL,
   `Image` longblob,
-  `FirebaseToken` text COLLATE utf8_spanish_ci,
+  `FirebaseToken` varchar(250) COLLATE utf8_spanish_ci DEFAULT NULL,
   `Created` datetime NOT NULL,
   `LastUpdate` datetime NOT NULL,
   `Deleted` tinyint(1) NOT NULL,
   PRIMARY KEY (`UserID`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+
+DELIMITER $$
+--
+-- Eventos
+--
+CREATE DEFINER=`root`@`localhost` EVENT `daily_coolpints_recalculation` ON SCHEDULE EVERY 1 DAY STARTS '2017-03-17 00:00:00' ON COMPLETION PRESERVE ENABLE DO CALL `coolpoints_recalculation`()$$
+
+DELIMITER ;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

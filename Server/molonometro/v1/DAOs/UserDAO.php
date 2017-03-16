@@ -118,6 +118,39 @@ class UserDAO {
         return $response;
     }
 
+
+    // creating new user if not existed
+    public function updateFirebaseToken($id, $firebaseToken) {
+        $response = array();
+
+        // First check if user already existed in db
+        if ($this->isUserExistsById($id)) {
+            // update query
+            $stmt = $this->conn->prepare("UPDATE users SET FirebaseToken = ? WHERE UserID = ?");
+            $stmt->bind_param("si", $firebaseToken, $id);
+
+            $result = $stmt->execute();
+
+            $stmt->close();
+
+            // Check for successful insertion
+            if ($result) {
+                // User successfully inserted
+                $response["status"] = 200;
+            } else {
+                // Failed to create user
+                $response["status"] = 430;
+                $response["error"] = "Oops! An error occurred while updating user firebaseToken";
+            }
+        } else {
+            // User with same phone already existed in the db
+            $response["status"] = 432;
+            $response["error"] = "The user doesn't exists";
+        }
+
+        return $response;
+    }
+
     /**
      * Checking for duplicate user by email address
      * @param String $email email to check in db

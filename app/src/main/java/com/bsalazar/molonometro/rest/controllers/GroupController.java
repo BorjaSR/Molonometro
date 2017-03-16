@@ -8,10 +8,10 @@ import com.bsalazar.molonometro.general.Constants;
 import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.json.CreateGroupJson;
 import com.bsalazar.molonometro.rest.json.GroupJson;
-import com.bsalazar.molonometro.rest.json.UpdateGroupJson;
 import com.bsalazar.molonometro.rest.json.UserIdJson;
 import com.bsalazar.molonometro.rest.services.Parser;
 import com.bsalazar.molonometro.rest.services.ServiceCallbackInterface;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +35,7 @@ public class GroupController {
                     public void success(GroupJson groupJson, Response response) {
                         Variables.createGroupJson = null;
 
-                        callback.onSuccess(groupJson.getGroupID()+"");
+                        callback.onSuccess(groupJson.getGroupID() + "");
                     }
 
                     @Override
@@ -48,7 +48,7 @@ public class GroupController {
                 });
     }
 
-    public void updateGroup(final Context mContext, UpdateGroupJson updateGroupJson, final ServiceCallbackInterface callback) {
+    public void updateGroup(final Context mContext, GroupJson updateGroupJson, final ServiceCallbackInterface callback) {
 
         Constants.restController.getService().updateGroup(updateGroupJson
                 , new Callback<GroupJson>() {
@@ -69,7 +69,7 @@ public class GroupController {
                 });
     }
 
-    public void updateGroupImage(final Context mContext, UpdateGroupJson updateGroupJson, final ServiceCallbackInterface callback) {
+    public void updateGroupImage(final Context mContext, GroupJson updateGroupJson, final ServiceCallbackInterface callback) {
 
         Constants.restController.getService().updateGroupImage(updateGroupJson
                 , new Callback<GroupJson>() {
@@ -109,6 +109,25 @@ public class GroupController {
                     public void failure(RetrofitError error) {
 
                         callback.onFailure("");
+                    }
+                });
+    }
+
+    public void getGroupByID(final Context mContext, GroupJson groupId, final ServiceCallbackInterface callback) {
+
+        Constants.restController.getService().getGroupByID(groupId
+                , new Callback<GroupJson>() {
+                    @Override
+                    public void success(GroupJson group, Response response) {
+                        if (callback != null)
+                            callback.onSuccess(new Gson().toJson(group));
+
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        if (callback != null)
+                            callback.onFailure("");
                     }
                 });
     }

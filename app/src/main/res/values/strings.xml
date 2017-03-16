@@ -19,4 +19,5 @@
     <string name="edit_name">Editar nombre</string>
     <string name="you">Tú</string>
     <string name="participants">Participantes</string>
+    <string name="added_to_group">Te han añadido al grupo</string>
 </resources>
