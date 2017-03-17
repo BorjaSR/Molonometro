@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.area_home.MainActivity;
 import com.bsalazar.molonometro.entities.Contact;
+import com.bsalazar.molonometro.general.MyRequestListener;
 import com.bsalazar.molonometro.general.Tools;
 import com.bumptech.glide.Glide;
 
@@ -53,6 +54,7 @@ public class ContactsRecyclerAdapter  extends RecyclerView.Adapter<ContactsRecyc
                 Glide.with(mContext)
                         .load(imageByteArray)
                         .asBitmap()
+                        .listener(new MyRequestListener(mContext, holder.contact_image))
                         .into(holder.contact_image);
 
             }catch (Exception e){

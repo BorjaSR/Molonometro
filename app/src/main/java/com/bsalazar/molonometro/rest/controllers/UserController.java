@@ -7,21 +7,17 @@ import android.widget.Toast;
 
 import com.bsalazar.molonometro.area_register.RegisterActivity;
 import com.bsalazar.molonometro.area_register.SetFirstProfileDataActivity;
-import com.bsalazar.molonometro.entities.Contact;
+import com.bsalazar.molonometro.firebase.SetFirebaseTokenThread;
 import com.bsalazar.molonometro.general.Constants;
 import com.bsalazar.molonometro.general.Memo;
 import com.bsalazar.molonometro.general.Tools;
 import com.bsalazar.molonometro.general.Variables;
-import com.bsalazar.molonometro.rest.json.ContactJson;
-import com.bsalazar.molonometro.rest.json.ContactsListJson;
 import com.bsalazar.molonometro.rest.json.CreateUserJson;
 import com.bsalazar.molonometro.rest.json.UpdateUserJson;
 import com.bsalazar.molonometro.rest.json.UserJson;
 import com.bsalazar.molonometro.rest.services.Parser;
 import com.bsalazar.molonometro.rest.services.ServiceCallbackInterface;
 import com.google.gson.Gson;
-
-import java.util.List;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -40,6 +36,9 @@ public class UserController {
                     @Override
                     public void success(UserJson userJson, Response response) {
                         Variables.User = Parser.parseUser(userJson);
+
+                        new SetFirebaseTokenThread(mContext).start();
+
                         mContext.startActivity(new Intent(mContext, SetFirstProfileDataActivity.class));
                         ((RegisterActivity) mContext).finish();
                     }

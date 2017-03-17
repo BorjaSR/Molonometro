@@ -17,6 +17,7 @@ import com.bsalazar.molonometro.area_dashboard_group.DashboardGroupActivity;
 import com.bsalazar.molonometro.area_home.MainActivity;
 import com.bsalazar.molonometro.entities.Contact;
 import com.bsalazar.molonometro.entities.Group;
+import com.bsalazar.molonometro.general.MyRequestListener;
 import com.bsalazar.molonometro.general.Tools;
 import com.bumptech.glide.Glide;
 
@@ -57,6 +58,7 @@ public class GroupsRecyclerAdapter extends RecyclerView.Adapter<GroupsRecyclerAd
                     Glide.with(mContext)
                             .load(imageByteArray)
                             .asBitmap()
+                            .listener(new MyRequestListener(mContext, holder.group_image))
                             .into(holder.group_image);
 
                 }catch (Exception e){

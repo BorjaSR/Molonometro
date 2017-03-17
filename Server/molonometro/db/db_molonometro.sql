@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 16-03-2017 a las 17:34:23
+-- Tiempo de generación: 17-03-2017 a las 14:26:02
 -- Versión del servidor: 5.6.17
 -- Versión de PHP: 5.5.12
 
@@ -90,6 +90,7 @@ CREATE TABLE IF NOT EXISTS `groups` (
   PRIMARY KEY (`GroupID`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
+--
 -- --------------------------------------------------------
 
 --
@@ -125,7 +126,6 @@ CREATE TABLE IF NOT EXISTS `users` (
   `Deleted` tinyint(1) NOT NULL,
   PRIMARY KEY (`UserID`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-
 
 DELIMITER $$
 --

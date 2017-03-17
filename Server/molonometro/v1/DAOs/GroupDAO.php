@@ -248,6 +248,42 @@ class GroupDAO {
         return $response;
     }
 
+
+    public function getGroupParticipantsByID($groupID) {
+
+        $response = array();
+
+        $stmt = $this->conn->prepare("SELECT UserID, Molopuntos From groupuser where GroupID = ? and Deleted = 0");
+        $stmt->bind_param("i", $groupID);
+        
+        if ($stmt->execute()) {
+            $stmt->bind_result($UserID, $Molopuntos);
+
+            $participantsList = array();
+
+            $i = 0;
+            while ($stmt->fetch()) {
+                $participant = array();
+                $participant["UserID"] = $UserID;
+                $participant["Molopuntos"] = $Molopuntos;
+
+                $participantsList[$i] = $participant;
+                $i++;
+            }
+
+
+            $response["status"] = 200;
+            $response["participants"] = $participantsList;
+
+        } else {
+            $response["status"] = 456;
+            $response["groups"] = "Error obteniendo grupos del usuario";
+        }
+        
+        $stmt->close();
+        
+        return $response;
+    }
     
 }
 ?>

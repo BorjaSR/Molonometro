@@ -114,6 +114,28 @@ $app->post('/group/getGroupByID', function() use ($app) {
 
 });
 
+
+// User login
+$app->post('/group/getGroupParticipantsByID', function() use ($app) {
+
+    $body = $app->request()->getBody(); 
+    $input = json_decode($body);
+
+    // reading post params
+    $groupID = (int)$input->GroupID;
+
+    $groupDAO = new GroupDAO();
+    $DBresponse = $groupDAO->getGroupParticipantsByID($groupID);
+
+    if($DBresponse["status"] == 200){
+        echoResponse(200, $DBresponse["participants"]);
+
+    }else{
+        echoResponse(455, $DBresponse["participants"]);
+    }
+
+});
+
 function addUserToGroup($userID, $groupID, $creater) {
 
     $groupDAO = new GroupDAO();

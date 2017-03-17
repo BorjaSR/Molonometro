@@ -59,11 +59,6 @@ public class NewGroupActivity extends AppCompatActivity implements View.OnClickL
         for (Contact contact : Variables.contactsWithApp)
             filteredContacts.add(contact);
 
-        if(Variables.createGroupJson != null){
-            //TODO añadir los contactos cuando venga de onBack
-        }
-
-
         contacts_recycler = (RecyclerView) findViewById(R.id.groups_recycler);
         contacts_recycler.setHasFixedSize(true);
         contacts_recycler.setLayoutManager(new LinearLayoutManager(this));
@@ -88,6 +83,7 @@ public class NewGroupActivity extends AppCompatActivity implements View.OnClickL
                 Variables.createGroupJson.setContacts(contacts_selected_id);
 
                 startActivity(new Intent(getApplicationContext(), FinishGroupActivity.class));
+                finish();
             }
         });
 

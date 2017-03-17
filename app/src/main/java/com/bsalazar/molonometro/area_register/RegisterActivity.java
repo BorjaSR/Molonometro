@@ -31,8 +31,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private EditText phone_for_register, user_name_for_register;
     private static final String TAG = "RegisterActivity";
 
-    String firebaseToken;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,15 +51,13 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         // Load User ID:1
 //        User user = new User();
 //        user.setUserID(1);
-//        user.setPhone("600788622");
+//        user.setPhone("123456789");
 //        user.setName("Borja Salazar Rey");
 //        user.setState("I don't wanna waste my time");
 //
 //        Gson gson2 = new Gson();
 //        String userStringJson = gson2.toJson(user);
 //        Memo.rememberMe(this, userStringJson);
-
-        firebaseToken = getFirebaseToken();
 
         String rememberedUser = Memo.doYouRemember(this);
         if(rememberedUser != null){
@@ -105,33 +101,17 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
         switch (id) {
             case R.id.next:
-                createUserJson.setName(user_name_for_register.getText().toString());
-                createUserJson.setPhone(phone_for_register.getText().toString());
-                if(firebaseToken == null) firebaseToken = "";
-                createUserJson.setFirebaseToken(firebaseToken);
-
-                new UserController().createUser(this, createUserJson);
+//                createUserJson.setName(user_name_for_register.getText().toString());
+//                createUserJson.setPhone(phone_for_register.getText().toString());
+//
+//                new UserController().createUser(this, createUserJson);
                 break;
             case R.id.continue_button:
                 createUserJson.setName(user_name_for_register.getText().toString());
                 createUserJson.setPhone(phone_for_register.getText().toString());
-                if(firebaseToken == null) firebaseToken = "";
-                createUserJson.setFirebaseToken(firebaseToken);
 
                 new UserController().createUser(this, createUserJson);
                 break;
         }
-    }
-
-    public String getFirebaseToken(){
-
-        // Get token
-        String token = FirebaseInstanceId.getInstance().getToken();
-
-        // Log and toast
-        String msg = "FirebaseToken: " + token;
-        Log.d(TAG, msg);
-
-        return token;
     }
 }

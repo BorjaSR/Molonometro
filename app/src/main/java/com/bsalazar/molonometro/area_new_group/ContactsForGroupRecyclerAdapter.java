@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.area_home.MainActivity;
 import com.bsalazar.molonometro.entities.Contact;
+import com.bsalazar.molonometro.general.MyRequestListener;
 import com.bsalazar.molonometro.general.Tools;
 import com.bsalazar.molonometro.general.Variables;
 import com.bumptech.glide.Glide;
@@ -78,10 +79,11 @@ public class ContactsForGroupRecyclerAdapter extends RecyclerView.Adapter<Contac
             Glide.with(mContext)
                     .load(Base64.decode(contact.getImageBase64(), Base64.DEFAULT))
                     .asBitmap()
-                    .into(holder.group_image);
+                    .listener(new MyRequestListener(mContext, holder.contact_image))
+                    .into(holder.contact_image);
 
         } catch (Exception e) {
-            holder.group_image.setImageResource(R.drawable.user_icon);
+            holder.contact_image.setImageResource(R.drawable.user_icon);
         }
 
         if (contacts_selected.contains(contact.getUserID()))
@@ -114,7 +116,7 @@ public class ContactsForGroupRecyclerAdapter extends RecyclerView.Adapter<Contac
         TextView match_contact_name;
         TextView contact_name_second_part;
         TextView item_detail;
-        ImageView group_image;
+        ImageView contact_image;
 
         ContactsForGroupViewHolder(View itemView) {
             super(itemView);
@@ -125,7 +127,7 @@ public class ContactsForGroupRecyclerAdapter extends RecyclerView.Adapter<Contac
             match_contact_name = (TextView) itemView.findViewById(R.id.match_group_name);
             contact_name_second_part = (TextView) itemView.findViewById(R.id.group_name_second_part);
             item_detail = (TextView) itemView.findViewById(R.id.item_detail);
-            group_image = (ImageView) itemView.findViewById(R.id.contact_image);
+            contact_image = (ImageView) itemView.findViewById(R.id.contact_image);
         }
     }
 

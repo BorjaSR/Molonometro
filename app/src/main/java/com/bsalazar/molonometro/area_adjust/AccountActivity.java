@@ -12,11 +12,14 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.general.Constants;
+import com.bsalazar.molonometro.general.MyRequestListener;
 import com.bsalazar.molonometro.general.Tools;
 import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.controllers.UserController;
@@ -24,6 +27,8 @@ import com.bsalazar.molonometro.rest.json.UpdateUserJson;
 import com.bsalazar.molonometro.rest.json.UserJson;
 import com.bsalazar.molonometro.rest.services.ServiceCallbackInterface;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -45,11 +50,14 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
     private TextView profile_state;
     private TextView profile_phone;
 
+    private Activity activity;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.adjust_activity);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        activity = this;
 
         profile_image = (ImageView) findViewById(R.id.profile_image);
         profile_user_name = (TextView) findViewById(R.id.profile_user_name);
@@ -67,6 +75,7 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
                     .load(imageByteArray)
                     .asBitmap()
                     .dontAnimate()
+                    .listener(new MyRequestListener(activity, profile_image))
                     .into(profile_image);
 
         } catch (Exception e) {
@@ -141,6 +150,7 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
                                     .load(bitmapdata)
                                     .asBitmap()
                                     .dontAnimate()
+                                    .listener(new MyRequestListener(activity, profile_image))
                                     .into(profile_image);
                         }
 
@@ -154,6 +164,7 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
                                         .load(imageByteArray)
                                         .asBitmap()
                                         .dontAnimate()
+                                        .listener(new MyRequestListener(activity, profile_image))
                                         .into(profile_image);
 
                             } catch (Exception e) {
