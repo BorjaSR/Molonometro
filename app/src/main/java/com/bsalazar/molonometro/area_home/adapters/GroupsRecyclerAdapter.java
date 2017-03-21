@@ -14,11 +14,15 @@ import android.widget.TextView;
 
 import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.area_dashboard_group.DashboardGroupActivity;
+import com.bsalazar.molonometro.area_dashboard_group.DashboardGroupActivityNEW;
 import com.bsalazar.molonometro.area_home.MainActivity;
 import com.bsalazar.molonometro.entities.Contact;
 import com.bsalazar.molonometro.entities.Group;
 import com.bsalazar.molonometro.general.MyRequestListener;
 import com.bsalazar.molonometro.general.Tools;
+import com.bsalazar.molonometro.general.Variables;
+import com.bsalazar.molonometro.rest.controllers.GroupController;
+import com.bsalazar.molonometro.rest.services.ServiceCallbackInterface;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
@@ -46,7 +50,7 @@ public class GroupsRecyclerAdapter extends RecyclerView.Adapter<GroupsRecyclerAd
     @Override
     public void onBindViewHolder(GroupViewHolder holder, int position) {
 
-        Group group = groups.get(position);
+        final Group group = groups.get(position);
 
         holder.group_name.setText(group.getName());
 
@@ -74,7 +78,19 @@ public class GroupsRecyclerAdapter extends RecyclerView.Adapter<GroupsRecyclerAd
         holder.group_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mContext.startActivity(new Intent(mContext, DashboardGroupActivity.class));
+                Variables.Group = group;
+                new GroupController().getGroupParticipantsByID(mContext, group.getId(), new ServiceCallbackInterface() {
+                    @Override
+                    public void onSuccess(String result) {
+//                        mContext.startActivity(new Intent(mContext, DashboardGroupActivityNEW.class));
+                        mContext.startActivity(new Intent(mContext, DashboardGroupActivity.class));
+                    }
+
+                    @Override
+                    public void onFailure(String result) {
+
+                    }
+                });
             }
         });
     }

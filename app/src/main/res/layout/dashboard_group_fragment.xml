@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:background="@color/white"
+    tools:context="com.bsalazar.molonometro.area_home.MainActivity">
 
     <RelativeLayout
         android:id="@+id/termometer_container"
@@ -61,40 +65,24 @@
 
                 <TextView
                     android:id="@+id/text"
-                    android:visibility="invisible"
+                    android:visibility="visible"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Nada que mostrar"
+                    android:text="@string/no_comments"
                     android:gravity="center"
-                    android:textSize="25dp"
+                    android:textSize="16dp"
                     android:padding="15dp"/>
-
-                <SeekBar
-                    android:id="@+id/seek_bar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    />
-
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="350dp"/>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Nada que mostrar"
-                    android:gravity="center"
-                    android:textSize="25dp"
-                    android:padding="15dp"/>
-
-
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="350dp"/>
 
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
-</RelativeLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@drawable/add"/>
+
+</android.support.design.widget.CoordinatorLayout>

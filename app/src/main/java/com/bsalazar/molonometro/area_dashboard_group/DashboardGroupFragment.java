@@ -64,7 +64,6 @@ public class DashboardGroupFragment extends Fragment {
         final RelativeLayout users_container = (RelativeLayout) rootView.findViewById(R.id.users_container);
         final LinearLayout shadow = (LinearLayout) rootView.findViewById(R.id.shadow);
         ScrollView scroll_dashboard_group = (ScrollView) rootView.findViewById(R.id.scroll_dashboard_group);
-        final SeekBar seek_bar = (SeekBar) rootView.findViewById(R.id.seek_bar);
 
         final float ter_height = termometer_container.getLayoutParams().height;
 
@@ -93,30 +92,6 @@ public class DashboardGroupFragment extends Fragment {
             users_container.addView(user_termometer_view);
             users_container.getChildAt(users_container.getChildCount() - 1).setTranslationY(getPositionUser(user.getMolopuntos()));
         }
-
-        seek_bar.setMax(Constants.HEIGHT_OF_TEMOMETER);
-        seek_bar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                users_container.getChildAt(2).setTranslationY(Constants.HEIGHT_OF_TEMOMETER - i);
-                Log.d("[SEEKBAR INFO]", i + "");
-
-                if(i > seek_bar.getMax()/2){
-                    enterReveal();
-                }
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
-
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)

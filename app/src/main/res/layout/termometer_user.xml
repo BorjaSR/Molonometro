@@ -13,7 +13,8 @@
             android:layout_height="match_parent"
             android:src="@drawable/marco_user"/>
 
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/dashboard_user_image"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginBottom="8dp"
@@ -24,7 +25,7 @@
 
     </RelativeLayout>
 
-    <com.bsalazar.molonometro.general.CustomTextViewEmmasophia
+    <TextView
         android:id="@+id/user_name"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -32,6 +33,6 @@
         android:padding="15dp"
         android:text="Usuario"
         android:textColor="@color/charcoal_gray"
-        android:textSize="10dp"/>
+        android:textSize="17dp"/>
 
 </LinearLayout>

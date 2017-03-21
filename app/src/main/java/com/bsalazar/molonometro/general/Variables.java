@@ -2,6 +2,7 @@ package com.bsalazar.molonometro.general;
 
 import com.bsalazar.molonometro.entities.Contact;
 import com.bsalazar.molonometro.entities.Group;
+import com.bsalazar.molonometro.entities.Participant;
 import com.bsalazar.molonometro.entities.User;
 import com.bsalazar.molonometro.rest.json.CreateGroupJson;
 
@@ -21,4 +22,5 @@ public class Variables {
     public static ArrayList<Group> groups = new ArrayList<>();
 
     public static CreateGroupJson createGroupJson;
+    public static Group Group;
 }

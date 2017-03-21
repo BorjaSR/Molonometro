@@ -151,7 +151,23 @@ function addUserToGroup($userID, $groupID, $creater) {
             $fcm = new FCM();
             $fcm->sendNewGroupNotification($contactFirebaseToken, $groupID);
         }
+    } else {
+        makeUserAdmin($userID, $groupID);
     }
+
+    if($DBresponse["status"] == 200){
+        return true;
+    } else {
+        return false;
+    }
+}
+
+
+
+function makeUserAdmin($userID, $groupID) {
+
+    $groupDAO = new GroupDAO();
+    $DBresponse = $groupDAO->makeUserAdmin($userID, $groupID);
 
     if($DBresponse["status"] == 200){
         return true;

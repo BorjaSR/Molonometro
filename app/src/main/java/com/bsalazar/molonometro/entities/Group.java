@@ -13,7 +13,7 @@ public class Group {
     private Bitmap image;
     private String imageBase64;
     private String name;
-    private ArrayList<User> users;
+    private ArrayList<Participant> participants;
     private String lastEvent;
 
     public Group() {
@@ -62,12 +62,12 @@ public class Group {
         this.name = name;
     }
 
-    public ArrayList<User> getUsers() {
-        return users;
+    public ArrayList<Participant> getParticipants() {
+        return participants;
     }
 
-    public void setUsers(ArrayList<User> users) {
-        this.users = users;
+    public void setParticipants(ArrayList<Participant> participants) {
+        this.participants = participants;
     }
 
     public String getLastEvent() {

@@ -93,4 +93,12 @@ public class Tools {
         byte[] decodedBytes = Base64.decode(input, 0);
         return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
     }
+
+    public static String cropName(String Name){
+        String[] split = Name.split(" ");
+        if(split.length > 2){
+            return split[0] + " " + split[1];
+        } else
+            return Name;
+    }
 }

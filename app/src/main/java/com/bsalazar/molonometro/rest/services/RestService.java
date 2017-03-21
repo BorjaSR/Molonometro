@@ -1,5 +1,6 @@
 package com.bsalazar.molonometro.rest.services;
 
+import com.bsalazar.molonometro.entities.Participant;
 import com.bsalazar.molonometro.rest.json.ContactJson;
 import com.bsalazar.molonometro.rest.json.ContactsListJson;
 import com.bsalazar.molonometro.rest.json.CreateGroupJson;
@@ -10,6 +11,7 @@ import com.bsalazar.molonometro.rest.json.UpdateUserJson;
 import com.bsalazar.molonometro.rest.json.UserIdJson;
 import com.bsalazar.molonometro.rest.json.UserJson;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit.Callback;
@@ -75,6 +77,11 @@ public interface RestService {
     void getGroupByID(
             @Body GroupJson userIdJson,
             Callback<GroupJson> callback);
+
+    @POST("/group/getGroupParticipantsByID")
+    void getGroupParticipantsByID(
+            @Body GroupJson groupIdJson,
+            Callback<ArrayList<Participant>> callback);
 
 
 

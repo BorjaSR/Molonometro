@@ -95,7 +95,7 @@ class GroupDAO {
     // creating new user if not existed
     public function updateGroupImage($groupID, $image) {
 
-        if ($this->isGroupExistsById($groupID) != NULL) {
+        if ($this->isGroupExistsById($groupID)) {
             $response = array();
             
             // update query
@@ -253,11 +253,11 @@ class GroupDAO {
 
         $response = array();
 
-        $stmt = $this->conn->prepare("SELECT UserID, Molopuntos From groupuser where GroupID = ? and Deleted = 0");
+        $stmt = $this->conn->prepare("SELECT UserID, Molopuntos, IsAdmin From groupuser where GroupID = ? and Deleted = 0");
         $stmt->bind_param("i", $groupID);
         
         if ($stmt->execute()) {
-            $stmt->bind_result($UserID, $Molopuntos);
+            $stmt->bind_result($UserID, $Molopuntos, $IsAdmin);
 
             $participantsList = array();
 
@@ -266,6 +266,12 @@ class GroupDAO {
                 $participant = array();
                 $participant["UserID"] = $UserID;
                 $participant["Molopuntos"] = $Molopuntos;
+                if($IsAdmin == 0){
+                    $participant["IsAdmin"] = false;
+                } else {
+                    $participant["IsAdmin"] = true;
+                }
+
 
                 $participantsList[$i] = $participant;
                 $i++;
@@ -282,6 +288,37 @@ class GroupDAO {
         
         $stmt->close();
         
+        return $response;
+    }
+
+
+    public function makeUserAdmin($userID, $groupID) {
+        
+        $userDAO = new UserDAO();
+        if ($this->isGroupExistsById($groupID) && $userDAO->isUserExistsById($userID)) {
+
+            $response = array();
+            
+            // update query
+            $stmt = $this->conn->prepare("UPDATE groupuser SET IsAdmin = 1, LastUpdate = now() WHERE GroupID = ? AND UserID = ?");
+            $stmt->bind_param("ii", $groupID, $userID);
+
+            $result = $stmt->execute();
+            $stmt->close();
+
+            if ($result) {
+                // Group successfully updated
+                $response["status"] = 200;
+            } else {
+                // Failed to update group
+                $response["status"] = 430;
+                $response["error"] = "Oops! An error occurred while update group";
+            }
+        } else {
+            $response["status"] = 432;
+            $response["error"] = "The group doesn't exists";
+        }
+
         return $response;
     }
     

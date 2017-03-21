@@ -2,17 +2,14 @@ package com.bsalazar.molonometro.area_dashboard_group;
 
 import android.animation.Animator;
 import android.annotation.TargetApi;
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,26 +25,18 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.bsalazar.molonometro.R;
-import com.bsalazar.molonometro.area_adjust.AccountActivity;
 import com.bsalazar.molonometro.entities.Participant;
-import com.bsalazar.molonometro.entities.UserGroup;
 import com.bsalazar.molonometro.general.Constants;
 import com.bsalazar.molonometro.general.MyRequestListener;
 import com.bsalazar.molonometro.general.Tools;
 import com.bsalazar.molonometro.general.Variables;
-import com.bsalazar.molonometro.rest.controllers.GroupController;
-import com.bsalazar.molonometro.rest.services.ServiceCallbackInterface;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
-
-import java.util.ArrayList;
 
 /**
  * Created by bsalazar on 28/02/2017.
  */
 
-public class DashboardGroupActivity extends AppCompatActivity {
+public class DashboardGroupActivityNEW extends AppCompatActivity {
 
     private int highestScore = 1;
 
@@ -55,35 +44,21 @@ public class DashboardGroupActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.dashboard_group_fragment);
+        setContentView(R.layout.dashboard_group_fragment_new);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-
-        final ActionBar ab = getSupportActionBar();
-        if (ab != null)
-            ab.setTitle(Variables.Group.getName());
+        setToolbar();
+        setView();
 
         getHighestScore();
 
         final RelativeLayout termometer_container = (RelativeLayout) findViewById(R.id.termometer_container);
         final RelativeLayout users_container = (RelativeLayout) findViewById(R.id.users_container);
-        final LinearLayout shadow = (LinearLayout) findViewById(R.id.shadow);
-        ScrollView scroll_dashboard_group = (ScrollView) findViewById(R.id.scroll_dashboard_group);
 
         final float ter_height = termometer_container.getLayoutParams().height;
 
         //SET HEIGHT TERMOMETER
         Constants.HEIGHT_OF_TEMOMETER = (int) ((ter_height * 830) / 1050);
-
-        scroll_dashboard_group.setOnScrollChangeListener(new View.OnScrollChangeListener() {
-            @Override
-            public void onScrollChange(View view, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                termometer_container.setTranslationY(scrollY / -2);
-                float alpha = (float) scrollY / ter_height;
-                if (alpha <= 1)
-                    shadow.setAlpha((float) scrollY / ter_height);
-            }
-        });
 
         users_container.removeAllViews();
         for (Participant user : Variables.Group.getParticipants()) {
@@ -94,9 +69,9 @@ public class DashboardGroupActivity extends AppCompatActivity {
             TextView user_name = (TextView) user_termometer_view.findViewById(R.id.user_name);
 
             if (user.getUserID() == Variables.User.getUserID())
-                user_name.setText(getString(R.string.you) + " (" + user.getMolopuntos() + " Mp)");
+                user_name.setText(getString(R.string.you));
             else
-                user_name.setText(Tools.cropName(user.getName()) + " (" + user.getMolopuntos() + " Mp)");
+                user_name.setText(Tools.cropName(user.getName()));
 
             try {
                 byte[] imageByteArray = Base64.decode(user.getImageBase64(), Base64.DEFAULT);
@@ -114,8 +89,26 @@ public class DashboardGroupActivity extends AppCompatActivity {
             users_container.addView(user_termometer_view);
             users_container.getChildAt(users_container.getChildCount() - 1).setTranslationY(getPositionUser(user.getMolopuntos()));
         }
+    }
 
+    private void setToolbar() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
+        // Get a support ActionBar corresponding to this toolbar
+        ActionBar ab = getSupportActionBar();
+
+        // Enable the Up button
+        assert ab != null;
+        ab.setDisplayHomeAsUpEnabled(true);
+    }
+    private void setView() {
+
+        CollapsingToolbarLayout ctl = (CollapsingToolbarLayout) findViewById(R.id.ctl);
+
+        ctl.setTitle(Variables.Group.getName());
+        ctl.setExpandedTitleColor(getResources().getColor(R.color.charcoal_gray));
+        ctl.setCollapsedTitleTextColor(getResources().getColor(android.R.color.white));
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)

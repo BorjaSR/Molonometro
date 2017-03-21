@@ -4,6 +4,7 @@ import android.content.Context;
 import android.widget.Toast;
 
 import com.bsalazar.molonometro.entities.Group;
+import com.bsalazar.molonometro.entities.Participant;
 import com.bsalazar.molonometro.general.Constants;
 import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.json.CreateGroupJson;
@@ -121,6 +122,28 @@ public class GroupController {
                     public void success(GroupJson group, Response response) {
                         if (callback != null)
                             callback.onSuccess(new Gson().toJson(group));
+
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        if (callback != null)
+                            callback.onFailure("");
+                    }
+                });
+    }
+    public void getGroupParticipantsByID(final Context mContext, int groupId, final ServiceCallbackInterface callback) {
+
+        GroupJson groupJson = new GroupJson();
+        groupJson.setGroupID(groupId);
+
+        Constants.restController.getService().getGroupParticipantsByID(groupJson
+                , new Callback<ArrayList<Participant>>() {
+                    @Override
+                    public void success(ArrayList<Participant> participants, Response response) {
+                        Variables.Group.setParticipants(Parser.parseParticipants(participants));
+                        if (callback != null)
+                            callback.onSuccess(new Gson().toJson(participants));
 
                     }
 
