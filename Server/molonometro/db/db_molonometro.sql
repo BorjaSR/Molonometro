@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 17-03-2017 a las 14:26:02
+-- Tiempo de generación: 22-03-2017 a las 17:49:17
 -- Versión del servidor: 5.6.17
 -- Versión de PHP: 5.5.12
 
@@ -76,6 +76,25 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `comments`
+--
+
+CREATE TABLE IF NOT EXISTS `comments` (
+  `CommentID` int(11) NOT NULL AUTO_INCREMENT,
+  `GroupID` int(11) NOT NULL,
+  `UserID` int(11) NOT NULL,
+  `DestinationUserID` int(11) NOT NULL,
+  `AssociatedCommentID` int(11) DEFAULT NULL,
+  `hasAnswers` tinyint(1) NOT NULL DEFAULT '0',
+  `Text` varchar(400) CHARACTER SET utf8 COLLATE utf8_spanish_ci DEFAULT NULL,
+  `Image` longblob,
+  `Created` datetime NOT NULL,
+  `LastUpdate` datetime NOT NULL,
+  `Deleted` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`CommentID`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+--
 -- Estructura de tabla para la tabla `groups`
 --
 
@@ -90,7 +109,6 @@ CREATE TABLE IF NOT EXISTS `groups` (
   PRIMARY KEY (`GroupID`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
---
 -- --------------------------------------------------------
 
 --
@@ -107,6 +125,18 @@ CREATE TABLE IF NOT EXISTS `groupuser` (
   `Deleted` tinyint(1) NOT NULL,
   PRIMARY KEY (`GroupID`,`UserID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+--
+-- Estructura de tabla para la tabla `likes`
+--
+
+CREATE TABLE IF NOT EXISTS `likes` (
+  `CommentID` int(11) NOT NULL,
+  `UserID` int(11) NOT NULL,
+  `Created` datetime NOT NULL,
+  `Deleted` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`CommentID`,`UserID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 -- --------------------------------------------------------
 
@@ -127,11 +157,12 @@ CREATE TABLE IF NOT EXISTS `users` (
   PRIMARY KEY (`UserID`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
+
 DELIMITER $$
 --
 -- Eventos
 --
-CREATE DEFINER=`root`@`localhost` EVENT `daily_coolpints_recalculation` ON SCHEDULE EVERY 1 DAY STARTS '2017-03-17 00:00:00' ON COMPLETION PRESERVE ENABLE DO CALL `coolpoints_recalculation`()$$
+CREATE DEFINER=`root`@`localhost` EVENT `daily_coolpoints_recalculation` ON SCHEDULE EVERY 1 DAY STARTS '2017-03-22 13:00:00' ON COMPLETION PRESERVE ENABLE DO CALL `coolpoints_recalculation`()$$
 
 DELIMITER ;
 

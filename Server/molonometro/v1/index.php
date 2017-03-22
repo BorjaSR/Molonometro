@@ -22,6 +22,7 @@ $app = new \Slim\Slim();
 include 'controllers/GroupController.php';
 include 'controllers/UserController.php';
 include 'controllers/ContactController.php';
+include 'controllers/CommentsController.php';
 
 
 /**
@@ -74,6 +75,12 @@ function echoResponse($status_code, $response) {
 }
 
 
+// User login
+$app->post('/dummyService', function() use ($app) {
+
+    echo "It really works!";
+
+});
 
 // User login
 $app->post('/fcm/sendPushTo', function() use ($app) {
