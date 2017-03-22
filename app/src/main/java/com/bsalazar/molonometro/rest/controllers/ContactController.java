@@ -46,7 +46,7 @@ public class ContactController {
                     public void failure(RetrofitError error) {
                         if (error.getResponse() != null)
                             Toast.makeText(mContext, "KO checkenado usuarios\n" + error.getResponse().getStatus() + " " + error.getResponse().getReason(), Toast.LENGTH_SHORT).show();
-                        callback.onSuccess("");
+                        callback.onFailure("");
                     }
                 });
     }

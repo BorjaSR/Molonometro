@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
@@ -82,11 +83,28 @@ public class Tools {
         return new_phone;
     }
 
+    public static final double RESICED_CONSTAMT = 0.54;
     public static String encodeBitmapToBase64(Bitmap image) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        image.compress(Bitmap.CompressFormat.JPEG, 25, baos);
 
-        return Base64.encodeToString(baos.toByteArray(),Base64.DEFAULT);
+        ByteArrayOutputStream baos2 = new ByteArrayOutputStream();
+
+        image.compress(Bitmap.CompressFormat.JPEG, 25, baos2);
+        int sinCompr = Base64.encodeToString(baos2.toByteArray(),Base64.DEFAULT).getBytes().length;
+        if(sinCompr > 60000){
+
+            double div = RESICED_CONSTAMT / (60000f / sinCompr);
+            int division = (int) Math.ceil(div);
+            if(division == 1) division = 2;
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            Bitmap resicedBitmap = getResizedBitmap(image, image.getWidth()/division, image.getHeight()/division);
+            resicedBitmap.compress(Bitmap.CompressFormat.JPEG, 25, baos);
+
+            return Base64.encodeToString(baos.toByteArray(),Base64.DEFAULT);
+        } else {
+            return Base64.encodeToString(baos2.toByteArray(),Base64.DEFAULT);
+        }
+
     }
 
     public static Bitmap decodeBase64(String input) {
@@ -100,5 +118,22 @@ public class Tools {
             return split[0] + " " + split[1];
         } else
             return Name;
+    }
+
+    public static Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
+        int width = bm.getWidth();
+        int height = bm.getHeight();
+        float scaleWidth = ((float) newWidth) / width;
+        float scaleHeight = ((float) newHeight) / height;
+        // CREATE A MATRIX FOR THE MANIPULATION
+        Matrix matrix = new Matrix();
+        // RESIZE THE BIT MAP
+        matrix.postScale(scaleWidth, scaleHeight);
+
+        // "RECREATE" THE NEW BITMAP
+        Bitmap resizedBitmap = Bitmap.createBitmap(
+                bm, 0, 0, width, height, matrix, false);
+        bm.recycle();
+        return resizedBitmap;
     }
 }
