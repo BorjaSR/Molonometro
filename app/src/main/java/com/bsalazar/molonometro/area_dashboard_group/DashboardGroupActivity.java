@@ -193,7 +193,7 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
         commentsRecyclerView = (RecyclerView) findViewById(R.id.commentsRecyclerView);
         commentsRecyclerView.setHasFixedSize(false);
         commentsRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        
+
         loading_comments.setVisibility(View.VISIBLE);
         new CommentsController().getCommentsByGroup(this, Variables.Group.getId(), new ServiceCallbackInterface() {
             @Override

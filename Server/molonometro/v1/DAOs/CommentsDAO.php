@@ -115,7 +115,7 @@ class CommentsDAO {
 
 
     public function getCommentByGroup($groupID) {
-        $stmt = $this->conn->prepare("SELECT CommentID, UserID, DestinationUserID, hasAnswers, Text, Image From comments where GroupID = ? and AssociatedCommentID IS NULL and Deleted = 0");
+        $stmt = $this->conn->prepare("SELECT CommentID, UserID, DestinationUserID, hasAnswers, Text, Image From comments where GroupID = ? and AssociatedCommentID IS NULL and Deleted = 0 ORDER BY Created DESC");
         $stmt->bind_param("i", $groupID);
         
         $response = array();
