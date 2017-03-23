@@ -11,17 +11,13 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
-import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.bsalazar.molonometro.R;
@@ -71,7 +67,7 @@ public class DashboardGroupActivityNEW extends AppCompatActivity {
             if (user.getUserID() == Variables.User.getUserID())
                 user_name.setText(getString(R.string.you));
             else
-                user_name.setText(Tools.cropName(user.getName()));
+                user_name.setText(Tools.cropNameSurname(user.getName()));
 
             try {
                 byte[] imageByteArray = Base64.decode(user.getImageBase64(), Base64.DEFAULT);

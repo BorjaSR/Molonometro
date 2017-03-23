@@ -15,14 +15,11 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewAnimationUtils;
-import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
@@ -129,7 +126,7 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
             if (user.getUserID() == Variables.User.getUserID())
                 user_name.setText(getString(R.string.you) + " (" + user.getMolopuntos() + " Mp)");
             else {
-                user_name.setText(Tools.cropName(user.getName()) + " (" + user.getMolopuntos() + " Mp)");
+                user_name.setText(Tools.cropNameSurname(user.getName()) + " (" + user.getMolopuntos() + " Mp)");
                 participants_without_you.add(user);
             }
             try {

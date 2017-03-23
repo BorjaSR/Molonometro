@@ -112,12 +112,15 @@ public class Tools {
         return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
     }
 
-    public static String cropName(String Name){
+    public static String cropNameSurname(String Name){
         String[] split = Name.split(" ");
         if(split.length > 2){
             return split[0] + " " + split[1];
         } else
             return Name;
+    }
+    public static String cropName(String Name){
+        return Name.split(" ")[0];
     }
 
     public static Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {

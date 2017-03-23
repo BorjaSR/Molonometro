@@ -13,6 +13,7 @@ import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.area_home.adapters.GroupsRecyclerAdapter;
 import com.bsalazar.molonometro.entities.Comment;
 import com.bsalazar.molonometro.general.MyRequestListener;
+import com.bsalazar.molonometro.general.Tools;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
@@ -41,8 +42,8 @@ public class CommentsRecyclerAdapter extends RecyclerView.Adapter<CommentsRecycl
     public void onBindViewHolder(CommentViewHolder holder, int position) {
         final Comment comment = comments.get(position);
 
-        holder.comment_from.setText(comment.getUserName());
-        holder.comment_to.setText(comment.getDestinationUserName());
+        holder.comment_from.setText(Tools.cropName(comment.getUserName()));
+        holder.comment_to.setText(Tools.cropName(comment.getDestinationUserName()));
         holder.comment.setText(comment.getText());
 
         try{
