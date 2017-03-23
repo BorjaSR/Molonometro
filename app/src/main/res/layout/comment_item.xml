@@ -15,33 +15,32 @@
         android:layout_marginBottom="15dp">
 
         <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/user_image"
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:layout_marginRight="10dp"
             android:src="@drawable/user_icon"/>
 
         <TextView
-            android:id="@+id/vote_from"
+            android:id="@+id/comment_from"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textStyle="bold"
             android:textSize="16sp"
-            android:text="Borja"
             android:textColor="@color/charcoal_gray"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text=" ha votado a "
+            android:text="@string/has_voted_to"
             android:textColor="@color/charcoal_gray"/>
 
         <TextView
-            android:id="@+id/vote_to"
+            android:id="@+id/comment_to"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textStyle="bold"
             android:textSize="16sp"
-            android:text="Sergio"
             android:textColor="@color/charcoal_gray"/>
     </LinearLayout>
 
@@ -51,7 +50,18 @@
         android:layout_height="wrap_content"
         android:textColor="@color/charcoal_gray"
         android:textSize="16sp"
-        android:text="Por que el otro dia molo que te pasas"/>
+        android:text="Mi comentario"/>
+
+    <TextView
+        android:id="@+id/view_replies"
+        android:layout_marginTop="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorPrimaryDark"
+        android:background="?android:selectableItemBackground"
+        android:textSize="12sp"
+        android:textStyle="italic"
+        android:text="@string/view_plies"/>
 
     <LinearLayout
         android:layout_marginTop="15dp"

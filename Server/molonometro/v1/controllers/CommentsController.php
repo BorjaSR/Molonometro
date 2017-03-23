@@ -67,7 +67,7 @@ $app->post('/comments/getCommentByGroup', function() use ($app) {
     $input = json_decode($body);
 
     // reading post params
-    $groupID = (int)$input->groupID;
+    $groupID = (int)$input->GroupID;
 
     $commentsDAO = new CommentsDAO();
     $DBresponse = $commentsDAO->getCommentByGroup($groupID);

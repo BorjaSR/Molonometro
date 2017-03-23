@@ -1,5 +1,6 @@
 package com.bsalazar.molonometro.rest.services;
 
+import com.bsalazar.molonometro.entities.Comment;
 import com.bsalazar.molonometro.entities.Participant;
 import com.bsalazar.molonometro.rest.json.ContactJson;
 import com.bsalazar.molonometro.rest.json.ContactsListJson;
@@ -24,6 +25,7 @@ import retrofit.http.POST;
 
 public interface RestService {
 
+    // USER //
     @POST("/user/createUser")
     void createUser(
             @Body CreateUserJson createUserJson,
@@ -46,6 +48,7 @@ public interface RestService {
 
 
 
+    // CONTACTS //
     @POST("/contact/checkContacts")
     void checkContacts(
             @Body ContactsListJson updateUserJson,
@@ -53,6 +56,7 @@ public interface RestService {
 
 
 
+    // GROUP //
     @POST("/group/createGroup")
     void createGroup(
             @Body CreateGroupJson createGroupJson,
@@ -82,6 +86,18 @@ public interface RestService {
     void getGroupParticipantsByID(
             @Body GroupJson groupIdJson,
             Callback<ArrayList<Participant>> callback);
+
+
+    // COMENTS //
+    @POST("/comments/getCommentByGroup")
+    void getCommentByGroup(
+            @Body GroupJson groupIdJson,
+            Callback<ArrayList<Comment>> callback);
+
+    @POST("/comments/getRepliesByComment")
+    void getRepliesByComment(
+            @Body Comment groupIdJson,
+            Callback<ArrayList<Comment>> callback);
 
 
 

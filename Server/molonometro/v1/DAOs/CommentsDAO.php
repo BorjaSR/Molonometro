@@ -132,7 +132,13 @@ class CommentsDAO {
                 $comment["CommentID"] = $CommentID;
                 $comment["UserID"] = $UserID;
                 $comment["DestinationUserID"] = $DestinationUserID;
-                $comment["hasAnswers"] = $hasAnswers;
+                if($hasAnswers == 0){
+                    $comment["hasAnswers"] = false;
+                }
+                else{
+                    $comment["hasAnswers"] = true;
+                }
+
                 $comment["Text"] = $Text;
                 $comment["Image"] = $Image;
 

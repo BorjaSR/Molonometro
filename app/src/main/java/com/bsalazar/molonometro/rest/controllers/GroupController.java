@@ -55,8 +55,6 @@ public class GroupController {
                 , new Callback<GroupJson>() {
                     @Override
                     public void success(GroupJson groupJson, Response response) {
-
-
                         callback.onSuccess("");
                     }
 
@@ -76,8 +74,6 @@ public class GroupController {
                 , new Callback<GroupJson>() {
                     @Override
                     public void success(GroupJson groupJson, Response response) {
-
-
                         callback.onSuccess("");
                     }
 

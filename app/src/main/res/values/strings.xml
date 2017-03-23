@@ -22,4 +22,8 @@
     <string name="added_to_group">Te han añadido al grupo</string>
     <string name="group_info">Info. del grupo</string>
     <string name="no_comments">Todavia no hay comentarios en este grupo.\n¡Se el primero en votar!</string>
+    <string name="to">Para:</string>
+    <string name="send">Enviar</string>
+    <string name="has_voted_to">&#160;ha votado a&#160;</string>
+    <string name="view_plies">Ver respuestas</string>
 </resources>

@@ -13,8 +13,10 @@ public class Group {
     private Bitmap image;
     private String imageBase64;
     private String name;
-    private ArrayList<Participant> participants;
     private String lastEvent;
+
+    private ArrayList<Participant> participants;
+    private ArrayList<Comment> comments;
 
     public Group() {
     }
@@ -28,6 +30,14 @@ public class Group {
         this.id = id;
         image = groupImage;
         name = groupName;
+    }
+
+    public ArrayList<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(ArrayList<Comment> comments) {
+        this.comments = comments;
     }
 
     public int getId() {

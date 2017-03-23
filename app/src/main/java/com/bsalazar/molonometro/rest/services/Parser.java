@@ -1,5 +1,6 @@
 package com.bsalazar.molonometro.rest.services;
 
+import com.bsalazar.molonometro.entities.Comment;
 import com.bsalazar.molonometro.entities.Contact;
 import com.bsalazar.molonometro.entities.Group;
 import com.bsalazar.molonometro.entities.Participant;
@@ -85,5 +86,49 @@ public class Parser {
         }
 
         return participants;
+    }
+
+    public static ArrayList<Comment> parseComments(ArrayList<Comment> commentsJson) {
+        ArrayList<Comment> comments = new ArrayList<>();
+
+        for (Comment commentJson : commentsJson) {
+            Comment comment = new Comment();
+
+            comment.setCommentID(commentJson.getCommentID());
+            comment.setUserID(commentJson.getUserID());
+            comment.setDestinationUserID(commentJson.getDestinationUserID());
+            comment.setHasAnswers(commentJson.isHasAnswers());
+            comment.setText(commentJson.getText());
+            comment.setImage(commentJson.getImage());
+
+            if (commentJson.getUserID() == Variables.User.getUserID()){
+                comment.setUserName(Variables.User.getName());
+                comment.setUserImage(Variables.User.getImageBase64());
+                comment.setDestinationUserName(getContactByID(commentJson.getDestinationUserID()).getName());
+            } else{
+                Contact contact = getContactByID(commentJson.getUserID());
+                if(contact != null) {
+                    comment.setUserName(contact.getName());
+                    comment.setUserImage(contact.getImageBase64());
+
+                    if(commentJson.getDestinationUserID() == Variables.User.getUserID())
+                        comment.setDestinationUserName(Variables.User.getName());
+                    else
+                        comment.setDestinationUserName(getContactByID(commentJson.getDestinationUserID()).getName());
+
+                }
+            }
+
+            comments.add(comment);
+        }
+
+        return comments;
+    }
+
+    private static Contact getContactByID(int id){
+        for (Contact contact : Variables.contactsWithApp)
+            if (contact.getUserID() == id)
+                return contact;
+        return null;
     }
 }
