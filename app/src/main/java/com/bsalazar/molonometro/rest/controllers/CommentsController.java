@@ -74,4 +74,28 @@ public class CommentsController {
                     }
                 });
     }
+
+
+
+    public void addCommentToGroup(final Context mContext, Comment comment, final ServiceCallbackInterface callback) {
+
+        Constants.restController.getService().addCommentToGroup(comment
+                , new Callback<Boolean>() {
+                    @Override
+                    public void success(Boolean result, Response response) {
+                        if (callback != null)
+                            callback.onSuccess(result.toString());
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        if (callback != null)
+                            callback.onSuccess(error.getResponse().getReason());
+
+                        if (error.getResponse() != null)
+                            Toast.makeText(mContext, "KO obteniendo respuestas\n" + error.getResponse().getStatus() + " " + error.getResponse().getReason(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
 }

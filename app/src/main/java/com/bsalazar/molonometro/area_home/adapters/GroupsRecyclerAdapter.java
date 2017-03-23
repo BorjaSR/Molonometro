@@ -2,7 +2,6 @@ package com.bsalazar.molonometro.area_home.adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
 import android.view.LayoutInflater;
@@ -14,12 +13,8 @@ import android.widget.TextView;
 
 import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.area_dashboard_group.DashboardGroupActivity;
-import com.bsalazar.molonometro.area_dashboard_group.DashboardGroupActivityNEW;
-import com.bsalazar.molonometro.area_home.MainActivity;
-import com.bsalazar.molonometro.entities.Contact;
 import com.bsalazar.molonometro.entities.Group;
 import com.bsalazar.molonometro.general.MyRequestListener;
-import com.bsalazar.molonometro.general.Tools;
 import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.controllers.GroupController;
 import com.bsalazar.molonometro.rest.services.ServiceCallbackInterface;

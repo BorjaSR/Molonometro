@@ -32,7 +32,7 @@ import com.bumptech.glide.Glide;
  * Created by bsalazar on 28/02/2017.
  */
 
-public class DashboardGroupActivityNEW extends AppCompatActivity {
+public class DashboardGroupActivityAUX extends AppCompatActivity {
 
     private int highestScore = 1;
 

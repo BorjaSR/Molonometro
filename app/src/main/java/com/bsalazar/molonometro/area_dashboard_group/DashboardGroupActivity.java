@@ -2,6 +2,7 @@ package com.bsalazar.molonometro.area_dashboard_group;
 
 import android.animation.Animator;
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,14 +21,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewAnimationUtils;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.area_dashboard_group.adapters.AutoCompleteAdapter;
@@ -59,6 +63,7 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
     private AutoCompleteTextView destinationUser;
     private TextView send_button, no_comments;
     private EditText comment_text;
+    private ProgressBar loading_comments;
 
     private boolean isAddCommentShowed = false;
     private boolean isUSerInGroup = false;
@@ -93,11 +98,13 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
         send_button = (TextView) findViewById(R.id.send_button);
         no_comments = (TextView) findViewById(R.id.no_comments);
         comment_text = (EditText) findViewById(R.id.comment_text);
+        loading_comments = (ProgressBar) findViewById(R.id.loading_comments);
 
         participants_without_you = new ArrayList<>();
 
         fab.setOnClickListener(this);
         send_button.setOnClickListener(this);
+        add_comment_container.setOnClickListener(this);
 
         final float ter_height = termometer_container.getLayoutParams().height;
 
@@ -186,16 +193,16 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
         commentsRecyclerView = (RecyclerView) findViewById(R.id.commentsRecyclerView);
         commentsRecyclerView.setHasFixedSize(false);
         commentsRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        adapter = new CommentsRecyclerAdapter(this, Variables.Group.getComments());
-        commentsRecyclerView.setAdapter(adapter);
-
+        
+        loading_comments.setVisibility(View.VISIBLE);
         new CommentsController().getCommentsByGroup(this, Variables.Group.getId(), new ServiceCallbackInterface() {
             @Override
             public void onSuccess(String result) {
+                loading_comments.setVisibility(View.GONE);
                 if(Variables.Group.getComments().size() > 0) {
                     adapter = new CommentsRecyclerAdapter(getApplicationContext(), Variables.Group.getComments());
                     commentsRecyclerView.setAdapter(adapter);
-                    no_comments.setVisibility(View.GONE);
+                    commentsRecyclerView.setVisibility(View.VISIBLE);
                 } else
                     no_comments.setVisibility(View.VISIBLE);
             }
@@ -251,9 +258,46 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
                 showAddComment();
                 break;
             case R.id.send_button:
-                if (isUSerInGroup){
 
-                }
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+
+                if (isUSerInGroup){
+                    if(comment_text.getText().toString().length() != 0){
+                        final Comment comment = new Comment();
+                        comment.setGroupID(Variables.Group.getId());
+                        comment.setUserID(Variables.User.getUserID());
+                        comment.setDestinationUserID(participantToSend.getUserID());
+                        comment.setText(comment_text.getText().toString());
+
+                        new CommentsController().addCommentToGroup(this, comment, new ServiceCallbackInterface() {
+                            @Override
+                            public void onSuccess(String result) {
+                                comment.setUserName(Variables.User.getName());
+                                comment.setUserImage(Variables.User.getImageBase64());
+                                comment.setDestinationUserName(participantToSend.getName());
+
+                                Variables.Group.getComments().add(0, comment);
+                                adapter.notifyItemInserted(0);
+                                hideAddComment();
+                            }
+
+                            @Override
+                            public void onFailure(String result) {
+
+                            }
+                        });
+
+                    }else
+                        Toast.makeText(this, "Pero no lo envies vacío animal!", Toast.LENGTH_SHORT).show();
+
+                }else
+                    Toast.makeText(this, "Vota a alguien que exista!", Toast.LENGTH_SHORT).show();
+
+                break;
+
+            case R.id.add_comment_container:
+                hideAddComment();
                 break;
         }
     }

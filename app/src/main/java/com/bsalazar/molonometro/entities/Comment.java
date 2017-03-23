@@ -7,6 +7,7 @@ public class Comment {
 
     // JSON
     private int CommentID;
+    private int GroupID;
     private int UserID;
     private int DestinationUserID;
     private boolean hasAnswers;
@@ -19,6 +20,14 @@ public class Comment {
     private String DestinationUserName;
 
     public Comment() {
+    }
+
+    public int getGroupID() {
+        return GroupID;
+    }
+
+    public void setGroupID(int groupID) {
+        GroupID = groupID;
     }
 
     public String getUserName() {

@@ -99,6 +99,10 @@ public interface RestService {
             @Body Comment groupIdJson,
             Callback<ArrayList<Comment>> callback);
 
+    @POST("/comments/addCommentToGroup")
+    void addCommentToGroup(
+            @Body Comment comment,
+            Callback<Boolean> callback);
 
 
     @POST("/fcm/sendPushTo")

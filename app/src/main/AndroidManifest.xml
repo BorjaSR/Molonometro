@@ -46,7 +46,7 @@
         </activity>
 
         <activity
-            android:name=".area_dashboard_group.DashboardGroupActivityNEW"
+            android:name=".area_dashboard_group.DashboardGroupActivityAUX"
             android:label="@string/group_activity"
             android:theme="@style/AppTheme.NoActionBar"
             android:parentActivityName=".area_home.MainActivity">
