@@ -19,14 +19,19 @@ $app->post('/comments/addCommentToGroup', function() use ($app) {
 	    $commentsDAO = new CommentsDAO();
 	    $DBresponse = $commentsDAO->addComment($groupID, $userID, $destinationUserID, $text);
 
-	    if($DBresponse["status"] == 200){      
-	        echoResponse(200, $DBresponse["comment"]);
-
+	    if($DBresponse["status"] == 200){    
+	    	$isAddMolopuntos = addMolopuntosByComment($destinationUserID, $groupID);
+	    	if($isAddMolopuntos != -1){
+	        	echoResponse(200, $DBresponse["comment"]);
+	        	
+	    	} else {
+	        	echoResponse(457, "Error al añadir los molopuntos");
+	    	}
 	    }else{
 	        echoResponse(455, $DBresponse["error"]);
 	    }
 	}else{
-	        echoResponse(456, "Error: Same user");
+	    echoResponse(456, "Error: Same user");
 	}
 });
 

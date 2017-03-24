@@ -321,6 +321,72 @@ class GroupDAO {
 
         return $response;
     }
+
+    public function getMolopuntosFromUserGroup($userID, $groupID) {
+        
+        $userDAO = new UserDAO();
+        if ($this->isGroupExistsById($groupID) && $userDAO->isUserExistsById($userID)) {
+
+            $response = array();
+            
+            // update query
+            $stmt = $this->conn->prepare("SELECT Molopuntos From groupuser where GroupID = ? and UserID = ? and Deleted = 0");
+            $stmt->bind_param("ii", $groupID, $userID);
+
+
+            if ($stmt->execute()) {
+
+                $stmt->bind_result($Molopuntos);
+                $stmt->fetch();
+                // Group successfully updated
+                $response["status"] = 200;
+                $response["molopuntos"] = $Molopuntos;
+
+                $stmt->close();
+            } else {
+                // Failed to update group
+                $response["status"] = 430;
+                $response["error"] = "Oops! An error occurred while getting molopuntos";
+            }
+        } else {
+            $response["status"] = 432;
+            $response["error"] = "The group or user doesn't exists";
+        }
+
+
+        return $response;
+    }
+
+
+    public function setMolopuntosFromUserGroup($userID, $groupID, $molopuntos) {
+        
+        $userDAO = new UserDAO();
+        if ($this->isGroupExistsById($groupID) && $userDAO->isUserExistsById($userID)) {
+
+            $response = array();
+            
+            // update query
+            $stmt = $this->conn->prepare("UPDATE groupuser SET Molopuntos = ?, LastUpdate = now() WHERE GroupID = ? AND UserID = ?");
+            $stmt->bind_param("iii",$molopuntos, $groupID, $userID);
+
+            $result = $stmt->execute();
+            $stmt->close();
+
+            if ($result) {
+                // Group successfully updated
+                $response["status"] = 200;
+            } else {
+                // Failed to update group
+                $response["status"] = 430;
+                $response["error"] = "Oops! An error occurred while setting molopuntos";
+            }
+        } else {
+            $response["status"] = 432;
+            $response["error"] = "The group doesn't exists";
+        }
+
+        return $response;
+    }
     
 }
 ?>

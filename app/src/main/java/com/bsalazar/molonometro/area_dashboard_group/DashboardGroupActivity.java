@@ -16,11 +16,13 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewAnimationUtils;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
@@ -55,6 +57,7 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
 
     private int highestScore = 1;
 
+    private RelativeLayout users_container;
     private RecyclerView commentsRecyclerView;
     private CommentsRecyclerAdapter adapter;
 
@@ -68,6 +71,8 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
     private boolean isAddCommentShowed = false;
     private boolean isUSerInGroup = false;
     private Participant participantToSend;
+
+    private int ScrollY = 0;
 
     ArrayList<Participant> participants_without_you;
 
@@ -87,9 +92,8 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
 
 
         final RelativeLayout termometer_container = (RelativeLayout) findViewById(R.id.termometer_container);
-        final RelativeLayout users_container = (RelativeLayout) findViewById(R.id.users_container);
+        users_container = (RelativeLayout) findViewById(R.id.users_container);
         final LinearLayout shadow = (LinearLayout) findViewById(R.id.shadow);
-        ScrollView scroll_dashboard_group = (ScrollView) findViewById(R.id.scroll_dashboard_group);
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
 
@@ -111,21 +115,12 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
         //SET HEIGHT TERMOMETER
         Constants.HEIGHT_OF_TEMOMETER = (int) ((ter_height * 830) / 1050);
 
-        scroll_dashboard_group.setOnScrollChangeListener(new View.OnScrollChangeListener() {
-            @Override
-            public void onScrollChange(View view, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                termometer_container.setTranslationY(scrollY / -2);
-                float alpha = (float) scrollY / ter_height;
-                if (alpha <= 1)
-                    shadow.setAlpha((float) scrollY / ter_height);
-            }
-        });
-
-
         users_container.removeAllViews();
         for (Participant user : Variables.Group.getParticipants()) {
             LayoutInflater inflater = LayoutInflater.from(getApplicationContext());
             View user_termometer_view = inflater.inflate(R.layout.termometer_user, users_container, false);
+
+            user_termometer_view.setTag(user.getUserID());
 
             ImageView dashboard_user_image = (ImageView) user_termometer_view.findViewById(R.id.dashboard_user_image);
             TextView user_name = (TextView) user_termometer_view.findViewById(R.id.user_name);
@@ -194,14 +189,27 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
         commentsRecyclerView.setHasFixedSize(false);
         commentsRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
+        commentsRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                ScrollY += dy;
+                termometer_container.setTranslationY(ScrollY / -2);
+                float alpha = (float) ScrollY / ter_height;
+                if (alpha <= 1)
+                    shadow.setAlpha((float) ScrollY / ter_height);
+                Log.d("[SCROLL LISTENER]", dx + " " + dy + " " + ScrollY);
+            }
+        });
+
         loading_comments.setVisibility(View.VISIBLE);
         new CommentsController().getCommentsByGroup(this, Variables.Group.getId(), new ServiceCallbackInterface() {
             @Override
             public void onSuccess(String result) {
                 loading_comments.setVisibility(View.GONE);
+                adapter = new CommentsRecyclerAdapter(getApplicationContext(), Variables.Group.getComments());
+                commentsRecyclerView.setAdapter(adapter);
                 if(Variables.Group.getComments().size() > 0) {
-                    adapter = new CommentsRecyclerAdapter(getApplicationContext(), Variables.Group.getComments());
-                    commentsRecyclerView.setAdapter(adapter);
                     commentsRecyclerView.setVisibility(View.VISIBLE);
                 } else
                     no_comments.setVisibility(View.VISIBLE);
@@ -209,10 +217,12 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
 
             @Override
             public void onFailure(String result) {
-
+                adapter = new CommentsRecyclerAdapter(getApplicationContext(), Variables.Group.getComments());
+                commentsRecyclerView.setAdapter(adapter);
             }
         });
     }
+
 
     @Override
     public void onBackPressed() {
@@ -278,8 +288,20 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
                                 comment.setDestinationUserName(participantToSend.getName());
 
                                 Variables.Group.getComments().add(0, comment);
-                                adapter.notifyItemInserted(0);
+                                adapter.notifyItemInserted(1);
+
+                                if(commentsRecyclerView.getVisibility() == View.GONE){
+                                    commentsRecyclerView.setVisibility(View.VISIBLE);
+                                    no_comments.setVisibility(View.GONE);
+                                }
+
                                 hideAddComment();
+
+                                for(Participant participant : Variables.Group.getParticipants())
+                                    if(participant.getUserID() == comment.getDestinationUserID())
+                                        participant.setMolopuntos(participant.getMolopuntos()+1);
+
+                                recalculateTermometer();
                             }
 
                             @Override
@@ -302,6 +324,35 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
         }
     }
 
+    private void recalculateTermometer() {
+        getHighestScore();
+
+        for (int i = 0; i < users_container.getChildCount(); i++){
+            View view = users_container.getChildAt(i);
+
+            int UserID = (int) view.getTag();
+            int molopuntosUser = 0;
+
+            for(Participant participant : Variables.Group.getParticipants())
+                if(participant.getUserID() == UserID){
+                    molopuntosUser = participant.getMolopuntos();
+
+                    TextView user_name = (TextView) view.findViewById(R.id.user_name);
+
+                    if (participant.getUserID() == Variables.User.getUserID())
+                        user_name.setText(getString(R.string.you) + " (" + participant.getMolopuntos() + " Mp)");
+                    else
+                        user_name.setText(Tools.cropNameSurname(participant.getName()) + " (" + participant.getMolopuntos() + " Mp)");
+
+                    view.animate()
+                            .translationY(getPositionUser(molopuntosUser))
+                            .setInterpolator(new AccelerateDecelerateInterpolator())
+                            .setDuration(1000)
+                            .start();
+                }
+        }
+    }
+
     private void showAddComment() {
         fab.setVisibility(View.GONE);
         add_comment_container.setVisibility(View.VISIBLE);
@@ -309,6 +360,9 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
     }
 
     private void hideAddComment() {
+
+        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(fab.getWindowToken(), 0);
 
         isAddCommentShowed = false;
         fab.setVisibility(View.VISIBLE);
@@ -344,9 +398,11 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
         return Constants.HEIGHT_OF_TEMOMETER - relative_position;
     }
 
-    public void getHighestScore() {
+    public int getHighestScore() {
         for (Participant user : Variables.Group.getParticipants())
             if (user.getMolopuntos() > highestScore) highestScore = user.getMolopuntos();
+
+        return highestScore;
     }
 
 }

@@ -1,12 +1,14 @@
 package com.bsalazar.molonometro.area_dashboard_group.adapters;
 
 import android.content.Context;
+import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bsalazar.molonometro.R;
@@ -40,39 +42,50 @@ public class CommentsRecyclerAdapter extends RecyclerView.Adapter<CommentsRecycl
 
     @Override
     public void onBindViewHolder(CommentViewHolder holder, int position) {
-        final Comment comment = comments.get(position);
 
-        holder.comment_from.setText(Tools.cropName(comment.getUserName()));
-        holder.comment_to.setText(Tools.cropName(comment.getDestinationUserName()));
-        holder.comment.setText(comment.getText());
+        if(position == 0){
+            holder.window_to_termometer.setVisibility(View.VISIBLE);
+            holder.comment_container.setVisibility(View.GONE);
+        } else {
+            holder.window_to_termometer.setVisibility(View.GONE);
+            holder.comment_container.setVisibility(View.VISIBLE);
 
-        try{
-            byte[] imageByteArray = Base64.decode(comment.getUserImage(), Base64.DEFAULT);
+            final Comment comment = comments.get(position - 1);
 
-            Glide.with(mContext)
-                    .load(imageByteArray)
-                    .asBitmap()
-                    .listener(new MyRequestListener(mContext, holder.user_image))
-                    .into(holder.user_image);
+            holder.comment_from.setText(Tools.cropName(comment.getUserName()));
+            holder.comment_to.setText(Tools.cropName(comment.getDestinationUserName()));
+            holder.comment.setText(comment.getText());
 
-        }catch (Exception e){
-            holder.user_image.setImageResource(R.drawable.user_icon);
+            try{
+                byte[] imageByteArray = Base64.decode(comment.getUserImage(), Base64.DEFAULT);
+
+                Glide.with(mContext)
+                        .load(imageByteArray)
+                        .asBitmap()
+                        .listener(new MyRequestListener(mContext, holder.user_image))
+                        .into(holder.user_image);
+
+            }catch (Exception e){
+                holder.user_image.setImageResource(R.drawable.user_icon);
+            }
+
+            if(comment.isHasAnswers())
+                holder.view_replies.setVisibility(View.VISIBLE);
+            else
+                holder.view_replies.setVisibility(View.GONE);
         }
-
-        if(comment.isHasAnswers())
-            holder.view_replies.setVisibility(View.VISIBLE);
-        else
-            holder.view_replies.setVisibility(View.GONE);
 
     }
 
     @Override
     public int getItemCount() {
-        return comments.size();
+        return comments.size()+1;
     }
 
     class CommentViewHolder extends RecyclerView.ViewHolder {
 
+        LinearLayout window_to_termometer;
+        LinearLayout comment_container;
         ImageView user_image;
         TextView comment_from;
         TextView comment_to;
@@ -82,6 +95,8 @@ public class CommentsRecyclerAdapter extends RecyclerView.Adapter<CommentsRecycl
         CommentViewHolder(View itemView) {
             super(itemView);
 
+            window_to_termometer = (LinearLayout) itemView.findViewById(R.id.window_to_termometer);
+            comment_container = (LinearLayout) itemView.findViewById(R.id.comment_container);
             user_image = (ImageView) itemView.findViewById(R.id.user_image);
             comment_from = (TextView) itemView.findViewById(R.id.comment_from);
             comment_to = (TextView) itemView.findViewById(R.id.comment_to);

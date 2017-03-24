@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     android:background="@color/white"
+    android:fitsSystemWindows="true"
     tools:context="com.bsalazar.molonometro.area_home.MainActivity">
 
     <RelativeLayout
@@ -15,79 +15,74 @@
 
         <ImageView
             android:layout_width="match_parent"
-            android:transitionName="@string/element_shared_dashboard_group"
             android:layout_height="match_parent"
+            android:scaleType="fitXY"
             android:src="@drawable/termometer"
-            android:scaleType="fitXY"/>
+            android:transitionName="@string/element_shared_dashboard_group" />
 
         <RelativeLayout
             android:id="@+id/users_container"
-            android:layout_marginLeft = "135dp"
-            android:layout_marginTop = "10dp"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_marginLeft="135dp"
+            android:layout_marginTop="10dp">
 
-            <include layout="@layout/termometer_user"/>
+            <include layout="@layout/termometer_user" />
 
         </RelativeLayout>
 
         <LinearLayout
             android:id="@+id/shadow"
-            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:alpha="0"
             android:background="@color/colorPrimaryLight"
-            android:alpha="0"/>
+            android:orientation="horizontal" />
     </RelativeLayout>
 
-    <ScrollView
-        android:id="@+id/scroll_dashboard_group"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
         <LinearLayout
-            android:orientation="vertical"
+            android:id="@+id/window_to_termometer"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="350dp"
+            android:orientation="vertical" />
 
-            <LinearLayout
-                android:id="@+id/window_to_termometer"
-                android:orientation="vertical"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:elevation="4dp"
+            android:orientation="vertical">
+
+            <ProgressBar
+                android:id="@+id/loading_comments"
                 android:layout_width="match_parent"
-                android:layout_height="350dp"/>
+                android:layout_height="40dp"
+                android:layout_marginTop="30dp" />
 
-            <LinearLayout
+            <TextView
+                android:id="@+id/no_comments"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:elevation="4dp"
-                android:background="@color/white">
+                android:gravity="center"
+                android:padding="15dp"
+                android:text="@string/no_comments"
+                android:textSize="16dp"
+                android:visibility="gone" />
 
-                <ProgressBar
-                    android:id="@+id/loading_comments"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:layout_marginTop="30dp"/>
-
-                <TextView
-                    android:id="@+id/no_comments"
-                    android:visibility="gone"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/no_comments"
-                    android:gravity="center"
-                    android:textSize="16dp"
-                    android:padding="15dp"/>
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/commentsRecyclerView"
-                    android:visibility="gone"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
-
-            </LinearLayout>
         </LinearLayout>
-    </ScrollView>
+    </LinearLayout>
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/commentsRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
@@ -95,83 +90,84 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/add"/>
+        android:src="@drawable/add" />
 
     <LinearLayout
         android:id="@+id/add_comment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/alpha_black"
-        android:visibility="gone"
-        android:gravity="bottom">
+        android:gravity="bottom"
+        android:visibility="gone">
 
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="15dp"
             android:background="@color/white"
-            android:elevation="20dp">
+            android:clickable="true"
+            android:elevation="20dp"
+            android:orientation="vertical"
+            android:padding="15dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="25dp">
+                android:layout_marginBottom="25dp"
+                android:orientation="horizontal">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/to"
-                    android:textColor="@color/charcoal_gray"/>
+                    android:textColor="@color/charcoal_gray" />
 
                 <AutoCompleteTextView
                     android:id="@+id/destinationUser"
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
-                    android:padding="6dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/edit_text_background"
                     android:hint="Nombre..."
-                    android:textSize="16sp"
                     android:imeOptions="actionDone"
-                    android:background="@drawable/edit_text_background"/>
+                    android:padding="6dp"
+                    android:textSize="16sp" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="10dp">
+                android:layout_marginBottom="10dp"
+                android:orientation="horizontal">
 
                 <EditText
                     android:id="@+id/comment_text"
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:padding="10dp"
                     android:layout_gravity="top"
+                    android:layout_weight="1"
+                    android:background="@drawable/edit_text_background"
                     android:hint="¿Que ha ocurrido?"
                     android:imeOptions="actionDone"
                     android:maxLength="300"
-                    android:textSize="16sp"
-                    android:background="@drawable/edit_text_background"/>
+                    android:padding="10dp"
+                    android:textSize="16sp" />
             </LinearLayout>
 
 
             <TextView
                 android:id="@+id/send_button"
-                android:background="?android:selectableItemBackground"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/send"
-                android:textSize="18sp"
+                android:layout_gravity="right"
+                android:background="?android:selectableItemBackground"
+                android:paddingBottom="10dp"
                 android:paddingLeft="25dp"
                 android:paddingRight="25dp"
                 android:paddingTop="10dp"
-                android:paddingBottom="10dp"
-                android:layout_gravity="right"
-                android:textColor="@color/colorAccent"/>
+                android:text="@string/send"
+                android:textColor="@color/colorAccent"
+                android:textSize="18sp" />
 
             <!--<ImageView-->
             <!--android:layout_width="45dp"-->

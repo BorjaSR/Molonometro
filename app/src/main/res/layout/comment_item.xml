@@ -1,72 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
-    android:paddingTop="16dp"
-    android:background="@color/white">
+    android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/window_to_termometer"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:orientation="vertical"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/comment_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:layout_marginBottom="15dp">
+        android:background="@color/white"
+        android:orientation="vertical"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="16dp">
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/user_image"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:layout_marginRight="10dp"
-            android:src="@drawable/user_icon"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/user_image"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginRight="10dp"
+                android:src="@drawable/user_icon" />
+
+            <TextView
+                android:id="@+id/comment_from"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/charcoal_gray"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/has_voted_to"
+                android:textColor="@color/charcoal_gray" />
+
+            <TextView
+                android:id="@+id/comment_to"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/charcoal_gray"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+        </LinearLayout>
 
         <TextView
-            android:id="@+id/comment_from"
-            android:layout_width="wrap_content"
+            android:id="@+id/comment"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textStyle="bold"
-            android:textSize="16sp"
-            android:textColor="@color/charcoal_gray"/>
+            android:text="Mi comentario"
+            android:textColor="@color/charcoal_gray"
+            android:textSize="16sp" />
 
         <TextView
+            android:id="@+id/view_replies"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/has_voted_to"
-            android:textColor="@color/charcoal_gray"/>
+            android:layout_marginTop="10dp"
+            android:background="?android:selectableItemBackground"
+            android:text="@string/view_plies"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="12sp"
+            android:textStyle="italic" />
 
-        <TextView
-            android:id="@+id/comment_to"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textStyle="bold"
-            android:textSize="16sp"
-            android:textColor="@color/charcoal_gray"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="15dp"
+            android:background="@color/light_gray" />
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/comment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/charcoal_gray"
-        android:textSize="16sp"
-        android:text="Mi comentario"/>
-
-    <TextView
-        android:id="@+id/view_replies"
-        android:layout_marginTop="10dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/colorPrimaryDark"
-        android:background="?android:selectableItemBackground"
-        android:textSize="12sp"
-        android:textStyle="italic"
-        android:text="@string/view_plies"/>
-
-    <LinearLayout
-        android:layout_marginTop="15dp"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/light_gray"/>
 </LinearLayout>

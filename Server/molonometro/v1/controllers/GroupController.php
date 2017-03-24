@@ -176,4 +176,33 @@ function makeUserAdmin($userID, $groupID) {
     }
 }
 
+
+function addMolopuntosByComment($userID, $groupID) {
+
+    $groupDAO = new GroupDAO();
+    
+    $molopuntosFromUserGroup = getMolopuntosFromUserGroup($userID, $groupID);
+    $molopuntosFromUserGroup++;
+
+    $DBresponse = $groupDAO->setMolopuntosFromUserGroup($userID, $groupID, $molopuntosFromUserGroup);
+
+    if($DBresponse["status"] == 200){
+        return $molopuntosFromUserGroup;
+    } else {
+        return -1;
+    }
+}
+
+function getMolopuntosFromUserGroup($userID, $groupID) {
+
+    $groupDAO = new GroupDAO();
+    $DBresponse = $groupDAO->getMolopuntosFromUserGroup($userID, $groupID);
+
+    if($DBresponse["status"] == 200){
+        return $DBresponse["molopuntos"];
+    } else {
+        return -1;
+    }
+}
+
 ?>
