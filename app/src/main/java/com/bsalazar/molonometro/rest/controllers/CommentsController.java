@@ -60,8 +60,11 @@ public class CommentsController {
                 , new Callback<ArrayList<Comment>>() {
                     @Override
                     public void success(ArrayList<Comment> commentsJson, Response response) {
+
+                        ArrayList<Comment> comments = Parser.parseReply(commentsJson);
+
                         if (callback != null)
-                            callback.onSuccess(new Gson().toJson(commentsJson));
+                            callback.onSuccess(new Gson().toJson(comments));
                     }
 
                     @Override
@@ -74,7 +77,6 @@ public class CommentsController {
                     }
                 });
     }
-
 
 
     public void addCommentToGroup(final Context mContext, Comment comment, final ServiceCallbackInterface callback) {
@@ -93,9 +95,29 @@ public class CommentsController {
                             callback.onSuccess(error.getResponse().getReason());
 
                         if (error.getResponse() != null)
-                            Toast.makeText(mContext, "KO obteniendo respuestas\n" + error.getResponse().getStatus() + " " + error.getResponse().getReason(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mContext, "KO enviando comentario\n" + error.getResponse().getStatus() + " " + error.getResponse().getReason(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
 
+    public void addReplyToComment(final Context mContext, Comment comment, final ServiceCallbackInterface callback) {
+
+        Constants.restController.getService().addReplyToComment(comment
+                , new Callback<Boolean>() {
+                    @Override
+                    public void success(Boolean result, Response response) {
+                        if (callback != null)
+                            callback.onSuccess(result.toString());
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        if (callback != null)
+                            callback.onSuccess(error.getResponse().getReason());
+
+                        if (error.getResponse() != null)
+                            Toast.makeText(mContext, "KO enviando respuesta\n" + error.getResponse().getStatus() + " " + error.getResponse().getReason(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
 }

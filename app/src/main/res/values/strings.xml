@@ -26,4 +26,6 @@
     <string name="send">Enviar</string>
     <string name="has_voted_to">&#160;ha votado a&#160;</string>
     <string name="view_plies">Ver respuestas</string>
+    <string name="reply">Responder</string>
+    <string name="send_reply">Responder</string>
 </resources>

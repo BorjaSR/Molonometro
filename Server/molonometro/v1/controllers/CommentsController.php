@@ -94,7 +94,7 @@ $app->post('/comments/getRepliesByComment', function() use ($app) {
     $input = json_decode($body);
 
     // reading post params
-    $commentID = (int)$input->commentID;
+    $commentID = (int)$input->CommentID;
 
     $commentsDAO = new CommentsDAO();
     $DBresponse = $commentsDAO->getRepliesByComment($commentID);

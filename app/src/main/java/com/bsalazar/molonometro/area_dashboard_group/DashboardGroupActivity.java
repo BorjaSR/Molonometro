@@ -2,6 +2,7 @@ package com.bsalazar.molonometro.area_dashboard_group;
 
 import android.animation.Animator;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.os.Build;
@@ -10,6 +11,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -55,9 +57,11 @@ import java.util.ArrayList;
 
 public class DashboardGroupActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private float ter_height;
     private int highestScore = 1;
-
+    private RelativeLayout termometer_container;
     private RelativeLayout users_container;
+    private LinearLayout shadow;
     private RecyclerView commentsRecyclerView;
     private CommentsRecyclerAdapter adapter;
 
@@ -74,6 +78,8 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
 
     private int ScrollY = 0;
 
+    private Activity activity;
+
     ArrayList<Participant> participants_without_you;
 
     @TargetApi(Build.VERSION_CODES.M)
@@ -82,7 +88,7 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dashboard_group_fragment);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
+        this.activity = this;
 
         final ActionBar ab = getSupportActionBar();
         if (ab != null)
@@ -91,9 +97,9 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
         getHighestScore();
 
 
-        final RelativeLayout termometer_container = (RelativeLayout) findViewById(R.id.termometer_container);
+        termometer_container = (RelativeLayout) findViewById(R.id.termometer_container);
         users_container = (RelativeLayout) findViewById(R.id.users_container);
-        final LinearLayout shadow = (LinearLayout) findViewById(R.id.shadow);
+        shadow = (LinearLayout) findViewById(R.id.shadow);
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
 
@@ -110,7 +116,7 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
         send_button.setOnClickListener(this);
         add_comment_container.setOnClickListener(this);
 
-        final float ter_height = termometer_container.getLayoutParams().height;
+        ter_height = termometer_container.getLayoutParams().height;
 
         //SET HEIGHT TERMOMETER
         Constants.HEIGHT_OF_TEMOMETER = (int) ((ter_height * 830) / 1050);
@@ -171,7 +177,7 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
                 if (userIsInGroup(destinationUser.getText().toString())) {
                     destinationUser.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.charcoal_gray));
                     isUSerInGroup = true;
-                }else {
+                } else {
                     destinationUser.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.wrong_color));
                     isUSerInGroup = true;
                 }
@@ -188,7 +194,6 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
         commentsRecyclerView = (RecyclerView) findViewById(R.id.commentsRecyclerView);
         commentsRecyclerView.setHasFixedSize(false);
         commentsRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-
         commentsRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -207,9 +212,9 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
             @Override
             public void onSuccess(String result) {
                 loading_comments.setVisibility(View.GONE);
-                adapter = new CommentsRecyclerAdapter(getApplicationContext(), Variables.Group.getComments());
+                adapter = new CommentsRecyclerAdapter(activity, Variables.Group.getComments());
                 commentsRecyclerView.setAdapter(adapter);
-                if(Variables.Group.getComments().size() > 0) {
+                if (Variables.Group.getComments().size() > 0) {
                     commentsRecyclerView.setVisibility(View.VISIBLE);
                 } else
                     no_comments.setVisibility(View.VISIBLE);
@@ -217,7 +222,7 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
 
             @Override
             public void onFailure(String result) {
-                adapter = new CommentsRecyclerAdapter(getApplicationContext(), Variables.Group.getComments());
+                adapter = new CommentsRecyclerAdapter(activity, Variables.Group.getComments());
                 commentsRecyclerView.setAdapter(adapter);
             }
         });
@@ -269,11 +274,11 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
                 break;
             case R.id.send_button:
 
-                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
 
-                if (isUSerInGroup){
-                    if(comment_text.getText().toString().length() != 0){
+                if (isUSerInGroup) {
+                    if (comment_text.getText().toString().length() != 0) {
                         final Comment comment = new Comment();
                         comment.setGroupID(Variables.Group.getId());
                         comment.setUserID(Variables.User.getUserID());
@@ -290,17 +295,19 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
                                 Variables.Group.getComments().add(0, comment);
                                 adapter.notifyItemInserted(1);
 
-                                if(commentsRecyclerView.getVisibility() == View.GONE){
+                                if (commentsRecyclerView.getVisibility() == View.GONE) {
                                     commentsRecyclerView.setVisibility(View.VISIBLE);
                                     no_comments.setVisibility(View.GONE);
                                 }
 
+
                                 hideAddComment();
 
-                                for(Participant participant : Variables.Group.getParticipants())
-                                    if(participant.getUserID() == comment.getDestinationUserID())
-                                        participant.setMolopuntos(participant.getMolopuntos()+1);
+                                for (Participant participant : Variables.Group.getParticipants())
+                                    if (participant.getUserID() == comment.getDestinationUserID())
+                                        participant.setMolopuntos(participant.getMolopuntos() + 1);
 
+                                repositionedTermometer();
                                 recalculateTermometer();
                             }
 
@@ -310,10 +317,10 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
                             }
                         });
 
-                    }else
+                    } else
                         Toast.makeText(this, "Pero no lo envies vacío animal!", Toast.LENGTH_SHORT).show();
 
-                }else
+                } else
                     Toast.makeText(this, "Vota a alguien que exista!", Toast.LENGTH_SHORT).show();
 
                 break;
@@ -324,17 +331,27 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
         }
     }
 
+    //TODO pendiente de revisar
+    private void repositionedTermometer() {
+        ScrollY = commentsRecyclerView.getScrollY();
+
+        termometer_container.setTranslationY(ScrollY / -2);
+        float alpha = (float) ScrollY / ter_height;
+        if (alpha <= 1)
+            shadow.setAlpha((float) ScrollY / ter_height);
+    }
+
     private void recalculateTermometer() {
         getHighestScore();
 
-        for (int i = 0; i < users_container.getChildCount(); i++){
+        for (int i = 0; i < users_container.getChildCount(); i++) {
             View view = users_container.getChildAt(i);
 
             int UserID = (int) view.getTag();
             int molopuntosUser = 0;
 
-            for(Participant participant : Variables.Group.getParticipants())
-                if(participant.getUserID() == UserID){
+            for (Participant participant : Variables.Group.getParticipants())
+                if (participant.getUserID() == UserID) {
                     molopuntosUser = participant.getMolopuntos();
 
                     TextView user_name = (TextView) view.findViewById(R.id.user_name);
@@ -361,7 +378,7 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
 
     private void hideAddComment() {
 
-        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(fab.getWindowToken(), 0);
 
         isAddCommentShowed = false;
@@ -405,4 +422,49 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
         return highestScore;
     }
 
+    public void showReplyDialog(final Comment comment) {
+
+        final AlertDialog builder = new AlertDialog.Builder(this).create();
+
+        LayoutInflater inflater = getLayoutInflater();
+        View dialoglayout = inflater.inflate(R.layout.reply_dialog, null);
+
+        TextView reply_to = (TextView) dialoglayout.findViewById(R.id.reply_to);
+        final EditText reply_text = (EditText) dialoglayout.findViewById(R.id.reply_text);
+        TextView send_reply = (TextView) dialoglayout.findViewById(R.id.send_reply);
+
+        reply_to.setText(comment.getUserName());
+
+        send_reply.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (reply_text.getText().toString().length() != 0) {
+                    Comment reply = new Comment();
+                    reply.setCommentID(comment.getCommentID());
+                    reply.setUserID(Variables.User.getUserID());
+                    reply.setText(reply_text.getText().toString());
+
+                    new CommentsController().addReplyToComment(getApplicationContext(), reply, new ServiceCallbackInterface() {
+                        @Override
+                        public void onSuccess(String result) {
+                            if(result.equals("true")){
+                                builder.dismiss();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(String result) {
+                            Toast.makeText(activity, "Oops! Ha ocurrido algún error", Toast.LENGTH_SHORT).show();
+                            builder.dismiss();
+                        }
+                    });
+
+                } else
+                    Toast.makeText(activity, "Pero no lo envies vacío animal!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        builder.setView(dialoglayout);
+        builder.show();
+    }
 }

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Responder a "
+            android:textColor="@color/charcoal_gray"
+            android:id="@+id/textView3" />
+
+        <TextView
+            android:id="@+id/reply_to"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/charcoal_gray"
+            android:textSize="16sp"
+            android:text="sdasfdadsa"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+
+    <EditText
+        android:id="@+id/reply_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/edit_text_background"
+        android:hint="Escribe aquí..."
+        android:imeOptions="actionDone"
+        android:layout_marginTop="10dp"
+        android:maxLength="300"
+        android:padding="10dp"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/send_reply"
+        android:layout_gravity="right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="?android:selectableItemBackground"
+        android:text="@string/send_reply"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="12sp"
+        android:padding="2dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:textStyle="italic" />
+
+</LinearLayout>

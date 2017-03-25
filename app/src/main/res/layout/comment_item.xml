@@ -5,13 +5,6 @@
     android:orientation="vertical">
 
     <LinearLayout
-        android:id="@+id/window_to_termometer"
-        android:layout_width="match_parent"
-        android:layout_height="350dp"
-        android:orientation="vertical"
-        android:visibility="gone" />
-
-    <LinearLayout
         android:id="@+id/comment_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -47,7 +40,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/has_voted_to"
-                android:textColor="@color/charcoal_gray" />
+                android:textColor="@color/charcoal_gray"
+                android:id="@+id/textView3" />
 
             <TextView
                 android:id="@+id/comment_to"
@@ -66,16 +60,52 @@
             android:textColor="@color/charcoal_gray"
             android:textSize="16sp" />
 
-        <TextView
-            android:id="@+id/view_replies"
-            android:layout_width="wrap_content"
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/reply_recycler"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:background="?android:selectableItemBackground"
-            android:text="@string/view_plies"
-            android:textColor="@color/colorPrimaryDark"
-            android:textSize="12sp"
-            android:textStyle="italic" />
+            android:layout_marginLeft="25dp"/>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:id="@+id/reply"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?android:selectableItemBackground"
+                android:text="@string/reply"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="12sp"
+                android:textStyle="italic"
+                android:padding="2dp"/>
+
+
+            <LinearLayout
+                android:id="@+id/separator"
+                android:orientation="horizontal"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:background="@color/colorPrimaryLight"/>
+
+            <TextView
+                android:id="@+id/view_replies"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?android:selectableItemBackground"
+                android:text="@string/view_plies"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="12sp"
+                android:padding="2dp"
+                android:textStyle="italic" />
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -83,5 +113,13 @@
             android:layout_marginTop="15dp"
             android:background="@color/light_gray" />
     </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/window_to_termometer"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:orientation="vertical"
+        android:visibility="gone" />
 
 </LinearLayout>

@@ -104,6 +104,10 @@ public interface RestService {
             @Body Comment comment,
             Callback<Boolean> callback);
 
+    @POST("/comments/addReplyToComment")
+    void addReplyToComment(
+            @Body Comment comment,
+            Callback<Boolean> callback);
 
     @POST("/fcm/sendPushTo")
     void sendPushTest(

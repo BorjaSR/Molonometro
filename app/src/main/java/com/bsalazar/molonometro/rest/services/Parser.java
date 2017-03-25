@@ -125,6 +125,34 @@ public class Parser {
         return comments;
     }
 
+    public static ArrayList<Comment> parseReply(ArrayList<Comment> commentsJson) {
+        ArrayList<Comment> comments = new ArrayList<>();
+
+        for (Comment commentJson : commentsJson) {
+            Comment comment = new Comment();
+
+            comment.setCommentID(commentJson.getCommentID());
+            comment.setUserID(commentJson.getUserID());
+            comment.setText(commentJson.getText());
+            comment.setImage(commentJson.getImage());
+
+            if (commentJson.getUserID() == Variables.User.getUserID()){
+                comment.setUserName(Variables.User.getName());
+                comment.setUserImage(Variables.User.getImageBase64());
+            } else{
+                Contact contact = getContactByID(commentJson.getUserID());
+                if(contact != null) {
+                    comment.setUserName(contact.getName());
+                    comment.setUserImage(contact.getImageBase64());
+                }
+            }
+
+            comments.add(comment);
+        }
+
+        return comments;
+    }
+
     private static Contact getContactByID(int id){
         for (Contact contact : Variables.contactsWithApp)
             if (contact.getUserID() == id)

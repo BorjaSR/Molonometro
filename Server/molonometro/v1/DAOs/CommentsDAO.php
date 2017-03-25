@@ -165,13 +165,13 @@ class CommentsDAO {
     public function getRepliesByComment($commentID) {
 
         if($this->isCommentExistById($commentID)){
-            $stmt = $this->conn->prepare("SELECT UserID, Text, Image From comments where AssociatedCommentID = ? and Deleted = 0");
+            $stmt = $this->conn->prepare("SELECT CommentID, UserID, Text, Image From comments where AssociatedCommentID = ? and Deleted = 0 ORDER BY Created DESC");
             $stmt->bind_param("i", $commentID);
             
             $response = array();
 
             if ($stmt->execute()) {
-                $stmt->bind_result($UserID, $Text, $Image);
+                $stmt->bind_result($CommentID, $UserID, $Text, $Image);
 
                 $repliesList = array();
                 $i = 0;
@@ -179,6 +179,7 @@ class CommentsDAO {
 
 
                     $reply = array();
+                    $reply["CommentID"] = $CommentID;
                     $reply["UserID"] = $UserID;
                     $reply["Text"] = $Text;
                     $reply["Image"] = $Image;

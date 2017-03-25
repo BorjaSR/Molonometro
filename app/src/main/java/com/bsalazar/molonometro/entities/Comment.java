@@ -1,5 +1,7 @@
 package com.bsalazar.molonometro.entities;
 
+import java.util.ArrayList;
+
 /**
  * Created by bsalazar on 23/03/2017.
  */
@@ -18,8 +20,26 @@ public class Comment {
     private String UserName;
     private String UserImage;
     private String DestinationUserName;
+    private ArrayList<Comment> replies;
+    private Boolean showReplies = false;
 
     public Comment() {
+    }
+
+    public Boolean getShowReplies() {
+        return showReplies;
+    }
+
+    public void setShowReplies(Boolean showReplies) {
+        this.showReplies = showReplies;
+    }
+
+    public ArrayList<Comment> getReplies() {
+        return replies;
+    }
+
+    public void setReplies(ArrayList<Comment> replies) {
+        this.replies = replies;
     }
 
     public int getGroupID() {
