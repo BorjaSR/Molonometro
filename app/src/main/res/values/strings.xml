@@ -28,4 +28,7 @@
     <string name="view_plies">Ver respuestas</string>
     <string name="reply">Responder</string>
     <string name="send_reply">Responder</string>
+    <string name="like">Me gusta</string>
+    <string name="comment">Comentar</string>
+    <string name="share">Compartir</string>
 </resources>

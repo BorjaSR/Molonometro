@@ -70,6 +70,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
+        Constants.fragmentManager = getFragmentManager();
+
         TextView groups_button = (TextView) findViewById(R.id.groups_button);
         TextView contacts_button = (TextView) findViewById(R.id.contacts_button);
         final LinearLayout indicator_current_page = (LinearLayout) findViewById(R.id.indicator_current_page);
@@ -93,7 +95,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     main_view_pager.setCurrentItem(1);
             }
         });
-
 
         main_view_pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override

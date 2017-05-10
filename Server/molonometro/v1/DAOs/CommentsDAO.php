@@ -23,6 +23,7 @@ class CommentsDAO {
     public function addComment($groupID, $userID, $destinationUserID, $text) {
         $userDAO = new UserDAO();
         $groupDAO = new GroupDAO();
+
         if ($userDAO->isUserExistsById($userID) &&
             $userDAO->isUserExistsById($destinationUserID) &&
             $groupDAO->isGroupExistsById($groupID)) {
@@ -63,10 +64,9 @@ class CommentsDAO {
 
     // creating new user if not existed
     public function addReply($groupID, $userID, $destinationUserID, $text, $associatedCommentID) {
-
-
         $userDAO = new UserDAO();
         $groupDAO = new GroupDAO();
+
         if ($userDAO->isUserExistsById($userID) &&
             $userDAO->isUserExistsById($destinationUserID) &&
             $groupDAO->isGroupExistsById($groupID)) {

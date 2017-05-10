@@ -2,6 +2,7 @@ package com.bsalazar.molonometro.area_home.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
 import android.view.LayoutInflater;
@@ -13,7 +14,9 @@ import android.widget.TextView;
 
 import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.area_dashboard_group.DashboardGroupActivity;
+import com.bsalazar.molonometro.general.PhotoDetailDialogFragment;
 import com.bsalazar.molonometro.entities.Group;
+import com.bsalazar.molonometro.general.Constants;
 import com.bsalazar.molonometro.general.MyRequestListener;
 import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.controllers.GroupController;
@@ -61,7 +64,7 @@ public class GroupsRecyclerAdapter extends RecyclerView.Adapter<GroupsRecyclerAd
                             .into(holder.group_image);
 
                 }catch (Exception e){
-                    holder.group_image.setImageResource(R.drawable.user_icon);
+                    holder.group_image.setImageResource(R.drawable.group_icon);
                 }
             else
                 holder.group_image.setImageResource(R.drawable.group_icon);
@@ -70,6 +73,22 @@ public class GroupsRecyclerAdapter extends RecyclerView.Adapter<GroupsRecyclerAd
             holder.group_image.setImageResource(R.drawable.group_icon);
         }
 
+        holder.group_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Variables.Group = group;
+                PhotoDetailDialogFragment dialogSample = new PhotoDetailDialogFragment();
+
+                // Supply index input as an argument.
+                Bundle args = new Bundle();
+                args.putString("image", group.getImageBase64());
+                args.putInt("noImage", R.drawable.group_icon);
+                dialogSample.setArguments(args);
+
+                dialogSample.show(Constants.fragmentManager, "TAG");
+            }
+        });
+
         holder.group_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -77,7 +96,6 @@ public class GroupsRecyclerAdapter extends RecyclerView.Adapter<GroupsRecyclerAd
                 new GroupController().getGroupParticipantsByID(mContext, group.getId(), new ServiceCallbackInterface() {
                     @Override
                     public void onSuccess(String result) {
-//                        mContext.startActivity(new Intent(mContext, DashboardGroupActivityNEW.class));
                         mContext.startActivity(new Intent(mContext, DashboardGroupActivity.class));
                     }
 

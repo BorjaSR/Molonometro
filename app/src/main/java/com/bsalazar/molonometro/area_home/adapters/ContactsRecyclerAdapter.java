@@ -1,6 +1,7 @@
 package com.bsalazar.molonometro.area_home.adapters;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
 import android.view.LayoutInflater;
@@ -12,8 +13,11 @@ import android.widget.TextView;
 import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.area_home.MainActivity;
 import com.bsalazar.molonometro.entities.Contact;
+import com.bsalazar.molonometro.general.Constants;
 import com.bsalazar.molonometro.general.MyRequestListener;
+import com.bsalazar.molonometro.general.PhotoDetailDialogFragment;
 import com.bsalazar.molonometro.general.Tools;
+import com.bsalazar.molonometro.general.Variables;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
@@ -68,6 +72,20 @@ public class ContactsRecyclerAdapter  extends RecyclerView.Adapter<ContactsRecyc
             holder.contact_image.setImageResource(R.drawable.user_icon);
             holder.invite_contact_button.setVisibility(View.VISIBLE);
         }
+
+        holder.contact_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PhotoDetailDialogFragment photoDetailDialogFragment = new PhotoDetailDialogFragment();
+
+                Bundle args = new Bundle();
+                args.putString("image", contact.getImageBase64());
+                args.putInt("noImage", R.drawable.user_icon);
+                photoDetailDialogFragment.setArguments(args);
+
+                photoDetailDialogFragment.show(Constants.fragmentManager, "Contact Image");
+            }
+        });
 
         holder.invite_contact_button.setOnClickListener(new View.OnClickListener() {
             @Override

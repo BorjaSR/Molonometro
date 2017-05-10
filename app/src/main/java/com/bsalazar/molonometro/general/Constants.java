@@ -1,5 +1,7 @@
 package com.bsalazar.molonometro.general;
 
+import android.app.FragmentManager;
+
 import com.bsalazar.molonometro.rest.services.RestController;
 
 /**
@@ -15,4 +17,5 @@ public class Constants {
 
     public static int HEIGHT_OF_TEMOMETER = 830;
     public static RestController restController;
+    public static FragmentManager fragmentManager;
 }
