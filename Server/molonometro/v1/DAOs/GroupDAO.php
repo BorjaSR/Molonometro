@@ -15,8 +15,6 @@ class GroupDAO {
         require_once dirname(__FILE__) . '/../../include/db_connect.php';
         require_once dirname(__FILE__) . '/./UserDAO.php';
         // opening db connection
-        $db = new DbConnect();
-        $this->conn = $db->connect();
     }
 
 /////////////////////////////////////////////////////////////////
@@ -34,6 +32,8 @@ class GroupDAO {
 		    $response = array();
 
 		    // insert query
+        $db = new DbConnect();
+        $this->conn = $db->connect();
 		    $stmt = $this->conn->prepare("INSERT INTO groups(Name, CreatedBy, Created, LastUpdate, Deleted) values(?, ?, now(), now(), 0)");
 		    $stmt->bind_param("si", $name, $createdBy);
 
@@ -57,6 +57,7 @@ class GroupDAO {
 	        $response["error"] = "The user doesn't exists";
 		}
 
+        $db->disconnect();
         return $response;
     }
 
@@ -69,6 +70,8 @@ class GroupDAO {
             $response = array();
             
             // update query
+        $db = new DbConnect();
+        $this->conn = $db->connect();
             $stmt = $this->conn->prepare("UPDATE groups SET Name = ?, LastUpdate = now() WHERE GroupID = ?");
             $stmt->bind_param("si", $name, $groupID);
 
@@ -89,6 +92,7 @@ class GroupDAO {
             $response["error"] = "The user doesn't exists";
         }
 
+        $db->disconnect();
         return $response;
     }
 
@@ -99,6 +103,8 @@ class GroupDAO {
             $response = array();
             
             // update query
+        $db = new DbConnect();
+        $this->conn = $db->connect();
             $stmt = $this->conn->prepare("UPDATE groups SET Image = ?, LastUpdate = now() WHERE GroupID = ?");
             $stmt->bind_param("si", $image, $groupID);
 
@@ -119,11 +125,14 @@ class GroupDAO {
             $response["error"] = "The group doesn't exists";
         }
 
+        $db->disconnect();
         return $response;
     }
 
 
     public function addUserToGroup($userId, $groupId) {
+        $db = new DbConnect();
+        $this->conn = $db->connect();
 
         // insert query
         $stmt = $this->conn->prepare("INSERT INTO groupuser(GroupID, UserID, Created, LastUpdate, Deleted) values(?, ?, now(), now(), 0)");
@@ -140,20 +149,26 @@ class GroupDAO {
 		    $response["error"] = "Oops! An error occurred while add user to group";
         }
 
+        $db->disconnect();
         return $response;
     }
 
     public function isGroupExistsById($id) {
+        $db = new DbConnect();
+        $this->conn = $db->connect();
         $stmt = $this->conn->prepare("SELECT GroupID from groups WHERE GroupID = ? and Deleted = 0");
         $stmt->bind_param("i", $id);
         $stmt->execute();
         $stmt->store_result();
         $num_rows = $stmt->num_rows;
         $stmt->close();
+        $db->disconnect();
         return $num_rows > 0;
     }
 
     public function getGroupById($groupID) {
+        $db = new DbConnect();
+        $this->conn = $db->connect();
         $stmt = $this->conn->prepare("SELECT GroupID, Name, Image From groups where GroupID = ? and Deleted = 0");
         $stmt->bind_param("i", $groupID);
         
@@ -165,13 +180,17 @@ class GroupDAO {
             $group["Name"] = $Name;
             $group["Image"] = $Image;
             $stmt->close();
+        $db->disconnect();
             return $group;
         } else {
+        $db->disconnect();
             return NULL;
         }
     }
 
     public function getGroupByIdWithoutImage($groupID) {
+        $db = new DbConnect();
+        $this->conn = $db->connect();
         $stmt = $this->conn->prepare("SELECT GroupID, Name From groups where GroupID = ? and Deleted = 0");
         $stmt->bind_param("i", $groupID);
         
@@ -182,13 +201,17 @@ class GroupDAO {
             $group["GroupID"] = $GroupID;
             $group["Name"] = $Name;
             $stmt->close();
+        $db->disconnect();
             return $group;
         } else {
+        $db->disconnect();
             return NULL;
         }
     }
 
     public function getLastGroupByUser($userId) {
+        $db = new DbConnect();
+        $this->conn = $db->connect();
         $stmt = $this->conn->prepare("SELECT GroupID, Name, Image From groups where CreatedBy = ? and Deleted = 0 order by Created Desc");
         $stmt->bind_param("i", $userId);
         
@@ -200,13 +223,17 @@ class GroupDAO {
             $lastGroup["Name"] = $Name;
             $lastGroup["Image"] = $Image;
             $stmt->close();
+        $db->disconnect();
             return $lastGroup;
         } else {
+        $db->disconnect();
             return NULL;
         }
     }
 
     public function getGroupsByUser($userId) {
+        $db = new DbConnect();
+        $this->conn = $db->connect();
 
         $response = array();
 
@@ -245,11 +272,14 @@ class GroupDAO {
 
         $stmt->close();
 
+        $db->disconnect();
         return $response;
     }
 
 
     public function getGroupParticipantsByID($groupID) {
+        $db = new DbConnect();
+        $this->conn = $db->connect();
 
         $response = array();
 
@@ -288,18 +318,21 @@ class GroupDAO {
         
         $stmt->close();
         
+        $db->disconnect();
         return $response;
     }
 
 
     public function makeUserAdmin($userID, $groupID) {
-        
         $userDAO = new UserDAO();
         if ($this->isGroupExistsById($groupID) && $userDAO->isUserExistsById($userID)) {
 
             $response = array();
             
             // update query
+        $db = new DbConnect();
+        $this->conn = $db->connect();
+        
             $stmt = $this->conn->prepare("UPDATE groupuser SET IsAdmin = 1, LastUpdate = now() WHERE GroupID = ? AND UserID = ?");
             $stmt->bind_param("ii", $groupID, $userID);
 
@@ -319,6 +352,7 @@ class GroupDAO {
             $response["error"] = "The group doesn't exists";
         }
 
+        $db->disconnect();
         return $response;
     }
 
@@ -330,6 +364,8 @@ class GroupDAO {
             $response = array();
             
             // update query
+        $db = new DbConnect();
+        $this->conn = $db->connect();
             $stmt = $this->conn->prepare("SELECT Molopuntos From groupuser where GroupID = ? and UserID = ? and Deleted = 0");
             $stmt->bind_param("ii", $groupID, $userID);
 
@@ -354,18 +390,22 @@ class GroupDAO {
         }
 
 
+        $db->disconnect();
+
         return $response;
     }
 
 
     public function setMolopuntosFromUserGroup($userID, $groupID, $molopuntos) {
-        
         $userDAO = new UserDAO();
         if ($this->isGroupExistsById($groupID) && $userDAO->isUserExistsById($userID)) {
 
             $response = array();
             
             // update query
+        $db = new DbConnect();
+        $this->conn = $db->connect();
+        
             $stmt = $this->conn->prepare("UPDATE groupuser SET Molopuntos = ?, LastUpdate = now() WHERE GroupID = ? AND UserID = ?");
             $stmt->bind_param("iii",$molopuntos, $groupID, $userID);
 
@@ -384,6 +424,8 @@ class GroupDAO {
             $response["status"] = 432;
             $response["error"] = "The group doesn't exists";
         }
+
+        $db->disconnect();
 
         return $response;
     }

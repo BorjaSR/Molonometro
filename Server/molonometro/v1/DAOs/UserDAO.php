@@ -14,17 +14,18 @@ class UserDAO {
     function __construct() {
         require_once dirname(__FILE__) . '/../../include/db_connect.php';
         // opening db connection
-        $db = new DbConnect();
-        $this->conn = $db->connect();
     }
 
     // creating new user if not existed
     public function createUser($name, $phone) {
+
         $response = array();
 
         // First check if user already existed in db
         if (!$this->isUserExistsByPhone($phone)) {
             // insert query
+        $db = new DbConnect();
+        $this->conn = $db->connect();
             $stmt = $this->conn->prepare("INSERT INTO users(Name, Phone, Created, LastUpdate, Deleted) values(?, ?, now(), now(), 0)");
             $stmt->bind_param("ss", $name, $phone);
 
@@ -48,6 +49,7 @@ class UserDAO {
             $response["error"] = "User already exists";
         }
 
+        $db->disconnect();
         return $response;
     }
 
@@ -59,6 +61,8 @@ class UserDAO {
         // First check if user already existed in db
         if ($this->isUserExistsById($id)) {
             // update query
+        $db = new DbConnect();
+        $this->conn = $db->connect();
             $stmt = $this->conn->prepare("UPDATE users SET Image = ?, LastUpdate = now() WHERE UserID = ?");
             $stmt->bind_param("si", $image, $id);
 
@@ -82,6 +86,7 @@ class UserDAO {
             $response["error"] = "The user doesn't exists";
         }
 
+        $db->disconnect();
         return $response;
     }
 
@@ -92,6 +97,8 @@ class UserDAO {
         // First check if user already existed in db
         if ($this->isUserExistsById($id)) {
             // update query
+        $db = new DbConnect();
+        $this->conn = $db->connect();
             $stmt = $this->conn->prepare("UPDATE users SET Name = ?, State = ?, LastUpdate = now() WHERE UserID = ?");
             $stmt->bind_param("ssi", $name, $state, $id);
 
@@ -115,6 +122,7 @@ class UserDAO {
             $response["error"] = "The user doesn't exists";
         }
 
+        $db->disconnect();
         return $response;
     }
 
@@ -126,6 +134,8 @@ class UserDAO {
         // First check if user already existed in db
         if ($this->isUserExistsById($id)) {
             // update query
+        $db = new DbConnect();
+        $this->conn = $db->connect();
             $stmt = $this->conn->prepare("UPDATE users SET FirebaseToken = ? WHERE UserID = ?");
             $stmt->bind_param("si", $firebaseToken, $id);
 
@@ -148,32 +158,34 @@ class UserDAO {
             $response["error"] = "The user doesn't exists";
         }
 
+        $db->disconnect();
         return $response;
     }
 
-    /**
-     * Checking for duplicate user by email address
-     * @param String $email email to check in db
-     * @return boolean
-     */
-
     private function isUserExistsByPhone($phone) {
+        $db = new DbConnect();
+        $this->conn = $db->connect();
         $stmt = $this->conn->prepare("SELECT UserID from users WHERE Phone = ? and Deleted = 0");
         $stmt->bind_param("s", $phone);
         $stmt->execute();
         $stmt->store_result();
         $num_rows = $stmt->num_rows;
         $stmt->close();
+        $db->disconnect();
         return $num_rows > 0;
     }
 
     public function isUserExistsById($id) {
+        $db = new DbConnect();
+        $this->conn = $db->connect();
+
         $stmt = $this->conn->prepare("SELECT UserID from users WHERE UserID = ? and Deleted = 0");
         $stmt->bind_param("i", $id);
         $stmt->execute();
         $stmt->store_result();
         $num_rows = $stmt->num_rows;
         $stmt->close();
+        $db->disconnect();
         return $num_rows > 0;
     }
 
@@ -182,6 +194,8 @@ class UserDAO {
      * @param String $email User email id
      */
     public function getUserByPhone($phone) {
+        $db = new DbConnect();
+        $this->conn = $db->connect();
         $stmt = $this->conn->prepare("SELECT UserID, Name, Phone, State, Image FROM users WHERE Phone = ? and Deleted = 0");
         $stmt->bind_param("s", $phone);
         
@@ -195,13 +209,17 @@ class UserDAO {
             $user["State"] = $State;
             $user["Image"] = $Image;
             $stmt->close();
+        $db->disconnect();
             return $user;
         } else {
+        $db->disconnect();
             return NULL;
         }
     }
     
     public function getUserByIdWithoutImage($id) {
+        $db = new DbConnect();
+        $this->conn = $db->connect();
         $stmt = $this->conn->prepare("SELECT UserID, Name, Phone, State FROM users WHERE UserID = ? and Deleted = 0");
         $stmt->bind_param("i", $id);
         
@@ -214,13 +232,17 @@ class UserDAO {
             $user["Phone"] = $Phone;
             $user["State"] = $State;
             $stmt->close();
+        $db->disconnect();
             return $user;
         } else {
+        $db->disconnect();
             return NULL;
         }
     }
     
     public function getUserById($id) {
+        $db = new DbConnect();
+        $this->conn = $db->connect();
         $stmt = $this->conn->prepare("SELECT UserID, Name, Phone, State, Image FROM users WHERE UserID = ? and Deleted = 0");
         $stmt->bind_param("i", $id);
         
@@ -234,14 +256,18 @@ class UserDAO {
             $user["State"] = $State;
             $user["Image"] = $Image;
             $stmt->close();
+        $db->disconnect();
             return $user;
         } else {
+        $db->disconnect();
             return NULL;
         }
     }
 
 
     public function getFirebaseTokenByUser($id) {
+        $db = new DbConnect();
+        $this->conn = $db->connect();
         $stmt = $this->conn->prepare("SELECT FirebaseToken FROM users WHERE UserID = ? and Deleted = 0");
         $stmt->bind_param("i", $id);
         
@@ -250,8 +276,10 @@ class UserDAO {
             $stmt->fetch();
             $firebaseToken = $FirebaseToken;
             $stmt->close();
+        $db->disconnect();
             return $firebaseToken;
         } else {
+        $db->disconnect();
             return NULL;
         }
     }

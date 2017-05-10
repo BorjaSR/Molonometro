@@ -32,6 +32,11 @@ class DbConnect {
         return $this->conn;
     }
 
+
+    function disconnect() {
+        return $this->conn->close();
+    }
+
 }
 
 ?>

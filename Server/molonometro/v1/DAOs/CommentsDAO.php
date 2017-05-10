@@ -16,14 +16,11 @@ class CommentsDAO {
         require_once dirname(__FILE__) . '/./UserDAO.php';
         require_once dirname(__FILE__) . '/./GroupDAO.php';
         // opening db connection
-        $db = new DbConnect();
-        $this->conn = $db->connect();
     }
 
 
     // creating new user if not existed
     public function addComment($groupID, $userID, $destinationUserID, $text) {
-
         $userDAO = new UserDAO();
         $groupDAO = new GroupDAO();
         if ($userDAO->isUserExistsById($userID) &&
@@ -34,6 +31,9 @@ class CommentsDAO {
             $response = array();
 
             // insert query
+        $db = new DbConnect();
+        $this->conn = $db->connect();
+
             $stmt = $this->conn->prepare("INSERT INTO comments(GroupID, UserID, DestinationUserID, Text, Created, LastUpdate, Deleted) values(?, ?, ?, ?, now(), now(), 0)");
             $stmt->bind_param("iiis", $groupID, $userID, $destinationUserID, $text);
 
@@ -57,11 +57,13 @@ class CommentsDAO {
             $response["error"] = "The user doesn't exists";
         }
 
+        $db->disconnect();
         return $response;
     }
 
     // creating new user if not existed
     public function addReply($groupID, $userID, $destinationUserID, $text, $associatedCommentID) {
+
 
         $userDAO = new UserDAO();
         $groupDAO = new GroupDAO();
@@ -73,6 +75,8 @@ class CommentsDAO {
             $response = array();
 
             // insert query
+        $db = new DbConnect();
+        $this->conn = $db->connect();
             $stmt = $this->conn->prepare("INSERT INTO comments(GroupID, UserID, DestinationUserID, AssociatedCommentID, Text, Created, LastUpdate, Deleted) values(?, ?, ?, ?, ?, now(), now(), 0)");
             $stmt->bind_param("iiiis", $groupID, $userID, $destinationUserID, $associatedCommentID, $text);
 
@@ -99,22 +103,30 @@ class CommentsDAO {
             $response["error"] = "The user doesn't exists";
         }
 
+        $db->disconnect();
         return $response;
     }
 
 
     public function isCommentExistById($commentID) {
+        $db = new DbConnect();
+        $this->conn = $db->connect();
+
         $stmt = $this->conn->prepare("SELECT CommentID from comments WHERE CommentID = ? and Deleted = 0");
         $stmt->bind_param("i", $commentID);
         $stmt->execute();
         $stmt->store_result();
         $num_rows = $stmt->num_rows;
         $stmt->close();
+        $db->disconnect();
         return $num_rows > 0;
     }
 
 
     public function getCommentByGroup($groupID) {
+        $db = new DbConnect();
+        $this->conn = $db->connect();
+        
         $stmt = $this->conn->prepare("SELECT CommentID, UserID, DestinationUserID, hasAnswers, Text, Image From comments where GroupID = ? and AssociatedCommentID IS NULL and Deleted = 0 ORDER BY Created DESC");
         $stmt->bind_param("i", $groupID);
         
@@ -158,13 +170,17 @@ class CommentsDAO {
             $response["error"] = "Oops! An error occurred while getting the comments";
         }
 
+        $db->disconnect();
         return $response;
     }
 
 
     public function getRepliesByComment($commentID) {
+        
 
         if($this->isCommentExistById($commentID)){
+        $db = new DbConnect();
+        $this->conn = $db->connect();
             $stmt = $this->conn->prepare("SELECT CommentID, UserID, Text, Image From comments where AssociatedCommentID = ? and Deleted = 0 ORDER BY Created DESC");
             $stmt->bind_param("i", $commentID);
             
@@ -204,11 +220,15 @@ class CommentsDAO {
             $response["status"] = 458;
             $response["error"] = "Comment doesn't exist";
         }
+        $db->disconnect();
         return $response;
     }
 
     public function getCommentById($commentID) {
+        
         if($this->isCommentExistById($commentID)){
+        $db = new DbConnect();
+        $this->conn = $db->connect();
             $stmt = $this->conn->prepare("SELECT GroupID, UserID, DestinationUserID, Text From comments where CommentID = ? and Deleted = 0");
             $stmt->bind_param("i", $commentID);
             
@@ -222,11 +242,14 @@ class CommentsDAO {
                 $comment["DestinationUserID"] = $DestinationUserID;
                 $comment["Text"] = $Text;
                 $stmt->close();
+        $db->disconnect();
                 return $comment;
             } else {
+        $db->disconnect();
                 return NULL;
             }
         } else {
+        $db->disconnect();
             return NULL;
         }
     }
@@ -234,6 +257,9 @@ class CommentsDAO {
 
     // creating new user if not existed
     public function setCommentWithAnswers($commentID) {
+        $db = new DbConnect();
+        $this->conn = $db->connect();
+        
 
         $response = array();
         
@@ -245,8 +271,10 @@ class CommentsDAO {
         $stmt->close();
 
         if ($result) {
+        $db->disconnect();
             return true;
         } else {
+        $db->disconnect();
             return false;
         }
     }
