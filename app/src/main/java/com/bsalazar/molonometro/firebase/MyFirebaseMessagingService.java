@@ -49,6 +49,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         Log.d(TAG, "From: " + remoteMessage.getFrom());
 
+        sendNotification("Pitillo", getString(R.string.added_to_group));
+
         // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
             try {
@@ -118,7 +120,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.mipmap.ic_launcher)
+                .setSmallIcon(R.drawable.shape)
                 .setContentTitle(title)
                 .setContentText(messageBody)
                 .setAutoCancel(true)

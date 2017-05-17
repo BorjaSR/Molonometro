@@ -1,6 +1,7 @@
 package com.bsalazar.molonometro.area_dashboard_group.adapters;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,9 +15,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bsalazar.molonometro.R;
+import com.bsalazar.molonometro.area_dashboard_group.CommentsDialogFragment;
 import com.bsalazar.molonometro.area_dashboard_group.DashboardGroupActivity;
 import com.bsalazar.molonometro.area_home.adapters.GroupsRecyclerAdapter;
 import com.bsalazar.molonometro.entities.Comment;
+import com.bsalazar.molonometro.general.Constants;
 import com.bsalazar.molonometro.general.MyRequestListener;
 import com.bsalazar.molonometro.general.Tools;
 import com.bsalazar.molonometro.rest.controllers.CommentsController;
@@ -48,7 +51,7 @@ public class CommentsRecyclerAdapter extends RecyclerView.Adapter<CommentsRecycl
 
     @Override
     public CommentViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.comment_item, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.comment_item_v2, parent, false);
         return new CommentsRecyclerAdapter.CommentViewHolder(v);
     }
 
@@ -81,61 +84,27 @@ public class CommentsRecyclerAdapter extends RecyclerView.Adapter<CommentsRecycl
                 holder.user_image.setImageResource(R.drawable.user_icon);
             }
 
-            if(comment.isHasAnswers())
-                holder.view_replies.setVisibility(View.VISIBLE);
-            else{
-                holder.view_replies.setVisibility(View.GONE);
-                holder.separator.setVisibility(View.GONE);
-            }
+//            if(comment.isHasAnswers())
+//                holder.view_replies.setVisibility(View.VISIBLE);
+//            else{
+//                holder.view_replies.setVisibility(View.GONE);
+//                holder.separator.setVisibility(View.GONE);
+//            }
 
-            holder.reply.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    ((DashboardGroupActivity) mContext).showReplyDialog(comment);
-                }
-            });
+//            holder.reply.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    ((DashboardGroupActivity) mContext).showReplyDialog(comment);
+//                }
+//            });
 
             holder.view_replies.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    new CommentsController().getRepliesByComment(mContext, comment.getCommentID(), new ServiceCallbackInterface() {
-                        @Override
-                        public void onSuccess(String result) {
-                            try {
-                                JSONArray jArray = new JSONArray(result);
-                                ArrayList<Comment> replies = new ArrayList<>();
-
-                                for (int i = 0; i < jArray.length(); i++)
-                                    replies.add(new Gson().fromJson(String.valueOf(jArray.getJSONObject(i)), Comment.class));
-
-                                comment.setReplies(replies);
-                                comment.setShowReplies(true);
-
-                                notifyItemChanged(holder.getAdapterPosition());
-
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(String result) {
-
-                        }
-                    });
+                    ((DashboardGroupActivity) mContext).showCommentsDialog(comment.getCommentID());
                 }
             });
 
-            if(comment.getShowReplies()){
-                holder.commentsRecyclerView.setVisibility(View.VISIBLE);
-                holder.commentsRecyclerView.setHasFixedSize(false);
-                holder.commentsRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
-
-                holder.adapter = new RepliesRecyclerAdapter(mContext, comment.getReplies());
-                holder.commentsRecyclerView.setAdapter(holder.adapter);
-            } else {
-                holder.commentsRecyclerView.setVisibility(View.GONE);
-            }
         }
     }
 
@@ -153,11 +122,7 @@ public class CommentsRecyclerAdapter extends RecyclerView.Adapter<CommentsRecycl
         TextView comment_to;
         TextView comment;
 
-        TextView reply;
-        LinearLayout separator;
-        TextView view_replies;
-        RecyclerView commentsRecyclerView;
-        RepliesRecyclerAdapter adapter;
+        LinearLayout view_replies;
 
         CommentViewHolder(View itemView) {
             super(itemView);
@@ -169,11 +134,7 @@ public class CommentsRecyclerAdapter extends RecyclerView.Adapter<CommentsRecycl
             comment_to = (TextView) itemView.findViewById(R.id.comment_to);
             comment = (TextView) itemView.findViewById(R.id.comment);
 
-            commentsRecyclerView = (RecyclerView) itemView.findViewById(R.id.reply_recycler);
-            reply = (TextView) itemView.findViewById(R.id.reply);
-            separator = (LinearLayout) itemView.findViewById(R.id.separator);
-            view_replies = (TextView) itemView.findViewById(R.id.view_replies);
-            adapter = new RepliesRecyclerAdapter(mContext, new ArrayList<Comment>());
+            view_replies = (LinearLayout) itemView.findViewById(R.id.view_replies);
         }
     }
 }

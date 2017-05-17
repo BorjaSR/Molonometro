@@ -5,6 +5,10 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -48,6 +52,8 @@ import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.controllers.CommentsController;
 import com.bsalazar.molonometro.rest.services.ServiceCallbackInterface;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 
 import java.util.ArrayList;
 
@@ -91,8 +97,9 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
         this.activity = this;
 
         final ActionBar ab = getSupportActionBar();
-        if (ab != null)
+        if (ab != null) {
             ab.setTitle(Variables.Group.getName());
+        }
 
         getHighestScore();
 
@@ -447,7 +454,7 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
                     new CommentsController().addReplyToComment(getApplicationContext(), reply, new ServiceCallbackInterface() {
                         @Override
                         public void onSuccess(String result) {
-                            if(result.equals("true")){
+                            if (result.equals("true")) {
                                 builder.dismiss();
                             }
                         }
@@ -466,5 +473,15 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
 
         builder.setView(dialoglayout);
         builder.show();
+    }
+
+    public void showCommentsDialog(int commentID){
+        CommentsDialogFragment commentsDialogFragment = new CommentsDialogFragment();
+
+        Bundle args = new Bundle();
+        args.putInt("commentID", commentID);
+        commentsDialogFragment.setArguments(args);
+
+        commentsDialogFragment.show(getFragmentManager(), "COMMENTS");
     }
 }

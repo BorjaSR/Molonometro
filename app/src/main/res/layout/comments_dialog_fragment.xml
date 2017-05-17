@@ -3,7 +3,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
+    android:padding="10dp"
     android:id="@+id/comments_layout">
 
 
@@ -22,165 +22,42 @@
                     android:padding="10dp"
                     android:background="?android:selectableItemBackground"/>
 
-                <!--<ScrollView-->
-                    <!--android:id="@+id/comments_scroll"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="0dp"-->
-                    <!--android:layout_weight="1">-->
+                <ProgressBar
+                    android:id="@+id/progress_replies"
+                    android:layout_marginTop="15dp"
+                    android:layout_width="@dimen/progress_size"
+                    android:layout_height="@dimen/progress_size"
+                    android:layout_gravity="center"/>
 
-                        <!--<LinearLayout-->
-                            <!--android:orientation="vertical"-->
-                            <!--android:layout_width="match_parent"-->
-                            <!--android:layout_height="match_parent">-->
 
-                                <!--<TextView-->
-                                    <!--android:layout_width="match_parent"-->
-                                    <!--android:layout_height="wrap_content"-->
-                                    <!--android:text="Pepe"-->
-                                    <!--android:textStyle="bold"-->
-                                    <!--android:layout_marginBottom="5dp"-->
-                                    <!--android:textColor="#434343"/>-->
-                                <!--<TextView-->
-                                    <!--android:layout_width="match_parent"-->
-                                    <!--android:layout_height="wrap_content"-->
-                                    <!--android:text="Un cometnario"-->
-                                    <!--android:textColor="#434343"-->
-                                    <!--android:layout_marginBottom="10dp"/>-->
-                                <!--<TextView-->
-                                    <!--android:layout_width="match_parent"-->
-                                    <!--android:layout_height="wrap_content"-->
-                                    <!--android:text="Pepe"-->
-                                    <!--android:textStyle="bold"-->
-                                    <!--android:layout_marginBottom="5dp"-->
-                                    <!--android:textColor="#434343"/>-->
-                                <!--<TextView-->
-                                    <!--android:layout_width="match_parent"-->
-                                    <!--android:layout_height="wrap_content"-->
-                                    <!--android:text="Un cometnario"-->
-                                    <!--android:textColor="#434343"-->
-                                    <!--android:layout_marginBottom="10dp"/>-->
-                                <!--<TextView-->
-                                    <!--android:layout_width="match_parent"-->
-                                    <!--android:layout_height="wrap_content"-->
-                                    <!--android:text="Pepe"-->
-                                    <!--android:textStyle="bold"-->
-                                    <!--android:layout_marginBottom="5dp"-->
-                                    <!--android:textColor="#434343"/>-->
-                                <!--<TextView-->
-                                    <!--android:layout_width="match_parent"-->
-                                    <!--android:layout_height="wrap_content"-->
-                                    <!--android:text="Un cometnario"-->
-                                    <!--android:textColor="#434343"-->
-                                    <!--android:layout_marginBottom="10dp"/>-->
-                                <!--<TextView-->
-                                    <!--android:layout_width="match_parent"-->
-                                    <!--android:layout_height="wrap_content"-->
-                                    <!--android:text="Pepe"-->
-                                    <!--android:textStyle="bold"-->
-                                    <!--android:layout_marginBottom="5dp"-->
-                                    <!--android:textColor="#434343"/>-->
-                                <!--<TextView-->
-                                    <!--android:layout_width="match_parent"-->
-                                    <!--android:layout_height="wrap_content"-->
-                                    <!--android:text="Un cometnario"-->
-                                    <!--android:textColor="#434343"-->
-                                    <!--android:layout_marginBottom="10dp"/>-->
-                                <!--<TextView-->
-                                    <!--android:layout_width="match_parent"-->
-                                    <!--android:layout_height="wrap_content"-->
-                                    <!--android:text="Pepe"-->
-                                    <!--android:textStyle="bold"-->
-                                    <!--android:layout_marginBottom="5dp"-->
-                                    <!--android:textColor="#434343"/>-->
-                                <!--<TextView-->
-                                    <!--android:layout_width="match_parent"-->
-                                    <!--android:layout_height="wrap_content"-->
-                                    <!--android:text="Un cometnario"-->
-                                    <!--android:textColor="#434343"-->
-                                    <!--android:layout_marginBottom="10dp"/>-->
-                                <!--<TextView-->
-                                    <!--android:layout_width="match_parent"-->
-                                    <!--android:layout_height="wrap_content"-->
-                                    <!--android:text="Pepe"-->
-                                    <!--android:textStyle="bold"-->
-                                    <!--android:layout_marginBottom="5dp"-->
-                                    <!--android:textColor="#434343"/>-->
-                                <!--<TextView-->
-                                    <!--android:layout_width="match_parent"-->
-                                    <!--android:layout_height="wrap_content"-->
-                                    <!--android:text="Un cometnario"-->
-                                    <!--android:textColor="#434343"-->
-                                    <!--android:layout_marginBottom="10dp"/>-->
-                                <!--<TextView-->
-                                    <!--android:layout_width="match_parent"-->
-                                    <!--android:layout_height="wrap_content"-->
-                                    <!--android:text="Pepe"-->
-                                    <!--android:textStyle="bold"-->
-                                    <!--android:layout_marginBottom="5dp"-->
-                                    <!--android:textColor="#434343"/>-->
-                                <!--<TextView-->
-                                    <!--android:layout_width="match_parent"-->
-                                    <!--android:layout_height="wrap_content"-->
-                                    <!--android:text="Un cometnario"-->
-                                    <!--android:textColor="#434343"-->
-                                    <!--android:layout_marginBottom="10dp"/>-->
-                                <!--<TextView-->
-                                    <!--android:layout_width="match_parent"-->
-                                    <!--android:layout_height="wrap_content"-->
-                                    <!--android:text="Pepe"-->
-                                    <!--android:textStyle="bold"-->
-                                    <!--android:layout_marginBottom="5dp"-->
-                                    <!--android:textColor="#434343"/>-->
-                                <!--<TextView-->
-                                    <!--android:layout_width="match_parent"-->
-                                    <!--android:layout_height="wrap_content"-->
-                                    <!--android:text="Un cometnario"-->
-                                    <!--android:textColor="#434343"-->
-                                    <!--android:layout_marginBottom="10dp"/>-->
-                                <!--<TextView-->
-                                    <!--android:layout_width="match_parent"-->
-                                    <!--android:layout_height="wrap_content"-->
-                                    <!--android:text="Pepe"-->
-                                    <!--android:textStyle="bold"-->
-                                    <!--android:layout_marginBottom="5dp"-->
-                                    <!--android:textColor="#434343"/>-->
-
-                                <!--<TextView-->
-                                    <!--android:layout_width="match_parent"-->
-                                    <!--android:layout_height="wrap_content"-->
-                                    <!--android:text="Un cometnario"-->
-                                    <!--android:textColor="#434343"-->
-                                    <!--android:layout_marginBottom="10dp"-->
-                                    <!--android:id="@+id/textView" />-->
-                                <!--<TextView-->
-                                    <!--android:layout_width="match_parent"-->
-                                    <!--android:layout_height="wrap_content"-->
-                                    <!--android:text="Pepe"-->
-                                    <!--android:textStyle="bold"-->
-                                    <!--android:layout_marginBottom="5dp"-->
-                                    <!--android:textColor="#434343"/>-->
-
-                                <!--<TextView-->
-                                    <!--android:layout_width="match_parent"-->
-                                    <!--android:layout_height="wrap_content"-->
-                                    <!--android:text="Un cometnario"-->
-                                    <!--android:textColor="#434343"-->
-                                    <!--android:layout_marginBottom="10dp"-->
-                                    <!--android:id="@+id/textView" />-->
-
-                        <!--</LinearLayout>-->
-                <!--</ScrollView>-->
-
-                <LinearLayout
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/reply_recycler"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"/>
 
-                <EditText
-                    android:id="@+id/edit"
+                <LinearLayout
+                    android:id="@+id/reply_container"
+                    android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Escribe aquí..."/>
+                    android:gravity="center_vertical">
+
+                        <EditText
+                            android:id="@+id/reply_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Escribe aquí..."/>
+
+                        <ImageView
+                            android:id="@+id/send_reply"
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            android:src="@drawable/send_green"
+                            android:layout_marginLeft="10dp"
+                            android:background="?android:selectableItemBackground"
+                            android:visibility="visible"/>
+                </LinearLayout>
 
         </LinearLayout>
 </LinearLayout>

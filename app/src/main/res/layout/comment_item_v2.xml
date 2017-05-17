@@ -43,8 +43,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
                     android:layout_marginBottom="15dp"
+                    android:layout_marginTop="5dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
@@ -53,25 +53,25 @@
                         android:id="@+id/comment_from"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:text="Borja"
                         android:textColor="@color/charcoal_gray"
                         android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:text="Borja"/>
+                        android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/textView3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/has_voted_to"
-                        android:textColor="@color/charcoal_gray"
-                        android:id="@+id/textView3" />
+                        android:textColor="@color/charcoal_gray" />
 
                     <TextView
                         android:id="@+id/comment_to"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:text="Borja"
                         android:textColor="@color/charcoal_gray"
                         android:textSize="16sp"
-                        android:text="Borja"
                         android:textStyle="bold" />
                 </LinearLayout>
 
@@ -82,7 +82,7 @@
                     android:layout_height="wrap_content"
                     android:text="Mi comentario"
                     android:textColor="@color/charcoal_gray"
-                    android:textSize="16sp"/>
+                    android:textSize="16sp" />
             </LinearLayout>
 
         </LinearLayout>
@@ -92,98 +92,133 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="25dp"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="10dp">
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
 
             <LinearLayout
                 android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:padding="5dp"
                     android:text="4 Me gusta"
-                    android:textColor="@color/gray"
-                    android:padding="5dp"/>
+                    android:textColor="@color/gray" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:gravity="end">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:padding="5dp"
                     android:text="3 comentarios"
-                    android:textColor="@color/gray"
-                    android:padding="5dp"/>
+                    android:textColor="@color/gray" />
             </LinearLayout>
 
         </LinearLayout>
 
 
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/colorPrimaryLight"/>
+            android:background="@color/light_gray" />
 
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-            <TextView
+            <LinearLayout
                 android:id="@+id/reply"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
                 android:background="?android:selectableItemBackground"
-                android:text="@string/like"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="12sp"
-                android:padding="10dp"
-                android:gravity="center"/>
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center">
 
-            <TextView
+                <ImageView
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:src="@drawable/like_green"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:text="@string/like"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+
+            <LinearLayout
                 android:id="@+id/view_replies"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
                 android:background="?android:selectableItemBackground"
-                android:text="@string/comment"
-                android:gravity="center"
-                android:padding="10dp"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="12sp" />
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center">
 
-            <TextView
+
+                <ImageView
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:src="@drawable/comment_green"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:text="@string/comment"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/share"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
                 android:background="?android:selectableItemBackground"
-                android:text="@string/share"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:gravity="center"
-                android:padding="10dp"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="12sp"
-                android:visibility="gone"/>
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:src="@drawable/comment_gray"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:text="@string/share"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="12sp"/>
+            </LinearLayout>
+
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/colorPrimaryLight" />
+            android:background="@color/light_gray" />
     </LinearLayout>
 
 </LinearLayout>

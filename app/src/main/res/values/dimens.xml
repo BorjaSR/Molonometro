@@ -16,4 +16,5 @@
     <dimen name="marginTop_emptyList">100dp</dimen>
     <dimen name="height_bottom_button">50dp</dimen>
     <dimen name="textSize_button_bottom">16sp</dimen>
+    <dimen name="progress_size">35dp</dimen>
 </resources>

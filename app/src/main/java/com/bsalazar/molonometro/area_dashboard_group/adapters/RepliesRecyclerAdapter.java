@@ -7,6 +7,8 @@ import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -51,8 +53,23 @@ public class RepliesRecyclerAdapter extends RecyclerView.Adapter<RepliesRecycler
 
         final Comment comment = comments.get(position);
 
+        try{
+            byte[] imageByteArray = Base64.decode(comment.getUserImage(), Base64.DEFAULT);
+
+            Glide.with(mContext)
+                    .load(imageByteArray)
+                    .asBitmap()
+                    .listener(new MyRequestListener(mContext, holder.user_image))
+                    .into(holder.user_image);
+
+        }catch (Exception e){
+            holder.user_image.setImageResource(R.drawable.user_icon);
+        }
+
         holder.comment_from.setText(comment.getUserName());
         holder.comment.setText(comment.getText());
+
+
     }
 
     @Override
