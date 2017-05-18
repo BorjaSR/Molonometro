@@ -31,4 +31,5 @@
     <string name="like">Me gusta</string>
     <string name="comment">Comentar</string>
     <string name="share">Compartir</string>
+    <string name="votar">Votar</string>
 </resources>

@@ -33,6 +33,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
+import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -163,8 +164,23 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
 
         final AutoCompleteAdapter autoCompleteAdapter = new AutoCompleteAdapter(this, R.layout.autocomplete_participant_item, participants_without_you);
 
+
         destinationUser.setAdapter(autoCompleteAdapter);
         destinationUser.setThreshold(1);
+
+//        destinationUser.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                autoCompleteAdapter.getFilter().filter("", new Filter.FilterListener() {
+//                    @Override
+//                    public void onFilterComplete(int i) {
+//                        destinationUser.showDropDown();
+//                        Toast.makeText(getApplicationContext(), i + " coincidencias", Toast.LENGTH_SHORT).show();
+//                    }
+//                });
+//            }
+//        });
+
         destinationUser.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {

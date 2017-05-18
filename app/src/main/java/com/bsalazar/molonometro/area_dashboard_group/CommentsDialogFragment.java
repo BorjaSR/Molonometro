@@ -160,9 +160,8 @@ public class CommentsDialogFragment extends DialogFragment {
 
                     for (int i = 0; i < jArray.length(); i++)
                         replies.add(new Gson().fromJson(String.valueOf(jArray.getJSONObject(i)), Comment.class));
-                    for (int i = 0; i < jArray.length(); i++)
 
-                        progress_replies.setVisibility(View.GONE);
+                    progress_replies.setVisibility(View.GONE);
                     commentsRecyclerView.setVisibility(View.VISIBLE);
                     commentsRecyclerView.setHasFixedSize(false);
                     commentsRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));

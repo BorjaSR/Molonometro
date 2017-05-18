@@ -6,13 +6,14 @@
     <color name="colorPrimaryDark">#00796B</color>
     <color name="colorAccent">#FF5722</color>
     <color name="colorAccentDark">#f53900</color>
-
+b
     <color name="transparent">#00000000</color>
     <color name="white">#FFFFFF</color>
     <color name="white_">#FAFAFA</color>
     <color name="light_gray">#DEDEDE</color>
     <color name="gray">#AAAAAA</color>
     <color name="dark_gray">#7d7d7d</color>
+    <color name="dark_gray_more">#666666</color>
     <color name="chg2">#212121</color>
     <color name="charcoal_gray">#030303</color>
 

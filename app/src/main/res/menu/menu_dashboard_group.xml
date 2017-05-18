@@ -4,6 +4,13 @@
     tools:context="com.bsalazar.molonometro.area_home.MainActivity">
 
     <item
+        android:id="@+id/action_comment"
+        android:orderInCategory="100"
+        android:title="@string/votar"
+        android:icon="@drawable/add"
+        app:showAsAction="always" />
+
+    <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
         android:title="@string/group_info"

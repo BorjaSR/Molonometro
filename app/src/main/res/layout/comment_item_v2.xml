@@ -19,7 +19,9 @@
         android:orientation="vertical"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
-        android:paddingTop="16dp">
+        android:paddingTop="16dp"
+        android:layout_marginBottom="10dp"
+        android:elevation="2dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -110,6 +112,7 @@
                     android:layout_height="wrap_content"
                     android:padding="5dp"
                     android:text="4 Me gusta"
+                    android:textSize="12sp"
                     android:textColor="@color/gray" />
             </LinearLayout>
 
@@ -124,6 +127,7 @@
                     android:layout_height="wrap_content"
                     android:padding="5dp"
                     android:text="3 comentarios"
+                    android:textSize="12sp"
                     android:textColor="@color/gray" />
             </LinearLayout>
 
@@ -151,16 +155,15 @@
                 <ImageView
                     android:layout_width="15dp"
                     android:layout_height="15dp"
-                    android:src="@drawable/like_green"/>
+                    android:src="@drawable/like_gray"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:padding="10dp"
+                    android:padding="12dp"
                     android:text="@string/like"
-                    android:textColor="@color/colorPrimaryDark"
-                    android:textSize="12sp" />
+                    android:textColor="@color/dark_gray_more"/>
             </LinearLayout>
 
 
@@ -176,16 +179,15 @@
                 <ImageView
                     android:layout_width="15dp"
                     android:layout_height="15dp"
-                    android:src="@drawable/comment_green"/>
+                    android:src="@drawable/comment_gray"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:padding="10dp"
+                    android:padding="12dp"
                     android:text="@string/comment"
-                    android:textColor="@color/colorPrimaryDark"
-                    android:textSize="12sp" />
+                    android:textColor="@color/dark_gray_more"/>
             </LinearLayout>
 
             <LinearLayout
@@ -215,10 +217,10 @@
 
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/light_gray" />
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="1dp"-->
+            <!--android:background="@color/light_gray" />-->
     </LinearLayout>
 
 </LinearLayout>
