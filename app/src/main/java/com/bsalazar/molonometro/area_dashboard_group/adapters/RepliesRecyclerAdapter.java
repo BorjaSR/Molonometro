@@ -69,7 +69,8 @@ public class RepliesRecyclerAdapter extends RecyclerView.Adapter<RepliesRecycler
         holder.comment_from.setText(comment.getUserName());
         holder.comment.setText(comment.getText());
 
-
+        holder.textView3.setVisibility(View.GONE);
+        holder.comment_to.setVisibility(View.GONE);
     }
 
     @Override
@@ -81,6 +82,8 @@ public class RepliesRecyclerAdapter extends RecyclerView.Adapter<RepliesRecycler
 
         ImageView user_image;
         TextView comment_from;
+        TextView textView3;
+        TextView comment_to;
         TextView comment;
 
         ReplyViewHolder(View itemView) {
@@ -88,6 +91,8 @@ public class RepliesRecyclerAdapter extends RecyclerView.Adapter<RepliesRecycler
 
             user_image = (ImageView) itemView.findViewById(R.id.user_image);
             comment_from = (TextView) itemView.findViewById(R.id.comment_from);
+            textView3 = (TextView) itemView.findViewById(R.id.textView3);
+            comment_to = (TextView) itemView.findViewById(R.id.comment_to);
             comment = (TextView) itemView.findViewById(R.id.comment);
         }
     }

@@ -84,24 +84,17 @@ public class CommentsRecyclerAdapter extends RecyclerView.Adapter<CommentsRecycl
                 holder.user_image.setImageResource(R.drawable.user_icon);
             }
 
-//            if(comment.isHasAnswers())
-//                holder.view_replies.setVisibility(View.VISIBLE);
-//            else{
-//                holder.view_replies.setVisibility(View.GONE);
-//                holder.separator.setVisibility(View.GONE);
-//            }
-
-//            holder.reply.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    ((DashboardGroupActivity) mContext).showReplyDialog(comment);
-//                }
-//            });
+            holder.likes_and_comments.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ((DashboardGroupActivity) mContext).showCommentsDialog(comment.getCommentID(), false);
+                }
+            });
 
             holder.view_replies.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ((DashboardGroupActivity) mContext).showCommentsDialog(comment.getCommentID());
+                    ((DashboardGroupActivity) mContext).showCommentsDialog(comment.getCommentID(), true);
                 }
             });
 
@@ -117,6 +110,7 @@ public class CommentsRecyclerAdapter extends RecyclerView.Adapter<CommentsRecycl
 
         LinearLayout window_to_termometer;
         LinearLayout comment_container;
+        LinearLayout likes_and_comments;
         ImageView user_image;
         TextView comment_from;
         TextView comment_to;
@@ -129,6 +123,7 @@ public class CommentsRecyclerAdapter extends RecyclerView.Adapter<CommentsRecycl
 
             window_to_termometer = (LinearLayout) itemView.findViewById(R.id.window_to_termometer);
             comment_container = (LinearLayout) itemView.findViewById(R.id.comment_container);
+            likes_and_comments = (LinearLayout) itemView.findViewById(R.id.likes_and_comments);
             user_image = (ImageView) itemView.findViewById(R.id.user_image);
             comment_from = (TextView) itemView.findViewById(R.id.comment_from);
             comment_to = (TextView) itemView.findViewById(R.id.comment_to);

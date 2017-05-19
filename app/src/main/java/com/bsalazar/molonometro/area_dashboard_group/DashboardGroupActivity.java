@@ -249,6 +249,7 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
                 commentsRecyclerView.setAdapter(adapter);
             }
         });
+
     }
 
 
@@ -354,7 +355,7 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
         }
     }
 
-    //TODO pendiente de revisar
+
     private void repositionedTermometer() {
         ScrollY = commentsRecyclerView.getScrollY();
 
@@ -445,57 +446,12 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
         return highestScore;
     }
 
-    public void showReplyDialog(final Comment comment) {
-
-        final AlertDialog builder = new AlertDialog.Builder(this).create();
-
-        LayoutInflater inflater = getLayoutInflater();
-        View dialoglayout = inflater.inflate(R.layout.reply_dialog, null);
-
-        TextView reply_to = (TextView) dialoglayout.findViewById(R.id.reply_to);
-        final EditText reply_text = (EditText) dialoglayout.findViewById(R.id.reply_text);
-        TextView send_reply = (TextView) dialoglayout.findViewById(R.id.send_reply);
-
-        reply_to.setText(comment.getUserName());
-
-        send_reply.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (reply_text.getText().toString().length() != 0) {
-                    Comment reply = new Comment();
-                    reply.setCommentID(comment.getCommentID());
-                    reply.setUserID(Variables.User.getUserID());
-                    reply.setText(reply_text.getText().toString());
-
-                    new CommentsController().addReplyToComment(getApplicationContext(), reply, new ServiceCallbackInterface() {
-                        @Override
-                        public void onSuccess(String result) {
-                            if (result.equals("true")) {
-                                builder.dismiss();
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(String result) {
-                            Toast.makeText(activity, "Oops! Ha ocurrido algún error", Toast.LENGTH_SHORT).show();
-                            builder.dismiss();
-                        }
-                    });
-
-                } else
-                    Toast.makeText(activity, "Pero no lo envies vacío animal!", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        builder.setView(dialoglayout);
-        builder.show();
-    }
-
-    public void showCommentsDialog(int commentID){
+    public void showCommentsDialog(int commentID, boolean needFocus){
         CommentsDialogFragment commentsDialogFragment = new CommentsDialogFragment();
 
         Bundle args = new Bundle();
         args.putInt("commentID", commentID);
+        args.putBoolean("focus", needFocus);
         commentsDialogFragment.setArguments(args);
 
         commentsDialogFragment.show(getFragmentManager(), "COMMENTS");

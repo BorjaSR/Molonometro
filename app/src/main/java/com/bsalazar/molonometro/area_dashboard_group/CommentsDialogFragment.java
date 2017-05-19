@@ -15,6 +15,8 @@ import android.transition.TransitionManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -41,6 +43,7 @@ import java.util.ArrayList;
 public class CommentsDialogFragment extends DialogFragment {
 
     private int commentID;
+    private boolean needFocus;
 
     private Context mContext;
     private LinearLayout reply_container;
@@ -53,10 +56,16 @@ public class CommentsDialogFragment extends DialogFragment {
     @Override
     public void onActivityCreated(Bundle arg0) {
         super.onActivityCreated(arg0);
-        getDialog().getWindow()
-                .getAttributes().windowAnimations = R.style.CommentsDialogAnimation;
+        getDialog().getWindow().getAttributes().windowAnimations = R.style.CommentsDialogAnimation;
 
         mContext = getActivity().getApplicationContext();
+
+        needFocus = getArguments().getBoolean("focus", false);
+
+        if(needFocus) {
+            reply_text.requestFocus();
+            getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        }
     }
 
     @Override
@@ -76,14 +85,15 @@ public class CommentsDialogFragment extends DialogFragment {
         View rootView = inflater.inflate(R.layout.comments_dialog_fragment, container,
                 false);
 
-        commentID = getArguments().getInt("commentID");
-
+        commentID = getArguments().getInt("commentID", -1);
+        
         reply_container = (LinearLayout) rootView.findViewById(R.id.reply_container);
         reply_text = (EditText) rootView.findViewById(R.id.reply_text);
         progress_replies = (ProgressBar) rootView.findViewById(R.id.progress_replies);
         commentsRecyclerView = (RecyclerView) rootView.findViewById(R.id.reply_recycler);
         adapter = new RepliesRecyclerAdapter(mContext, new ArrayList<Comment>());
         send_reply = (ImageView) rootView.findViewById(R.id.send_reply);
+
 
         loadReplies();
 
@@ -101,14 +111,14 @@ public class CommentsDialogFragment extends DialogFragment {
                                       int before, int count) {
 
                 if (s.length() > 0) {
-                        TransitionManager.beginDelayedTransition(reply_container);
+                    TransitionManager.beginDelayedTransition(reply_container);
 
-                        LinearLayout.LayoutParams loparams = (LinearLayout.LayoutParams) reply_text.getLayoutParams();
-                        loparams.weight = 1;
+                    LinearLayout.LayoutParams loparams = (LinearLayout.LayoutParams) reply_text.getLayoutParams();
+                    loparams.weight = 1;
 
-                        reply_text.setLayoutParams(loparams);
+                    reply_text.setLayoutParams(loparams);
 
-                }else {
+                } else {
                     TransitionManager.beginDelayedTransition(reply_container);
 
                     LinearLayout.LayoutParams loparams = (LinearLayout.LayoutParams) reply_text.getLayoutParams();
@@ -147,37 +157,43 @@ public class CommentsDialogFragment extends DialogFragment {
             }
         });
 
+        if(needFocus) {
+            reply_text.requestFocus();
+//            ((DashboardGroupActivity) mContext).showKeyboard(reply_text);
+        }
+
         return rootView;
     }
 
     private void loadReplies() {
-        new CommentsController().getRepliesByComment(mContext, commentID, new ServiceCallbackInterface() {
-            @Override
-            public void onSuccess(String result) {
-                try {
-                    JSONArray jArray = new JSONArray(result);
-                    ArrayList<Comment> replies = new ArrayList<>();
+        if (commentID != -1)
+            new CommentsController().getRepliesByComment(mContext, commentID, new ServiceCallbackInterface() {
+                @Override
+                public void onSuccess(String result) {
+                    try {
+                        JSONArray jArray = new JSONArray(result);
+                        ArrayList<Comment> replies = new ArrayList<>();
 
-                    for (int i = 0; i < jArray.length(); i++)
-                        replies.add(new Gson().fromJson(String.valueOf(jArray.getJSONObject(i)), Comment.class));
+                        for (int i = 0; i < jArray.length(); i++)
+                            replies.add(new Gson().fromJson(String.valueOf(jArray.getJSONObject(i)), Comment.class));
 
-                    progress_replies.setVisibility(View.GONE);
-                    commentsRecyclerView.setVisibility(View.VISIBLE);
-                    commentsRecyclerView.setHasFixedSize(false);
-                    commentsRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
+                        progress_replies.setVisibility(View.GONE);
+                        commentsRecyclerView.setVisibility(View.VISIBLE);
+                        commentsRecyclerView.setHasFixedSize(false);
+                        commentsRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
 
-                    adapter = new RepliesRecyclerAdapter(mContext, replies);
-                    commentsRecyclerView.setAdapter(adapter);
+                        adapter = new RepliesRecyclerAdapter(mContext, replies);
+                        commentsRecyclerView.setAdapter(adapter);
 
-                } catch (Exception e) {
-                    e.printStackTrace();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(String result) {
+                @Override
+                public void onFailure(String result) {
 
-            }
-        });
+                }
+            });
     }
 }
