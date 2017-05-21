@@ -2,6 +2,7 @@ package com.bsalazar.molonometro.area_dashboard_group.adapters;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -61,9 +62,11 @@ public class CommentsRecyclerAdapter extends RecyclerView.Adapter<CommentsRecycl
         if(position == 0){
             holder.window_to_termometer.setVisibility(View.VISIBLE);
             holder.comment_container.setVisibility(View.GONE);
+            holder.backgorund_comment_item.setBackgroundColor(ContextCompat.getColor(mContext, R.color.transparent));
         } else {
             holder.window_to_termometer.setVisibility(View.GONE);
             holder.comment_container.setVisibility(View.VISIBLE);
+            holder.backgorund_comment_item.setBackgroundColor(ContextCompat.getColor(mContext, R.color.white_));
 
             final Comment comment = comments.get(position - 1);
 
@@ -109,6 +112,7 @@ public class CommentsRecyclerAdapter extends RecyclerView.Adapter<CommentsRecycl
     class CommentViewHolder extends RecyclerView.ViewHolder {
 
         LinearLayout window_to_termometer;
+        LinearLayout backgorund_comment_item;
         LinearLayout comment_container;
         LinearLayout likes_and_comments;
         ImageView user_image;
@@ -122,6 +126,7 @@ public class CommentsRecyclerAdapter extends RecyclerView.Adapter<CommentsRecycl
             super(itemView);
 
             window_to_termometer = (LinearLayout) itemView.findViewById(R.id.window_to_termometer);
+            backgorund_comment_item = (LinearLayout) itemView.findViewById(R.id.backgorund_comment_item);
             comment_container = (LinearLayout) itemView.findViewById(R.id.comment_container);
             likes_and_comments = (LinearLayout) itemView.findViewById(R.id.likes_and_comments);
             user_image = (ImageView) itemView.findViewById(R.id.user_image);

@@ -23,7 +23,6 @@ class CommentsDAO {
     public function addComment($groupID, $userID, $destinationUserID, $text) {
         $userDAO = new UserDAO();
         $groupDAO = new GroupDAO();
-
         if ($userDAO->isUserExistsById($userID) &&
             $userDAO->isUserExistsById($destinationUserID) &&
             $groupDAO->isGroupExistsById($groupID)) {
@@ -64,9 +63,10 @@ class CommentsDAO {
 
     // creating new user if not existed
     public function addReply($groupID, $userID, $destinationUserID, $text, $associatedCommentID) {
+
+
         $userDAO = new UserDAO();
         $groupDAO = new GroupDAO();
-
         if ($userDAO->isUserExistsById($userID) &&
             $userDAO->isUserExistsById($destinationUserID) &&
             $groupDAO->isGroupExistsById($groupID)) {
@@ -153,6 +153,12 @@ class CommentsDAO {
 
                 $comment["Text"] = $Text;
                 $comment["Image"] = $Image;
+                $comment["Comments"] = $this->getSimpleReplies($CommentID);
+
+                $likesDAO = new LikesDAO();
+                $DBresponse = $likesDAO->getLikesByComment($CommentID);
+                $comment["Likes"] = $DBresponse["likes"];
+
 
                 $commentsList[$i] = $comment;
                 $i++;
@@ -174,13 +180,38 @@ class CommentsDAO {
         return $response;
     }
 
+    public function getSimpleReplies($commentID) {
+        $db = new DbConnect();
+        $this->conn = $db->connect();
+
+        $stmt = $this->conn->prepare("SELECT UserID FROM `comments` WHERE AssociatedCommentID = ?");
+        $stmt->bind_param("i", $commentID);
+        
+        $response = array();
+
+        if ($stmt->execute()) {
+            $stmt->bind_result($UserID);
+
+            $i = 0;
+            while ($stmt->fetch()) {
+                $response[$i] = $UserID;
+                $i++;
+            }
+
+            $stmt->close();
+        }
+
+        $db->disconnect();
+        return $response;
+    }
+
 
     public function getRepliesByComment($commentID) {
         
 
         if($this->isCommentExistById($commentID)){
-        $db = new DbConnect();
-        $this->conn = $db->connect();
+            $db = new DbConnect();
+            $this->conn = $db->connect();
             $stmt = $this->conn->prepare("SELECT CommentID, UserID, Text, Image From comments where AssociatedCommentID = ? and Deleted = 0 ORDER BY Created DESC");
             $stmt->bind_param("i", $commentID);
             

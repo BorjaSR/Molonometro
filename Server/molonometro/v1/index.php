@@ -23,6 +23,7 @@ include 'controllers/GroupController.php';
 include 'controllers/UserController.php';
 include 'controllers/ContactController.php';
 include 'controllers/CommentsController.php';
+include 'controllers/LikesController.php';
 
 
 /**
