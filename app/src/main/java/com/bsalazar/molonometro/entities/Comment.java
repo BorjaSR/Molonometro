@@ -15,6 +15,8 @@ public class Comment {
     private boolean hasAnswers;
     private String Text;
     private String Image;
+    private ArrayList<Integer> Comments;
+    private ArrayList<Integer> Likes;
 
     // OWN
     private String UserName;
@@ -24,6 +26,22 @@ public class Comment {
     private Boolean showReplies = false;
 
     public Comment() {
+    }
+
+    public ArrayList<Integer> getComments() {
+        return Comments;
+    }
+
+    public void setComments(ArrayList<Integer> comments) {
+        Comments = comments;
+    }
+
+    public ArrayList<Integer> getLikes() {
+        return Likes;
+    }
+
+    public void setLikes(ArrayList<Integer> likes) {
+        Likes = likes;
     }
 
     public Boolean getShowReplies() {

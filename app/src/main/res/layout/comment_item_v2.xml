@@ -78,7 +78,6 @@
                         android:textStyle="bold" />
                 </LinearLayout>
 
-
                 <TextView
                     android:id="@+id/comment"
                     android:layout_width="match_parent"
@@ -110,12 +109,13 @@
                 android:layout_weight="1">
 
                 <TextView
+                    android:id="@+id/likes"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="5dp"
                     android:text="4 Me gusta"
                     android:textSize="12sp"
-                    android:textColor="@color/gray" />
+                    android:textColor="@color/gray"/>
             </LinearLayout>
 
             <LinearLayout
@@ -125,6 +125,7 @@
                 android:gravity="end">
 
                 <TextView
+                    android:id="@+id/comments"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="5dp"

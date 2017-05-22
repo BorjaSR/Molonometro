@@ -101,6 +101,9 @@ public class Parser {
             comment.setText(commentJson.getText());
             comment.setImage(commentJson.getImage());
 
+            comment.setComments(commentJson.getComments());
+            comment.setLikes(commentJson.getLikes());
+
             if (commentJson.getUserID() == Variables.User.getUserID()){
                 comment.setUserName(Variables.User.getName());
                 comment.setUserImage(Variables.User.getImageBase64());

@@ -1,13 +1,9 @@
 package com.bsalazar.molonometro.area_dashboard_group.adapters;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.LinearLayoutCompat;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,23 +12,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bsalazar.molonometro.R;
-import com.bsalazar.molonometro.area_dashboard_group.CommentsDialogFragment;
 import com.bsalazar.molonometro.area_dashboard_group.DashboardGroupActivity;
-import com.bsalazar.molonometro.area_home.adapters.GroupsRecyclerAdapter;
 import com.bsalazar.molonometro.entities.Comment;
-import com.bsalazar.molonometro.general.Constants;
 import com.bsalazar.molonometro.general.MyRequestListener;
 import com.bsalazar.molonometro.general.Tools;
-import com.bsalazar.molonometro.rest.controllers.CommentsController;
-import com.bsalazar.molonometro.rest.services.ServiceCallbackInterface;
 import com.bumptech.glide.Glide;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.annotations.JsonAdapter;
-
-import org.json.JSONArray;
-import org.json.JSONException;
 
 import java.util.ArrayList;
 
@@ -74,6 +58,21 @@ public class CommentsRecyclerAdapter extends RecyclerView.Adapter<CommentsRecycl
             holder.comment_to.setText(Tools.cropName(comment.getDestinationUserName()));
             holder.comment.setText(comment.getText());
 
+            int number_comments = comment.getComments().size();
+            int number_likes = comment.getLikes().size();
+
+            if(number_comments > 0){
+                holder.comments.setText(number_comments + " comentarios");
+                holder.comments.setVisibility(View.VISIBLE);
+            } else
+                holder.comments.setVisibility(View.INVISIBLE);
+
+            if(number_likes > 0){
+                holder.likes.setText(number_likes + " Me gusta");
+                holder.likes.setVisibility(View.VISIBLE);
+            } else
+                holder.likes.setVisibility(View.INVISIBLE);
+
             try{
                 byte[] imageByteArray = Base64.decode(comment.getUserImage(), Base64.DEFAULT);
 
@@ -94,7 +93,7 @@ public class CommentsRecyclerAdapter extends RecyclerView.Adapter<CommentsRecycl
                 }
             });
 
-            holder.view_replies.setOnClickListener(new View.OnClickListener() {
+            holder.to_comment.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     ((DashboardGroupActivity) mContext).showCommentsDialog(comment.getCommentID(), true);
@@ -119,8 +118,10 @@ public class CommentsRecyclerAdapter extends RecyclerView.Adapter<CommentsRecycl
         TextView comment_from;
         TextView comment_to;
         TextView comment;
+        TextView likes;
+        TextView comments;
 
-        LinearLayout view_replies;
+        LinearLayout to_comment;
 
         CommentViewHolder(View itemView) {
             super(itemView);
@@ -133,8 +134,10 @@ public class CommentsRecyclerAdapter extends RecyclerView.Adapter<CommentsRecycl
             comment_from = (TextView) itemView.findViewById(R.id.comment_from);
             comment_to = (TextView) itemView.findViewById(R.id.comment_to);
             comment = (TextView) itemView.findViewById(R.id.comment);
+            likes = (TextView) itemView.findViewById(R.id.likes);
+            comments = (TextView) itemView.findViewById(R.id.comments);
 
-            view_replies = (LinearLayout) itemView.findViewById(R.id.view_replies);
+            to_comment = (LinearLayout) itemView.findViewById(R.id.view_replies);
         }
     }
 }
