@@ -35,7 +35,7 @@ public class GroupsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        update();
+//        update();
     }
 
     private void update() {

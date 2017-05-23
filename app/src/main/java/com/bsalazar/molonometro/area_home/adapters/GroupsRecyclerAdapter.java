@@ -1,5 +1,7 @@
 package com.bsalazar.molonometro.area_home.adapters;
 
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,6 +16,7 @@ import android.widget.TextView;
 
 import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.area_dashboard_group.DashboardGroupActivity;
+import com.bsalazar.molonometro.general.PhotoDetailActivity;
 import com.bsalazar.molonometro.general.PhotoDetailDialogFragment;
 import com.bsalazar.molonometro.entities.Group;
 import com.bsalazar.molonometro.general.Constants;
@@ -46,7 +49,7 @@ public class GroupsRecyclerAdapter extends RecyclerView.Adapter<GroupsRecyclerAd
     }
 
     @Override
-    public void onBindViewHolder(GroupViewHolder holder, int position) {
+    public void onBindViewHolder(final GroupViewHolder holder, int position) {
 
         final Group group = groups.get(position);
 
@@ -76,16 +79,27 @@ public class GroupsRecyclerAdapter extends RecyclerView.Adapter<GroupsRecyclerAd
         holder.group_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Variables.Group = group;
-                PhotoDetailDialogFragment dialogSample = new PhotoDetailDialogFragment();
-
+//
                 // Supply index input as an argument.
                 Bundle args = new Bundle();
                 args.putString("image", group.getImageBase64());
                 args.putInt("noImage", R.drawable.group_icon);
-                dialogSample.setArguments(args);
 
-                dialogSample.show(Constants.fragmentManager, "TAG");
+//                PhotoDetailDialogFragment dialogSample = new PhotoDetailDialogFragment();
+//                dialogSample.setArguments(args);
+//                dialogSample.show(Constants.fragmentManager, "TAG");
+
+                Intent intent = new Intent(mContext, PhotoDetailActivity.class);
+                intent.putExtras(args);
+
+
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                    ActivityOptions options = ActivityOptions
+                            .makeSceneTransitionAnimation((Activity) mContext, holder.group_image, "imageTransition");
+                    mContext.startActivity(intent, options.toBundle());
+                } else
+                    mContext.startActivity(intent);
+
             }
         });
 

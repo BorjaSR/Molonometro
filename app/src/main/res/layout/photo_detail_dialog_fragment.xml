@@ -12,5 +12,7 @@
         android:id="@+id/group_image_dialog"
         android:layout_width="match_parent"
         android:layout_height="300dp"
-        android:scaleType="centerCrop"/>
+        android:scaleType="centerCrop"
+        android:transitionName="imageTransition"
+        android:visibility="visible"/>
 </LinearLayout>

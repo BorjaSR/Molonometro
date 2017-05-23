@@ -14,6 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
+
         <activity
             android:name=".area_register.RegisterActivity"
             android:label="@string/app_name"
@@ -29,6 +30,8 @@
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
+
+
 
 
         <activity
@@ -57,6 +60,8 @@
                 android:value=".area_home.MainActivity" />
         </activity>
 
+
+
         <activity
             android:name=".area_new_group.NewGroupActivity"
             android:label="@string/new_group"
@@ -77,6 +82,8 @@
                 android:value=".area_new_group.NewGroupActivity" />
         </activity>
 
+
+
         <activity
             android:name=".area_adjust.AccountActivity"
             android:label="@string/adjust_activity"
@@ -95,6 +102,20 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".area_adjust.AccountActivity" />
+        </activity>
+
+
+
+
+        <activity
+            android:name=".general.PhotoDetailActivity"
+            android:label="@string/edit_field"
+            android:theme="@style/AppTheme.Transparent"
+            android:parentActivityName=".area_home.MainActivity" >
+
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".area_home.MainActivity"/>
         </activity>
 
 

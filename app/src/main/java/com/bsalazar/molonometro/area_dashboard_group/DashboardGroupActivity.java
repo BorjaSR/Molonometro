@@ -388,7 +388,7 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
                     view.animate()
                             .translationY(getPositionUser(molopuntosUser))
                             .setInterpolator(new AccelerateDecelerateInterpolator())
-                            .setDuration(1000)
+                            .setDuration(700)
                             .start();
                 }
         }
