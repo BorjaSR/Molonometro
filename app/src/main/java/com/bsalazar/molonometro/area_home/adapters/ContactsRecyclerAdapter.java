@@ -17,7 +17,6 @@ import com.bsalazar.molonometro.general.Constants;
 import com.bsalazar.molonometro.general.MyRequestListener;
 import com.bsalazar.molonometro.general.PhotoDetailDialogFragment;
 import com.bsalazar.molonometro.general.Tools;
-import com.bsalazar.molonometro.general.Variables;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
@@ -110,9 +109,9 @@ public class ContactsRecyclerAdapter  extends RecyclerView.Adapter<ContactsRecyc
         ContactViewHolder(View itemView) {
             super(itemView);
 
-            contact_image = (ImageView) itemView.findViewById(R.id.contact_image);
-            contact_name = (TextView) itemView.findViewById(R.id.contact_name);
-            item_detail = (TextView) itemView.findViewById(R.id.item_detail);
+            contact_image = (ImageView) itemView.findViewById(R.id.group_image);
+            contact_name = (TextView) itemView.findViewById(R.id.group_name);
+            item_detail = (TextView) itemView.findViewById(R.id.group_detail);
             invite_contact_button = (TextView) itemView.findViewById(R.id.invite_contact_button);
         }
     }

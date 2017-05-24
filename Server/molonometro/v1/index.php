@@ -19,6 +19,8 @@ require '.././libs/Slim/Slim.php';
 $app = new \Slim\Slim();
 
 
+include_once __DIR__ . '/../include/config.php';
+
 include 'controllers/GroupController.php';
 include 'controllers/UserController.php';
 include 'controllers/ContactController.php';

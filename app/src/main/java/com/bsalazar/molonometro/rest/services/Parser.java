@@ -50,6 +50,7 @@ public class Parser {
         group.setId(groupJson.getGroupID());
         group.setName(groupJson.getName());
         group.setImageBase64(groupJson.getImage());
+        group.setFirebaseTopic(groupJson.getFirebaseTopic());
 
         group.setParticipants(new ArrayList<Participant>());
 

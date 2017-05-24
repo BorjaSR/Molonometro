@@ -24,7 +24,7 @@
             android:gravity="center">
 
             <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/contact_image"
+                android:id="@+id/group_image"
                 android:transitionName="@string/element_shared_dashboard_group"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
@@ -75,7 +75,7 @@
                 </LinearLayout>
 
                 <TextView
-                    android:id="@+id/item_detail"
+                    android:id="@+id/group_detail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"

@@ -21,12 +21,20 @@ $app->post('/group/createGroup', function() use ($app) {
     if($DBresponse["status"] == 200){
 
         $group = $DBresponse["group"];
-        
-        foreach ($contacts as $contact) {
-            addUserToGroup($contact, $group["GroupID"], $userID);
+        $firebaseT = FIREBASE_TOPICS_PREFIX . $group["GroupID"]; //+ $group["GroupID"]
+        $DBresponseFT =  $groupDAO->setFirebaseTopic($group["GroupID"], $firebaseT);
+
+        if($DBresponseFT["status"] == 200){
+            $group["FirebaseTopic"] = FIREBASE_TOPICS_PREFIX + $group["GroupID"];
+
+            foreach ($contacts as $contact) {
+                addUserToGroup($contact, $group["GroupID"], $userID);
+            }
+            
+            echoResponse(200, $group);
+        }else{
+            echoResponse(455, $DBresponse);
         }
-        
-        echoResponse(200, $DBresponse["group"]);
 
     }else{
         echoResponse(455, $DBresponse);
@@ -42,11 +50,12 @@ $app->post('/group/updateGroup', function() use ($app) {
     $input = json_decode($body);
 
     // reading post params
-    $GroupID = (int)$input->GroupID;
-    $Name = (string)$input->Name;
+    $GroupID = (int) $input->GroupID;
+    $Name = (string) $input->Name;
+    $firebaseTopic = (string) $input->FirebaseTopic;
 
     $groupDAO = new GroupDAO();
-    $DBresponse = $groupDAO->updateGroup($GroupID, $Name);
+    $DBresponse = $groupDAO->updateGroup($GroupID, $Name, $firebaseTopic);
 
     if($DBresponse["status"] == 200){        
         echoResponse(200, $DBresponse["group"]);

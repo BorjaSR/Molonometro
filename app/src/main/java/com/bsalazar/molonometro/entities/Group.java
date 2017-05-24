@@ -13,12 +13,21 @@ public class Group {
     private Bitmap image;
     private String imageBase64;
     private String name;
+    private String FirebaseTopic;
     private String lastEvent;
 
     private ArrayList<Participant> participants;
     private ArrayList<Comment> comments;
 
     public Group() {
+    }
+
+    public String getFirebaseTopic() {
+        return FirebaseTopic;
+    }
+
+    public void setFirebaseTopic(String firebaseTopic) {
+        FirebaseTopic = firebaseTopic;
     }
 
     public Group(int id, String groupName) {

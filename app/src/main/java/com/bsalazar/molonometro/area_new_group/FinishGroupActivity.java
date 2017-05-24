@@ -22,12 +22,15 @@ import android.widget.TextView;
 
 import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.entities.Contact;
+import com.bsalazar.molonometro.entities.Group;
 import com.bsalazar.molonometro.general.Tools;
 import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.controllers.GroupController;
 import com.bsalazar.molonometro.rest.json.GroupJson;
 import com.bsalazar.molonometro.rest.services.ServiceCallbackInterface;
 import com.bumptech.glide.Glide;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.gson.Gson;
 
 /**
  * Created by bsalazar on 24/02/2017.
@@ -61,9 +64,9 @@ public class FinishGroupActivity extends AppCompatActivity implements View.OnCli
             LayoutInflater inflater = LayoutInflater.from(getApplicationContext());
             final View participant = inflater.inflate(R.layout.contact_for_group_item, participants_container, false);
 
-            ImageView contact_image = (ImageView) participant.findViewById(R.id.contact_image);
+            ImageView contact_image = (ImageView) participant.findViewById(R.id.group_image);
             TextView contact_name = (TextView) participant.findViewById(R.id.group_name_first_part);
-            TextView contact_state = (TextView) participant.findViewById(R.id.item_detail);
+            TextView contact_state = (TextView) participant.findViewById(R.id.group_detail);
 
             String image64 = "";
             String Name = "";
@@ -136,9 +139,12 @@ public class FinishGroupActivity extends AppCompatActivity implements View.OnCli
                     new GroupController().createGroup(this, Variables.createGroupJson, new ServiceCallbackInterface() {
                         @Override
                         public void onSuccess(String result) {
+
+                            GroupJson groupJson = new Gson().fromJson(result, GroupJson.class);
+                            if(groupJson.getFirebaseTopic() != null && !groupJson.getFirebaseTopic().equals(""))
+                                FirebaseMessaging.getInstance().subscribeToTopic(groupJson.getFirebaseTopic());
+
                             if(group_image_bitmap != null){
-                                GroupJson groupJson = new GroupJson();
-                                groupJson.setGroupID(Integer.parseInt(result));
                                 groupJson.setImage(Tools.encodeBitmapToBase64(group_image_bitmap));
                                 new GroupController().updateGroupImage(getApplicationContext(), groupJson, new ServiceCallbackInterface() {
                                     @Override
@@ -151,6 +157,8 @@ public class FinishGroupActivity extends AppCompatActivity implements View.OnCli
 
                                     }
                                 });
+                            } else {
+                                finish();
                             }
                         }
 

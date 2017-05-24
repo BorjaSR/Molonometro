@@ -17,9 +17,7 @@ import android.widget.TextView;
 import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.area_dashboard_group.DashboardGroupActivity;
 import com.bsalazar.molonometro.general.PhotoDetailActivity;
-import com.bsalazar.molonometro.general.PhotoDetailDialogFragment;
 import com.bsalazar.molonometro.entities.Group;
-import com.bsalazar.molonometro.general.Constants;
 import com.bsalazar.molonometro.general.MyRequestListener;
 import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.controllers.GroupController;
@@ -54,6 +52,7 @@ public class GroupsRecyclerAdapter extends RecyclerView.Adapter<GroupsRecyclerAd
         final Group group = groups.get(position);
 
         holder.group_name.setText(group.getName());
+        holder.group_detail.setText(group.getFirebaseTopic());
 
         try {
             if (group.getImageBase64() != null)
@@ -132,14 +131,16 @@ public class GroupsRecyclerAdapter extends RecyclerView.Adapter<GroupsRecyclerAd
 
         LinearLayout group_layout;
         TextView group_name;
+        TextView group_detail;
         ImageView group_image;
 
         GroupViewHolder(View itemView) {
             super(itemView);
 
             group_layout = (LinearLayout) itemView.findViewById(R.id.group_layout);
-            group_name = (TextView) itemView.findViewById(R.id.contact_name);
-            group_image = (ImageView) itemView.findViewById(R.id.contact_image);
+            group_name = (TextView) itemView.findViewById(R.id.group_name);
+            group_detail = (TextView) itemView.findViewById(R.id.group_detail);
+            group_image = (ImageView) itemView.findViewById(R.id.group_image);
         }
     }
 }

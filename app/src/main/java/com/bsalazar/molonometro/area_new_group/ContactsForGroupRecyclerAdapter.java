@@ -11,10 +11,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bsalazar.molonometro.R;
-import com.bsalazar.molonometro.area_home.MainActivity;
 import com.bsalazar.molonometro.entities.Contact;
 import com.bsalazar.molonometro.general.MyRequestListener;
-import com.bsalazar.molonometro.general.Tools;
 import com.bsalazar.molonometro.general.Variables;
 import com.bumptech.glide.Glide;
 
@@ -126,8 +124,8 @@ public class ContactsForGroupRecyclerAdapter extends RecyclerView.Adapter<Contac
             contact_name_first_part = (TextView) itemView.findViewById(R.id.group_name_first_part);
             match_contact_name = (TextView) itemView.findViewById(R.id.match_group_name);
             contact_name_second_part = (TextView) itemView.findViewById(R.id.group_name_second_part);
-            item_detail = (TextView) itemView.findViewById(R.id.item_detail);
-            contact_image = (ImageView) itemView.findViewById(R.id.contact_image);
+            item_detail = (TextView) itemView.findViewById(R.id.group_detail);
+            contact_image = (ImageView) itemView.findViewById(R.id.group_image);
         }
     }
 

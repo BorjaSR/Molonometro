@@ -8,8 +8,17 @@ public class GroupJson {
     private int GroupID;
     private String Name;
     private String Image;
+    private String FirebaseTopic;
 
     public GroupJson() {
+    }
+
+    public String getFirebaseTopic() {
+        return FirebaseTopic;
+    }
+
+    public void setFirebaseTopic(String firebaseTopic) {
+        FirebaseTopic = firebaseTopic;
     }
 
     public int getGroupID() {

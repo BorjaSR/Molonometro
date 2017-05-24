@@ -19,7 +19,7 @@
         android:background="?android:selectableItemBackground">
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/contact_image"
+            android:id="@+id/group_image"
             android:transitionName="imageTransition"
             android:layout_width="60dp"
             android:layout_height="60dp"
@@ -35,7 +35,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/contact_name"
+                android:id="@+id/group_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Nombre del grupo"
@@ -45,7 +45,7 @@
                 android:singleLine="true"/>
 
             <TextView
-                android:id="@+id/item_detail"
+                android:id="@+id/group_detail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="7dp"

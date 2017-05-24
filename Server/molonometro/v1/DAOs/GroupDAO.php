@@ -130,6 +130,41 @@ class GroupDAO {
     }
 
 
+
+
+    // creating new user if not existed
+    public function setFirebaseTopic($groupID, $firebaseTopic) {
+
+        if ($this->isGroupExistsById($groupID)) {
+            $response = array();
+            
+            // update query
+            $db = new DbConnect();
+            $this->conn = $db->connect();
+            $stmt = $this->conn->prepare("UPDATE groups SET FirebaseTopic = ?, LastUpdate = now() WHERE GroupID = ?");
+            $stmt->bind_param("si", $firebaseTopic, $groupID);
+
+            $result = $stmt->execute();
+            $stmt->close();
+
+            if ($result) {
+                // Group successfully updated
+                $response["status"] = 200;
+                $response["group"] = $this->getGroupById($groupID);
+            } else {
+                // Failed to update group
+                $response["status"] = 430;
+                $response["error"] = "Oops! An error occurred while update group";
+            }
+        } else {
+            $response["status"] = 432;
+            $response["error"] = "The user doesn't exists";
+        }
+
+        $db->disconnect();
+        return $response;
+    }
+
     public function addUserToGroup($userId, $groupId) {
         $db = new DbConnect();
         $this->conn = $db->connect();
@@ -212,16 +247,17 @@ class GroupDAO {
     public function getLastGroupByUser($userId) {
         $db = new DbConnect();
         $this->conn = $db->connect();
-        $stmt = $this->conn->prepare("SELECT GroupID, Name, Image From groups where CreatedBy = ? and Deleted = 0 order by Created Desc");
+        $stmt = $this->conn->prepare("SELECT GroupID, Name, Image, FirebaseTopic From groups where CreatedBy = ? and Deleted = 0 order by Created Desc");
         $stmt->bind_param("i", $userId);
         
         if ($stmt->execute()) {
-            $stmt->bind_result($GroupID, $Name, $Image);
+            $stmt->bind_result($GroupID, $Name, $Image, $FirebaseTopic);
             $stmt->fetch();
             $lastGroup = array();
             $lastGroup["GroupID"] = $GroupID;
             $lastGroup["Name"] = $Name;
             $lastGroup["Image"] = $Image;
+            $lastGroup["FirebaseTopic"] = $FirebaseTopic;
             $stmt->close();
         $db->disconnect();
             return $lastGroup;
@@ -238,7 +274,7 @@ class GroupDAO {
         $response = array();
 
         $stmt = $this->conn->prepare(
-            "SELECT groups.GroupID, groups.Name, groups.Image 
+            "SELECT groups.GroupID, groups.Name, groups.Image, groups.FirebaseTopic 
             From groups INNER JOIN groupuser
             ON groups.GroupID = groupuser.GroupID
             WHERE groupuser.UserID = ? and groupuser.Deleted = 0");
@@ -246,7 +282,7 @@ class GroupDAO {
 
         if($stmt->execute()){
 
-            $stmt->bind_result($GroupID, $Name, $Image);
+            $stmt->bind_result($GroupID, $Name, $Image, $firebaseTopic);
 
             $groupsList = array();
 
@@ -256,6 +292,7 @@ class GroupDAO {
                 $group["GroupID"] = $GroupID;
                 $group["Name"] = $Name;
                 $group["Image"] = $Image;
+                $group["FirebaseTopic"] = $firebaseTopic;
 
                 $groupsList[$i] = $group;
                 $i++;
