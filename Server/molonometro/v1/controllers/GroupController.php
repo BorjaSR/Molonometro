@@ -21,11 +21,11 @@ $app->post('/group/createGroup', function() use ($app) {
     if($DBresponse["status"] == 200){
 
         $group = $DBresponse["group"];
-        $firebaseT = FIREBASE_TOPICS_PREFIX . $group["GroupID"]; //+ $group["GroupID"]
+        $firebaseT = FIREBASE_TOPICS_PREFIX . $group["GroupID"];
         $DBresponseFT =  $groupDAO->setFirebaseTopic($group["GroupID"], $firebaseT);
 
         if($DBresponseFT["status"] == 200){
-            $group["FirebaseTopic"] = FIREBASE_TOPICS_PREFIX + $group["GroupID"];
+            $group["FirebaseTopic"] = $firebaseT; 
 
             foreach ($contacts as $contact) {
                 addUserToGroup($contact, $group["GroupID"], $userID);

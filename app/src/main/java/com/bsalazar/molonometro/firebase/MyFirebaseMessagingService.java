@@ -37,6 +37,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private static final String TAG = "MyFirebaseMsgService";
 
     private static final int NEW_GROUP_NOTIFICATION = 0;
+    private static final int COMMENT_NOTIFICATION = 1;
 
     /**
      * Called when message is received.
@@ -75,6 +76,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
                             }
                         });
+                        break;
+                    case COMMENT_NOTIFICATION:
+                        sendNotification("GRUPO 23", "Pepito ha votado a Fulanito");
                         break;
                 }
             } catch (JSONException e) {

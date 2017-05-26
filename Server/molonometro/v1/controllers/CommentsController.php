@@ -19,9 +19,13 @@ $app->post('/comments/addCommentToGroup', function() use ($app) {
 	    $commentsDAO = new CommentsDAO();
 	    $DBresponse = $commentsDAO->addComment($groupID, $userID, $destinationUserID, $text);
 
-	    if($DBresponse["status"] == 200){    
+	    if($DBresponse["status"] == 200){
 	    	$isAddMolopuntos = addMolopuntosByComment($destinationUserID, $groupID);
 	    	if($isAddMolopuntos != -1){
+
+            	$fcm = new FCM();
+            	$fcm->sendCommentToTopic(FIREBASE_TOPICS_PREFIX . $groupID, $DBresponse["comment"]);
+
 	        	echoResponse(200, $DBresponse["comment"]);
 	        	
 	    	} else {

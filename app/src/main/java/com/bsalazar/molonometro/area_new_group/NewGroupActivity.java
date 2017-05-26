@@ -2,8 +2,6 @@ package com.bsalazar.molonometro.area_new_group;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.content.res.Resources;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
@@ -11,12 +9,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.transition.TransitionManager;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -36,6 +34,8 @@ public class NewGroupActivity extends AppCompatActivity implements View.OnClickL
 
     private ArrayList<Contact> filteredContacts = new ArrayList<>();
     private LinearLayout container_contacts_selected;
+    private LinearLayout container_contacts_selected_2;
+    private LinearLayout all;
     private LinearLayout container_next;
     private TextView next;
 
@@ -55,6 +55,8 @@ public class NewGroupActivity extends AppCompatActivity implements View.OnClickL
             ab.setSubtitle("Añadir participantes");
 
         container_contacts_selected = (LinearLayout) findViewById(R.id.container_contacts_selected);
+        container_contacts_selected_2 = (LinearLayout) findViewById(R.id.container_contacts_selected_2);
+        all = (LinearLayout) findViewById(R.id.all);
         container_next = (LinearLayout) findViewById(R.id.container_next);
         next = (TextView) findViewById(R.id.next);
 
@@ -66,9 +68,6 @@ public class NewGroupActivity extends AppCompatActivity implements View.OnClickL
         contacts_recycler.setLayoutManager(new LinearLayoutManager(this));
         adapterRecycler = new ContactsForGroupRecyclerAdapter(this, filteredContacts);
         contacts_recycler.setAdapter(adapterRecycler);
-
-
-
 
         next.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -117,50 +116,63 @@ public class NewGroupActivity extends AppCompatActivity implements View.OnClickL
             selected_user_layout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+
+                    TransitionManager.beginDelayedTransition(all);
+
                     container_contacts_selected.removeView(user_for_group);
                     views_selected_contacts.remove(contactsID);
 
+                    if(container_contacts_selected.getChildCount() == 0)
+                        container_contacts_selected.setVisibility(View.GONE);
+
                     for (int i = 0; i < contacts_selected.size(); i++)
                         if (contacts_selected.get(i).getUserID() == contactsID){
+                            TransitionManager.beginDelayedTransition(all);
                             contacts_selected.remove(contacts_selected.get(i));
                             adapterRecycler.setContacts_selected(contacts_selected);
-                            adapterRecycler.notifyItemChanged(indexUser);
                             i--;
                         }
 
-                    actualizeButton();
+                    actualizeButtonAndTitle();
                 }
             });
+
+            TransitionManager.beginDelayedTransition(all);
+            if(container_contacts_selected.getChildCount() == 0)
+                container_contacts_selected.setVisibility(View.VISIBLE);
 
             container_contacts_selected.addView(user_for_group);
             views_selected_contacts.put(contactsID, user_for_group);
 
             contacts_selected.add(filteredContacts.get(indexUser));
             adapterRecycler.setContacts_selected(contacts_selected);
-            adapterRecycler.notifyItemChanged(indexUser);
 
-            actualizeButton();
+            actualizeButtonAndTitle();
         }
     }
 
     public void removeUserToSelection(final int indexUser){
         final int contactsID = filteredContacts.get(indexUser).getUserID();
 
+        TransitionManager.beginDelayedTransition(all);
         container_contacts_selected.removeView(views_selected_contacts.get(contactsID));
         views_selected_contacts.remove(contactsID);
+
+        if(container_contacts_selected.getChildCount() == 0)
+            container_contacts_selected.setVisibility(View.GONE);
+
 
         for (int i = 0; i < contacts_selected.size(); i++)
             if (contacts_selected.get(i).getUserID() == contactsID){
                 contacts_selected.remove(contacts_selected.get(i));
                 adapterRecycler.setContacts_selected(contacts_selected);
-                adapterRecycler.notifyItemChanged(indexUser);
                 i--;
             }
 
-        actualizeButton();
+        actualizeButtonAndTitle();
     }
 
-    private void actualizeButton() {
+    private void actualizeButtonAndTitle() {
         if (contacts_selected.size() > 0) {
             container_next.setVisibility(View.VISIBLE);
 

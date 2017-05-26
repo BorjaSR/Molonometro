@@ -316,6 +316,9 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
                                 comment.setUserImage(Variables.User.getImageBase64());
                                 comment.setDestinationUserName(participantToSend.getName());
 
+                                comment.setComments(new ArrayList<Integer>());
+                                comment.setLikes(new ArrayList<Integer>());
+
                                 Variables.Group.getComments().add(0, comment);
                                 adapter.notifyItemInserted(1);
 

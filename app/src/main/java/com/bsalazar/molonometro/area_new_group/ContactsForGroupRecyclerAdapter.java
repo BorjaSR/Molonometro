@@ -2,6 +2,7 @@ package com.bsalazar.molonometro.area_new_group;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.transition.TransitionManager;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -92,10 +93,14 @@ public class ContactsForGroupRecyclerAdapter extends RecyclerView.Adapter<Contac
         holder.contact_for_new_group_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!contacts_selected.contains(contact.getUserID()))
+                if (!contacts_selected.contains(contact.getUserID())) {
+                    TransitionManager.beginDelayedTransition(holder.contact_selected_shadow);
                     ((NewGroupActivity) mContext).addUserToSelection(holder.getAdapterPosition());
-                else
+                    holder.contact_selected_shadow.setVisibility(View.VISIBLE);
+                }else{
                     ((NewGroupActivity) mContext).removeUserToSelection(holder.getAdapterPosition());
+                    holder.contact_selected_shadow.setVisibility(View.GONE);
+                }
             }
         });
 

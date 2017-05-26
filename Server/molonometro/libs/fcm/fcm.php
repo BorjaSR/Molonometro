@@ -38,7 +38,21 @@ class FCM {
             'data' => array (
                     "tipo" => PUSH_FLAG_NEW_GROUP,
                     "GroupID" => $groupID
-            )
+                    )
+        );
+
+        return $this->sendPushNotification($fields);
+    }
+
+
+    // Sending message to a topic by topic id
+    public function sendCommentToTopic($to, $comment) {
+        $fields = array(
+            'to' => '/topics/' . $to,
+            'data' => array (
+                    "tipo" => PUSH_FLAG_COMMENT,
+                    "comment" => $comment
+                    )
         );
 
         return $this->sendPushNotification($fields);
