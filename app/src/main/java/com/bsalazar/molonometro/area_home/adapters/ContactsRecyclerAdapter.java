@@ -18,6 +18,7 @@ import com.bsalazar.molonometro.general.MyRequestListener;
 import com.bsalazar.molonometro.general.PhotoDetailDialogFragment;
 import com.bsalazar.molonometro.general.Tools;
 import com.bumptech.glide.Glide;
+import com.futuremind.recyclerviewfastscroll.SectionTitleProvider;
 
 import java.util.ArrayList;
 
@@ -25,7 +26,8 @@ import java.util.ArrayList;
  * Created by bsalazar on 28/02/2017.
  */
 
-public class ContactsRecyclerAdapter  extends RecyclerView.Adapter<ContactsRecyclerAdapter.ContactViewHolder> {
+public class ContactsRecyclerAdapter  extends RecyclerView.Adapter<ContactsRecyclerAdapter.ContactViewHolder>
+                                        implements SectionTitleProvider {
 
     private Context mContext;
     private ArrayList<Contact> contacts;
@@ -97,6 +99,11 @@ public class ContactsRecyclerAdapter  extends RecyclerView.Adapter<ContactsRecyc
     @Override
     public int getItemCount() {
         return contacts.size();
+    }
+
+    @Override
+    public String getSectionTitle(int position) {
+        return contacts.get(position).getName().substring(0,1);
     }
 
     class ContactViewHolder extends RecyclerView.ViewHolder {

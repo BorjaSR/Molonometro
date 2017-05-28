@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.area_home.adapters.ContactsRecyclerAdapter;
 import com.bsalazar.molonometro.general.Variables;
+import com.futuremind.recyclerviewfastscroll.FastScroller;
 
 /**
  * Created by bsalazar on 18/10/2016.
@@ -20,6 +21,7 @@ public class ContactsFragment extends Fragment {
 
     private View rootView;
     private ContactsRecyclerAdapter adapterRecycler;
+    private FastScroller fastScroller;
 
     LinearLayout empty_list;
 
@@ -43,10 +45,13 @@ public class ContactsFragment extends Fragment {
         empty_list = (LinearLayout) rootView.findViewById(R.id.empty_list);
 
         RecyclerView contacts_recycler = (RecyclerView) rootView.findViewById(R.id.contacts_recycler);
+        fastScroller = (FastScroller) rootView.findViewById(R.id.fastscroll);
+
         contacts_recycler.setHasFixedSize(true);
         contacts_recycler.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapterRecycler = new ContactsRecyclerAdapter(getActivity(), Variables.contacts);
         contacts_recycler.setAdapter(adapterRecycler);
+        fastScroller.setRecyclerView(contacts_recycler);
 
         if (Variables.contacts.size() > 0)
             empty_list.setVisibility(View.GONE);
