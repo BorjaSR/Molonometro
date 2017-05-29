@@ -32,4 +32,6 @@
     <string name="comment">Comentar</string>
     <string name="share">Compartir</string>
     <string name="votar">Votar</string>
+    <string name="no_reactions">No hay reacciones</string>
+    <string name="group_detail_activity">Detalle grupo</string>
 </resources>

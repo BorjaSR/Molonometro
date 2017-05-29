@@ -11,15 +11,19 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:padding="16dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
             android:background="@drawable/background_white_corners">
 
                 <TextView
+                    android:id="@+id/likes_comment_dialog"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="5 Me gusta"
                     android:textColor="#030303"
-                    android:padding="10dp"
+                    android:paddingBottom="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
                     android:background="?android:selectableItemBackground"/>
 
                 <ProgressBar
@@ -41,6 +45,8 @@
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
                     android:gravity="center_vertical">
 
                         <EditText

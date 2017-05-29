@@ -14,6 +14,7 @@ class GroupDAO {
     function __construct() {
         require_once dirname(__FILE__) . '/../../include/db_connect.php';
         require_once dirname(__FILE__) . '/./UserDAO.php';
+        require_once dirname(__FILE__) . '/./CommentsDAO.php';
         // opening db connection
     }
 
@@ -293,6 +294,11 @@ class GroupDAO {
                 $group["Name"] = $Name;
                 $group["Image"] = $Image;
                 $group["FirebaseTopic"] = $firebaseTopic;
+
+
+                $commentsDAO = new CommentsDAO();
+                $group["lastEvent"] = $commentsDAO->getLastCommentByGroup($GroupID);
+
 
                 $groupsList[$i] = $group;
                 $i++;

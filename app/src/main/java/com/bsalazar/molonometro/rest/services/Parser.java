@@ -3,13 +3,17 @@ package com.bsalazar.molonometro.rest.services;
 import com.bsalazar.molonometro.entities.Comment;
 import com.bsalazar.molonometro.entities.Contact;
 import com.bsalazar.molonometro.entities.Group;
+import com.bsalazar.molonometro.entities.LastEvent;
 import com.bsalazar.molonometro.entities.Participant;
 import com.bsalazar.molonometro.entities.User;
 import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.json.ContactJson;
 import com.bsalazar.molonometro.rest.json.GroupJson;
+import com.bsalazar.molonometro.rest.json.LastEventJson;
 import com.bsalazar.molonometro.rest.json.UserJson;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,9 +56,44 @@ public class Parser {
         group.setImageBase64(groupJson.getImage());
         group.setFirebaseTopic(groupJson.getFirebaseTopic());
 
+        group.setLastEvent(parseLastEvent(groupJson.getLastEvent()));
+
         group.setParticipants(new ArrayList<Participant>());
 
         return group;
+    }
+
+    private static LastEvent parseLastEvent(LastEventJson lastEventJson){
+        LastEvent lastEvent = new LastEvent();
+
+        lastEvent.setCommentID(lastEventJson.getCommentID());
+        lastEvent.setUserID(lastEventJson.getUserID());
+        lastEvent.setDestinationUserID(lastEventJson.getDestinationUserID());
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            lastEvent.setLastUpdate(dateFormat.parse(lastEventJson.getLastUpdate()));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        if(lastEventJson.getUserID() == Variables.User.getUserID())
+            lastEvent.setUserName(Variables.User.getName());
+        else{
+            for (Contact contact : Variables.contactsWithApp)
+                if (contact.getUserID() == lastEventJson.getUserID())
+                    lastEvent.setUserName(contact.getName());
+        }
+
+        if(lastEventJson.getDestinationUserID() == Variables.User.getUserID())
+            lastEvent.setDestinationUserName(Variables.User.getName());
+        else{
+            for (Contact contact : Variables.contactsWithApp)
+                if (contact.getUserID() == lastEventJson.getDestinationUserID())
+                    lastEvent.setDestinationUserName(contact.getName());
+        }
+
+        return lastEvent;
     }
 
     public static ArrayList<Participant> parseParticipants(ArrayList<Participant> participantsJson) {

@@ -1,5 +1,7 @@
 package com.bsalazar.molonometro.rest.services;
 
+import android.util.Log;
+
 import com.bsalazar.molonometro.rest.json.ContactsListJson;
 import com.bsalazar.molonometro.rest.json.CreateUserJson;
 import com.bsalazar.molonometro.rest.json.UpdateUserJson;
@@ -15,11 +17,13 @@ import retrofit.http.POST;
  * Created by bsalazar and bangulo and Stackoverflow on 22/02/2017.
  */
 
-public interface ServiceCallbackInterface {
+public abstract class ServiceCallbackInterface {
 
-    void onSuccess(String result);
+    public abstract void onSuccess(String result);
 
-    void onFailure(String result);
+    public void onFailure(String result) {
+        Log.e("SERVICE ERROR", "");
+    }
 }
 
 

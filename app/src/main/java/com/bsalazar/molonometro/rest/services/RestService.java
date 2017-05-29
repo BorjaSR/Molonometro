@@ -7,6 +7,7 @@ import com.bsalazar.molonometro.rest.json.ContactsListJson;
 import com.bsalazar.molonometro.rest.json.CreateGroupJson;
 import com.bsalazar.molonometro.rest.json.CreateUserJson;
 import com.bsalazar.molonometro.rest.json.GroupJson;
+import com.bsalazar.molonometro.rest.json.LikeJson;
 import com.bsalazar.molonometro.rest.json.PushTestJson;
 import com.bsalazar.molonometro.rest.json.UpdateUserJson;
 import com.bsalazar.molonometro.rest.json.UserIdJson;
@@ -108,6 +109,14 @@ public interface RestService {
     void addReplyToComment(
             @Body Comment comment,
             Callback<Boolean> callback);
+
+
+    // LIKES
+    @POST("/likes/addLikeToComment")
+    void addLikeToComment(
+            @Body LikeJson likeJson,
+            Callback<Boolean> callback);
+
 
     @POST("/fcm/sendPushTo")
     void sendPushTest(

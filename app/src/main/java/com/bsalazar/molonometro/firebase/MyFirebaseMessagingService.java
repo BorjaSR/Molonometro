@@ -9,13 +9,10 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.bsalazar.molonometro.R;
-import com.bsalazar.molonometro.area_home.MainActivity;
+import com.bsalazar.molonometro.MainActivity;
 import com.bsalazar.molonometro.entities.Group;
-import com.bsalazar.molonometro.entities.User;
-import com.bsalazar.molonometro.general.Tools;
 import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.controllers.GroupController;
 import com.bsalazar.molonometro.rest.json.GroupJson;
@@ -49,8 +46,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public void onMessageReceived(RemoteMessage remoteMessage) {
 
         Log.d(TAG, "From: " + remoteMessage.getFrom());
-
-        sendNotification("Pitillo", getString(R.string.added_to_group));
 
         // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {

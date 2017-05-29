@@ -2,6 +2,8 @@ package com.bsalazar.molonometro.entities;
 
 import android.graphics.Bitmap;
 
+import com.bsalazar.molonometro.rest.json.LastEventJson;
+
 import java.util.ArrayList;
 
 /**
@@ -14,7 +16,7 @@ public class Group {
     private String imageBase64;
     private String name;
     private String FirebaseTopic;
-    private String lastEvent;
+    private LastEvent lastEvent;
 
     private ArrayList<Participant> participants;
     private ArrayList<Comment> comments;
@@ -89,11 +91,11 @@ public class Group {
         this.participants = participants;
     }
 
-    public String getLastEvent() {
+    public LastEvent getLastEvent() {
         return lastEvent;
     }
 
-    public void setLastEvent(String lastEvent) {
+    public void setLastEvent(LastEvent lastEvent) {
         this.lastEvent = lastEvent;
     }
 }

@@ -19,12 +19,16 @@ import com.bsalazar.molonometro.area_dashboard_group.DashboardGroupActivity;
 import com.bsalazar.molonometro.general.PhotoDetailActivity;
 import com.bsalazar.molonometro.entities.Group;
 import com.bsalazar.molonometro.general.MyRequestListener;
+import com.bsalazar.molonometro.general.Tools;
 import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.controllers.GroupController;
 import com.bsalazar.molonometro.rest.services.ServiceCallbackInterface;
 import com.bumptech.glide.Glide;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created by bsalazar on 28/02/2017.
@@ -52,11 +56,22 @@ public class GroupsRecyclerAdapter extends RecyclerView.Adapter<GroupsRecyclerAd
         final Group group = groups.get(position);
 
         holder.group_name.setText(group.getName());
-        holder.group_detail.setText(group.getFirebaseTopic());
+        holder.group_detail.setText(Tools.cropName(group.getLastEvent().getUserName()) + " ha votado a " + Tools.cropName(group.getLastEvent().getDestinationUserName()));
+
+
+        SimpleDateFormat formatTime = new SimpleDateFormat("HH:mm");
+        SimpleDateFormat formatDate = new SimpleDateFormat("dd/MM/yyyy");
+        Date today = new Date();
+        Date eventDate = group.getLastEvent().getLastUpdate();
+
+        if (today.getYear() == eventDate.getYear() && today.getMonth() == eventDate.getMonth() && today.getDay() == eventDate.getDay()) {
+            holder.last_event_date.setText(formatTime.format(group.getLastEvent().getLastUpdate()));
+        } else
+            holder.last_event_date.setText(formatDate.format(group.getLastEvent().getLastUpdate()));
 
         try {
             if (group.getImageBase64() != null)
-                try{
+                try {
                     byte[] imageByteArray = Base64.decode(group.getImageBase64(), Base64.DEFAULT);
 
                     Glide.with(mContext)
@@ -65,7 +80,7 @@ public class GroupsRecyclerAdapter extends RecyclerView.Adapter<GroupsRecyclerAd
                             .listener(new MyRequestListener(mContext, holder.group_image))
                             .into(holder.group_image);
 
-                }catch (Exception e){
+                } catch (Exception e) {
                     holder.group_image.setImageResource(R.drawable.group_icon);
                 }
             else
@@ -132,6 +147,7 @@ public class GroupsRecyclerAdapter extends RecyclerView.Adapter<GroupsRecyclerAd
         LinearLayout group_layout;
         TextView group_name;
         TextView group_detail;
+        TextView last_event_date;
         ImageView group_image;
 
         GroupViewHolder(View itemView) {
@@ -140,6 +156,7 @@ public class GroupsRecyclerAdapter extends RecyclerView.Adapter<GroupsRecyclerAd
             group_layout = (LinearLayout) itemView.findViewById(R.id.group_layout);
             group_name = (TextView) itemView.findViewById(R.id.group_name);
             group_detail = (TextView) itemView.findViewById(R.id.group_detail);
+            last_event_date = (TextView) itemView.findViewById(R.id.last_event_date);
             group_image = (ImageView) itemView.findViewById(R.id.group_image);
         }
     }

@@ -17,12 +17,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bsalazar.molonometro.R;
-import com.bsalazar.molonometro.area_home.MainActivity;
+import com.bsalazar.molonometro.MainActivity;
 import com.bsalazar.molonometro.general.Constants;
 import com.bsalazar.molonometro.general.Tools;
 import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.controllers.UserController;
-import com.bsalazar.molonometro.rest.json.UpdateUserJson;
 import com.bsalazar.molonometro.rest.services.RestController;
 import com.bsalazar.molonometro.rest.services.ServiceCallbackInterface;
 

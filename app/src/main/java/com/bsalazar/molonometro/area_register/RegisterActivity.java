@@ -5,15 +5,13 @@ import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.bsalazar.molonometro.area_home.MainActivity;
+import com.bsalazar.molonometro.MainActivity;
 import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.entities.User;
 import com.bsalazar.molonometro.general.Constants;
@@ -23,7 +21,6 @@ import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.controllers.UserController;
 import com.bsalazar.molonometro.rest.json.CreateUserJson;
 import com.bsalazar.molonometro.rest.services.RestController;
-import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {

@@ -3,6 +3,7 @@ package com.bsalazar.molonometro.area_dashboard_group;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -22,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TableRow;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bsalazar.molonometro.R;
@@ -43,9 +45,11 @@ import java.util.ArrayList;
 public class CommentsDialogFragment extends DialogFragment {
 
     private int commentID;
+    private ArrayList<Integer> likes;
     private boolean needFocus;
 
     private Context mContext;
+    private TextView likes_comment_dialog;
     private LinearLayout reply_container;
     private EditText reply_text;
     private ImageView send_reply;
@@ -86,8 +90,10 @@ public class CommentsDialogFragment extends DialogFragment {
                 false);
 
         commentID = getArguments().getInt("commentID", -1);
-        
+        likes = new Gson().fromJson(getArguments().getString("likes", ""), ArrayList.class);
+
         reply_container = (LinearLayout) rootView.findViewById(R.id.reply_container);
+        likes_comment_dialog = (TextView) rootView.findViewById(R.id.likes_comment_dialog);
         reply_text = (EditText) rootView.findViewById(R.id.reply_text);
         progress_replies = (ProgressBar) rootView.findViewById(R.id.progress_replies);
         commentsRecyclerView = (RecyclerView) rootView.findViewById(R.id.reply_recycler);
@@ -96,6 +102,12 @@ public class CommentsDialogFragment extends DialogFragment {
 
 
         loadReplies();
+
+        int number_likes = likes.size();
+        if (number_likes > 0) {
+            likes_comment_dialog.setText(number_likes + " Me gusta");
+        } else
+            likes_comment_dialog.setText(getString(R.string.no_reactions));
 
         reply_text.addTextChangedListener(new TextWatcher() {
 

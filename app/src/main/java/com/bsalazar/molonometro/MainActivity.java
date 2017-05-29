@@ -1,4 +1,4 @@
-package com.bsalazar.molonometro.area_home;
+package com.bsalazar.molonometro;
 
 import android.Manifest;
 import android.content.Context;
@@ -29,6 +29,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bsalazar.molonometro.area_adjust.AccountActivity;
+import com.bsalazar.molonometro.area_home.ContactsFragment;
+import com.bsalazar.molonometro.area_home.GroupsFragment;
 import com.bsalazar.molonometro.area_new_group.NewGroupActivity;
 import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.entities.PhoneContact;

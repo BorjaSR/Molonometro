@@ -180,6 +180,32 @@ class CommentsDAO {
         return $response;
     }
 
+    public function getLastCommentByGroup($groupID){
+        //SELECT CommentID, UserID, DestinationUserID, LastUpdate From comments where GroupID = 15 and AssociatedCommentID IS NULL and Deleted = 0 ORDER BY Created DESC LIMIT 1
+        $db = new DbConnect();
+        $this->conn = $db->connect();
+        $response = array();
+
+        $stmt = $this->conn->prepare("SELECT CommentID, UserID, DestinationUserID, LastUpdate From comments where GroupID = ? and AssociatedCommentID IS NULL and Deleted = 0 ORDER BY Created DESC LIMIT 1");
+        $stmt->bind_param("i", $groupID);
+        
+        if ($stmt->execute()) {
+            $stmt->bind_result($CommentID, $UserID, $DestinationUserID, $LastUpdate);
+            $stmt->fetch();
+
+            $comment = array();
+            $comment["CommentID"] = $CommentID;
+            $comment["UserID"] = $UserID;
+            $comment["DestinationUserID"] = $DestinationUserID;
+            $comment["LastUpdate"] = $LastUpdate;
+        }
+
+
+        $stmt->close();
+        $db->disconnect();
+        return $comment;
+    }
+
     public function getSimpleReplies($commentID) {
         $db = new DbConnect();
         $this->conn = $db->connect();

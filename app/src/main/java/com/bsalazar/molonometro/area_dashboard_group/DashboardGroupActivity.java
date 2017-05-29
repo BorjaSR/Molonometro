@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -46,6 +47,7 @@ import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.area_dashboard_group.adapters.AutoCompleteAdapter;
 import com.bsalazar.molonometro.area_dashboard_group.adapters.CommentsRecyclerAdapter;
 import com.bsalazar.molonometro.entities.Comment;
+import com.bsalazar.molonometro.entities.LastEvent;
 import com.bsalazar.molonometro.entities.Participant;
 import com.bsalazar.molonometro.general.Constants;
 import com.bsalazar.molonometro.general.Tools;
@@ -55,8 +57,11 @@ import com.bsalazar.molonometro.rest.services.ServiceCallbackInterface;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.google.gson.Gson;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by bsalazar on 28/02/2017.
@@ -110,6 +115,7 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
         shadow = (LinearLayout) findViewById(R.id.shadow);
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setVisibility(View.GONE);
 
         add_comment_container = (LinearLayout) findViewById(R.id.add_comment_container);
         destinationUser = (AutoCompleteTextView) findViewById(R.id.destinationUser);
@@ -283,6 +289,13 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
             case android.R.id.home:
                 super.onBackPressed();
                 return true;
+            case R.id.action_comment:
+                showAddComment();
+                return true;
+            case R.id.action_group_info:
+                Intent group_detail = new Intent(this, GroupDetailActivity.class);
+                startActivity(group_detail);
+                return true;
             case android.R.id.title:
                 Snackbar.make(findViewById(R.id.termometer_container), "Titulo pulsado", Snackbar.LENGTH_SHORT).show();
                 return true;
@@ -327,6 +340,13 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
                                     no_comments.setVisibility(View.GONE);
                                 }
 
+                                LastEvent lastEvent = new LastEvent();
+                                lastEvent.setUserID(Variables.User.getUserID());
+                                lastEvent.setUserName(Variables.User.getName());
+                                lastEvent.setDestinationUserID(participantToSend.getUserID());
+                                lastEvent.setDestinationUserName(participantToSend.getName());
+                                lastEvent.setLastUpdate(new Date());
+                                Variables.Group.setLastEvent(lastEvent);
 
                                 hideAddComment();
 
@@ -397,8 +417,17 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
         }
     }
 
+    public void addLikePoint(int destinationUserID){
+
+        for (Participant participant : Variables.Group.getParticipants())
+            if (participant.getUserID() == destinationUserID)
+                participant.setMolopuntos(participant.getMolopuntos() + 1);
+
+        recalculateTermometer();
+    }
+
     private void showAddComment() {
-        fab.setVisibility(View.GONE);
+//        fab.setVisibility(View.GONE);
         add_comment_container.setVisibility(View.VISIBLE);
         isAddCommentShowed = true;
     }
@@ -409,7 +438,7 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
         imm.hideSoftInputFromWindow(fab.getWindowToken(), 0);
 
         isAddCommentShowed = false;
-        fab.setVisibility(View.VISIBLE);
+//        fab.setVisibility(View.VISIBLE);
         add_comment_container.setVisibility(View.GONE);
 
         destinationUser.setText("");
@@ -449,12 +478,13 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
         return highestScore;
     }
 
-    public void showCommentsDialog(int commentID, boolean needFocus){
+    public void showCommentsDialog(int commentID, boolean needFocus, ArrayList<Integer> likes){
         CommentsDialogFragment commentsDialogFragment = new CommentsDialogFragment();
 
         Bundle args = new Bundle();
         args.putInt("commentID", commentID);
         args.putBoolean("focus", needFocus);
+        args.putString("likes", new Gson().toJson(likes));
         commentsDialogFragment.setArguments(args);
 
         commentsDialogFragment.show(getFragmentManager(), "COMMENTS");
