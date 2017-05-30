@@ -118,7 +118,7 @@ public class ContactsRecyclerAdapter  extends RecyclerView.Adapter<ContactsRecyc
 
             contact_image = (ImageView) itemView.findViewById(R.id.group_image);
             contact_name = (TextView) itemView.findViewById(R.id.group_name);
-            item_detail = (TextView) itemView.findViewById(R.id.group_detail);
+            item_detail = (TextView) itemView.findViewById(R.id.participant_state);
             invite_contact_button = (TextView) itemView.findViewById(R.id.invite_contact_button);
         }
     }

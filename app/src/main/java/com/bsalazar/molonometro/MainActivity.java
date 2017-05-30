@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.transition.TransitionManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -26,6 +27,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bsalazar.molonometro.area_adjust.AccountActivity;
@@ -65,6 +67,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private MainScreenAdapter adapter;
 
     private final int PERMISSION_RESULT_READ_CONTACTS = 1;
+
+    private boolean contactsReady = false;
+    private boolean groupsReady = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,14 +132,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int permissionCheck = ContextCompat.checkSelfPermission(this,
                 Manifest.permission.READ_CONTACTS);
         if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
-            getContacts();
+            getContacts(true);
         } else {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.READ_CONTACTS},
                     PERMISSION_RESULT_READ_CONTACTS);
         }
 
-        refreshGroups();
+        refreshGroups(true);
 
 
         // Save the screen size
@@ -168,20 +173,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             return true;
         } else if (id == R.id.action_refresh) {
             if (main_view_pager.getCurrentItem() == 0)
-                refreshGroups();
+                refreshGroups(false);
             else if (main_view_pager.getCurrentItem() == 1)
-                getContacts();
+                getContacts(false);
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    public void refreshGroups() {
+    public void refreshGroups(final boolean firstTime) {
         new GroupController().getGroupsByUser(this, new UserIdJson(Variables.User.getUserID()), new ServiceCallbackInterface() {
             @Override
             public void onSuccess(String result) {
                 adapter.updateGroups();
+                if(firstTime){
+                    groupsReady = true;
+                    showContent();
+                }
             }
 
             @Override
@@ -228,7 +237,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case PERMISSION_RESULT_READ_CONTACTS:
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    getContacts();
+                    getContacts(true);
                 } else {
                     this.finish();
                 }
@@ -238,7 +247,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void getContacts() {
+    private void getContacts(final boolean firstTime) {
 
         String[] projection = new String[]{ContactsContract.Data._ID, ContactsContract.Data.DISPLAY_NAME, ContactsContract.CommonDataKinds.Phone.NUMBER, ContactsContract.Data.MIMETYPE}; //, ContactsContract.CommonDataKinds.Phone.NUMBER, ContactsContract.CommonDataKinds.Phone.TYPE
 
@@ -277,6 +286,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onSuccess(String result) {
                 adapter.updateContacts();
+                if(firstTime){
+                    contactsReady = true;
+                    showContent();
+                }
             }
 
             @Override
@@ -342,5 +355,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (Variables.User != null) Variables.User.setFirebaseToken(token);
 
         return token;
+    }
+
+    private void showContent(){
+        if(contactsReady && groupsReady){
+            RelativeLayout view_pager_container = (RelativeLayout) findViewById(R.id.view_pager_container);
+            LinearLayout progress_main_contain = (LinearLayout) findViewById(R.id.progress_main_contain);
+
+            TransitionManager.beginDelayedTransition(view_pager_container);
+            progress_main_contain.setVisibility(View.GONE);
+        }
     }
 }

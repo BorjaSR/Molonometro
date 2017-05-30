@@ -35,7 +35,6 @@
                     android:layout_width="@dimen/imageSize_profile"
                     android:layout_height="@dimen/imageSize_profile"
                     android:layout_margin="@dimen/margin_image_profile"
-                    android:src="@drawable/gradiant_register"
                     app:civ_border_color="@color/charcoal_gray"
                     app:civ_border_width="2dp"
                     android:layout_centerInParent="true"/>

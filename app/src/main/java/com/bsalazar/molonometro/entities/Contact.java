@@ -63,4 +63,5 @@ public class Contact {
     public void setInApp(boolean inApp) {
         isInApp = inApp;
     }
+
 }

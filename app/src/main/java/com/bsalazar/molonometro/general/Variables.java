@@ -14,6 +14,7 @@ import java.util.ArrayList;
 public class Variables {
 
     public static String search_for_contacts_for_group = "";
+    public static String search_for_add_participant_to_group = "";
     public static User User;
     public static String FirebaseToken = null;
 

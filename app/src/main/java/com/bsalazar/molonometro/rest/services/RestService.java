@@ -2,6 +2,7 @@ package com.bsalazar.molonometro.rest.services;
 
 import com.bsalazar.molonometro.entities.Comment;
 import com.bsalazar.molonometro.entities.Participant;
+import com.bsalazar.molonometro.rest.json.AddUserToGroupJson;
 import com.bsalazar.molonometro.rest.json.ContactJson;
 import com.bsalazar.molonometro.rest.json.ContactsListJson;
 import com.bsalazar.molonometro.rest.json.CreateGroupJson;
@@ -87,6 +88,16 @@ public interface RestService {
     void getGroupParticipantsByID(
             @Body GroupJson groupIdJson,
             Callback<ArrayList<Participant>> callback);
+
+    @POST("/group/addUserToGroup")
+    void addUserToGroup(
+            @Body AddUserToGroupJson addUserToGroupJson,
+            Callback<Boolean> callback);
+
+    @POST("/group/makeUserAdmin")
+    void makeUserAdmin(
+            @Body AddUserToGroupJson addUserToGroupJson,
+            Callback<Boolean> callback);
 
 
     // COMENTS //

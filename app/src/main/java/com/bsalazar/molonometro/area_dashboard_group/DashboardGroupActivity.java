@@ -84,6 +84,7 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
     private EditText comment_text;
     private ProgressBar loading_comments;
 
+    private AutoCompleteAdapter autoCompleteAdapter;
     private boolean isAddCommentShowed = false;
     private boolean isUSerInGroup = false;
     private Participant participantToSend;
@@ -135,57 +136,10 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
         //SET HEIGHT TERMOMETER
         Constants.HEIGHT_OF_TEMOMETER = (int) ((ter_height * 830) / 1050);
 
-        users_container.removeAllViews();
-        for (Participant user : Variables.Group.getParticipants()) {
-            LayoutInflater inflater = LayoutInflater.from(getApplicationContext());
-            View user_termometer_view = inflater.inflate(R.layout.termometer_user, users_container, false);
 
-            user_termometer_view.setTag(user.getUserID());
-
-            ImageView dashboard_user_image = (ImageView) user_termometer_view.findViewById(R.id.dashboard_user_image);
-            TextView user_name = (TextView) user_termometer_view.findViewById(R.id.user_name);
-
-            if (user.getUserID() == Variables.User.getUserID())
-                user_name.setText(getString(R.string.you) + " (" + user.getMolopuntos() + " Mp)");
-            else {
-                user_name.setText(Tools.cropNameSurname(user.getName()) + " (" + user.getMolopuntos() + " Mp)");
-                participants_without_you.add(user);
-            }
-            try {
-                byte[] imageByteArray = Base64.decode(user.getImageBase64(), Base64.DEFAULT);
-
-                Glide.with(this)
-                        .load(imageByteArray)
-                        .asBitmap()
-                        .into(dashboard_user_image);
-
-            } catch (Exception e) {
-                dashboard_user_image.setImageResource(R.drawable.user_icon);
-            }
-
-            users_container.addView(user_termometer_view);
-            users_container.getChildAt(users_container.getChildCount() - 1).setTranslationY(getPositionUser(user.getMolopuntos()));
-        }
-
-
-        final AutoCompleteAdapter autoCompleteAdapter = new AutoCompleteAdapter(this, R.layout.autocomplete_participant_item, participants_without_you);
-
-
+        autoCompleteAdapter = new AutoCompleteAdapter(this, R.layout.autocomplete_participant_item, participants_without_you);
         destinationUser.setAdapter(autoCompleteAdapter);
         destinationUser.setThreshold(1);
-
-//        destinationUser.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                autoCompleteAdapter.getFilter().filter("", new Filter.FilterListener() {
-//                    @Override
-//                    public void onFilterComplete(int i) {
-//                        destinationUser.showDropDown();
-//                        Toast.makeText(getApplicationContext(), i + " coincidencias", Toast.LENGTH_SHORT).show();
-//                    }
-//                });
-//            }
-//        });
 
         destinationUser.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -194,6 +148,7 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
                 comment_text.requestFocus();
             }
         });
+
 
         destinationUser.addTextChangedListener(new TextWatcher() {
             @Override
@@ -258,6 +213,11 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        paintTermometer();
+    }
 
     @Override
     public void onBackPressed() {
@@ -266,6 +226,44 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
         else
             hideAddComment();
 
+    }
+
+    private void paintTermometer(){
+        participants_without_you.clear();
+        users_container.removeAllViews();
+        for (Participant user : Variables.Group.getParticipants()) {
+            LayoutInflater inflater = LayoutInflater.from(getApplicationContext());
+            View user_termometer_view = inflater.inflate(R.layout.termometer_user, users_container, false);
+
+            user_termometer_view.setTag(user.getUserID());
+
+            ImageView dashboard_user_image = (ImageView) user_termometer_view.findViewById(R.id.dashboard_user_image);
+            TextView user_name = (TextView) user_termometer_view.findViewById(R.id.user_name);
+
+            if (user.getUserID() == Variables.User.getUserID())
+                user_name.setText(getString(R.string.you) + " (" + user.getMolopuntos() + " Mp)");
+            else {
+                user_name.setText(Tools.cropNameSurname(user.getName()) + " (" + user.getMolopuntos() + " Mp)");
+                participants_without_you.add(user);
+            }
+            try {
+                byte[] imageByteArray = Base64.decode(user.getImageBase64(), Base64.DEFAULT);
+
+                Glide.with(this)
+                        .load(imageByteArray)
+                        .asBitmap()
+                        .into(dashboard_user_image);
+
+            } catch (Exception e) {
+                dashboard_user_image.setImageResource(R.drawable.user_icon);
+            }
+
+            users_container.addView(user_termometer_view);
+            users_container.getChildAt(users_container.getChildCount() - 1).setTranslationY(getPositionUser(user.getMolopuntos()));
+        }
+
+        autoCompleteAdapter = new AutoCompleteAdapter(this, R.layout.autocomplete_participant_item, participants_without_you);
+        destinationUser.setAdapter(autoCompleteAdapter);
     }
 
     private Boolean userIsInGroup(String name) {

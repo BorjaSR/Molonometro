@@ -52,7 +52,7 @@
                 android:layout_marginTop="7dp">
 
                 <TextView
-                    android:id="@+id/group_detail"
+                    android:id="@+id/participant_state"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"

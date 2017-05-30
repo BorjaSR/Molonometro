@@ -1,6 +1,7 @@
-package com.bsalazar.molonometro.area_new_group;
+package com.bsalazar.molonometro.area_dashboard_group.adapters;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.transition.TransitionManager;
 import android.util.Base64;
@@ -12,7 +13,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bsalazar.molonometro.R;
+import com.bsalazar.molonometro.area_dashboard_group.AddParticipantActivity;
+import com.bsalazar.molonometro.area_new_group.NewGroupActivity;
 import com.bsalazar.molonometro.entities.Contact;
+import com.bsalazar.molonometro.entities.Participant;
 import com.bsalazar.molonometro.general.MyRequestListener;
 import com.bsalazar.molonometro.general.Variables;
 import com.bumptech.glide.Glide;
@@ -23,14 +27,12 @@ import java.util.ArrayList;
  * Created by bsalazar on 28/02/2017.
  */
 
-public class ContactsForGroupRecyclerAdapter extends RecyclerView.Adapter<ContactsForGroupRecyclerAdapter.ContactsForGroupViewHolder> {
+public class AddParticipantAdapter extends RecyclerView.Adapter<AddParticipantAdapter.ContactsForGroupViewHolder> {
 
     private Context mContext;
     private ArrayList<Contact> contacts;
 
-    private ArrayList<Integer> contacts_selected = new ArrayList<>();
-
-    public ContactsForGroupRecyclerAdapter(Context context, ArrayList<Contact> contacts) {
+    public AddParticipantAdapter(Context context, ArrayList<Contact> contacts) {
         this.mContext = context;
         this.contacts = contacts;
     }
@@ -46,21 +48,21 @@ public class ContactsForGroupRecyclerAdapter extends RecyclerView.Adapter<Contac
 
         final Contact contact = contacts.get(position);
 
-        if (Variables.search_for_contacts_for_group.equals("")) {
+        if (Variables.search_for_add_participant_to_group.equals("")) {
             holder.contact_name_first_part.setText(contact.getName());
             holder.contact_name_first_part.setVisibility(View.VISIBLE);
             holder.match_contact_name.setVisibility(View.GONE);
             holder.contact_name_second_part.setVisibility(View.GONE);
 
         } else {
-            String[] parts = contact.getName().split(Variables.search_for_contacts_for_group);
+            String[] parts = contact.getName().split(Variables.search_for_add_participant_to_group);
             if (parts.length == 0) {
-                holder.match_contact_name.setText(Variables.search_for_contacts_for_group);
+                holder.match_contact_name.setText(Variables.search_for_add_participant_to_group);
                 holder.contact_name_first_part.setVisibility(View.GONE);
                 holder.contact_name_second_part.setVisibility(View.GONE);
             } else {
                 holder.contact_name_first_part.setText(parts[0]);
-                holder.match_contact_name.setText(Variables.search_for_contacts_for_group);
+                holder.match_contact_name.setText(Variables.search_for_add_participant_to_group);
 
                 String second = "";
                 for (int i = 1; i < parts.length; i++)
@@ -72,7 +74,6 @@ public class ContactsForGroupRecyclerAdapter extends RecyclerView.Adapter<Contac
             }
         }
 
-        holder.item_detail.setText(contact.getState());
 
         try {
             Glide.with(mContext)
@@ -85,25 +86,31 @@ public class ContactsForGroupRecyclerAdapter extends RecyclerView.Adapter<Contac
             holder.contact_image.setImageResource(R.drawable.user_icon);
         }
 
-        if (contacts_selected.contains(contact.getUserID()))
+        if (isInGroup(contact)) {
             holder.contact_selected_shadow.setVisibility(View.VISIBLE);
-        else
+            holder.item_detail.setText(mContext.getString(R.string.already_in_group));
+            holder.contact_for_new_group_layout.setClickable(false);
+        } else {
             holder.contact_selected_shadow.setVisibility(View.GONE);
+            holder.item_detail.setText(contact.getState());
+            holder.contact_for_new_group_layout.setClickable(true);
 
-        holder.contact_for_new_group_layout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!contacts_selected.contains(contact.getUserID())) {
-                    TransitionManager.beginDelayedTransition(holder.contact_selected_shadow);
-                    ((NewGroupActivity) mContext).addUserToSelection(holder.getAdapterPosition());
-                    holder.contact_selected_shadow.setVisibility(View.VISIBLE);
-                }else{
-                    ((NewGroupActivity) mContext).removeUserToSelection(holder.getAdapterPosition());
-                    holder.contact_selected_shadow.setVisibility(View.GONE);
+            holder.contact_for_new_group_layout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ((AddParticipantActivity) mContext).showAddParticipantDialog(contact);
                 }
-            }
-        });
+            });
+        }
 
+
+    }
+
+    private boolean isInGroup(Contact contact) {
+        for (Participant participant : Variables.Group.getParticipants())
+            if (participant.getUserID() == contact.getUserID())
+                return true;
+        return false;
     }
 
     @Override
@@ -132,11 +139,5 @@ public class ContactsForGroupRecyclerAdapter extends RecyclerView.Adapter<Contac
             item_detail = (TextView) itemView.findViewById(R.id.participant_state);
             contact_image = (ImageView) itemView.findViewById(R.id.group_image);
         }
-    }
-
-    void setContacts_selected(ArrayList<Contact> contacts_selected_in) {
-        contacts_selected.clear();
-        for (Contact contact : contacts_selected_in)
-            contacts_selected.add(contact.getUserID());
     }
 }

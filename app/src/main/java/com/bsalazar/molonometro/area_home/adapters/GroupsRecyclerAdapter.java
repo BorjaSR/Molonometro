@@ -27,7 +27,6 @@ import com.bumptech.glide.Glide;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -56,8 +55,10 @@ public class GroupsRecyclerAdapter extends RecyclerView.Adapter<GroupsRecyclerAd
         final Group group = groups.get(position);
 
         holder.group_name.setText(group.getName());
-        holder.group_detail.setText(Tools.cropName(group.getLastEvent().getUserName()) + " ha votado a " + Tools.cropName(group.getLastEvent().getDestinationUserName()));
-
+        if (group.getLastEvent() != null)
+            holder.group_detail.setText(Tools.cropName(group.getLastEvent().getUserName()) + " ha votado a " + Tools.cropName(group.getLastEvent().getDestinationUserName()));
+        else
+            holder.group_detail.setText(mContext.getString(R.string.group_creation));
 
         SimpleDateFormat formatTime = new SimpleDateFormat("HH:mm");
         SimpleDateFormat formatDate = new SimpleDateFormat("dd/MM/yyyy");
@@ -155,7 +156,7 @@ public class GroupsRecyclerAdapter extends RecyclerView.Adapter<GroupsRecyclerAd
 
             group_layout = (LinearLayout) itemView.findViewById(R.id.group_layout);
             group_name = (TextView) itemView.findViewById(R.id.group_name);
-            group_detail = (TextView) itemView.findViewById(R.id.group_detail);
+            group_detail = (TextView) itemView.findViewById(R.id.participant_state);
             last_event_date = (TextView) itemView.findViewById(R.id.last_event_date);
             group_image = (ImageView) itemView.findViewById(R.id.group_image);
         }

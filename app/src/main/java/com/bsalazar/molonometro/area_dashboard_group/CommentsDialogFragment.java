@@ -150,6 +150,11 @@ public class CommentsDialogFragment extends DialogFragment {
                     reply.setUserID(Variables.User.getUserID());
                     reply.setText(reply_text.getText().toString());
 
+                    reply_text.setText("");
+
+                    InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+
                     new CommentsController().addReplyToComment(mContext, reply, new ServiceCallbackInterface() {
                         @Override
                         public void onSuccess(String result) {

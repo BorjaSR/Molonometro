@@ -22,7 +22,6 @@ import android.widget.TextView;
 
 import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.entities.Contact;
-import com.bsalazar.molonometro.entities.Group;
 import com.bsalazar.molonometro.general.Tools;
 import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.controllers.GroupController;
@@ -65,8 +64,8 @@ public class FinishGroupActivity extends AppCompatActivity implements View.OnCli
             final View participant = inflater.inflate(R.layout.contact_for_group_item, participants_container, false);
 
             ImageView contact_image = (ImageView) participant.findViewById(R.id.group_image);
-            TextView contact_name = (TextView) participant.findViewById(R.id.group_name_first_part);
-            TextView contact_state = (TextView) participant.findViewById(R.id.group_detail);
+            TextView contact_name = (TextView) participant.findViewById(R.id.participant_name);
+            TextView contact_state = (TextView) participant.findViewById(R.id.participant_state);
 
             String image64 = "";
             String Name = "";

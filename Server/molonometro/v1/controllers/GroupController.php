@@ -145,6 +145,47 @@ $app->post('/group/getGroupParticipantsByID', function() use ($app) {
 
 });
 
+
+$app->post('/group/addUserToGroup', function() use ($app) {
+    $body = $app->request()->getBody(); 
+    $input = json_decode($body);
+
+    // reading post params
+    $userID = (int)$input->UserID;
+    $groupID = (int)$input->GroupID;
+    $contactID = (int)$input->ContactID;
+
+    $result = addUserToGroup($contactID, $groupID, $userID);
+
+    if($result){
+        echoResponse(200, true);
+
+    }else{
+        echoResponse(455, false);
+    }
+
+});
+
+
+$app->post('/group/makeUserAdmin', function() use ($app) {
+    $body = $app->request()->getBody(); 
+    $input = json_decode($body);
+
+    // reading post params
+    $groupID = (int)$input->GroupID;
+    $contactID = (int)$input->ContactID;
+
+    $result = makeUserAdmin($contactID, $groupID);
+
+    if($result){
+        echoResponse(200, true);
+
+    }else{
+        echoResponse(455, false);
+    }
+
+});
+
 function addUserToGroup($userID, $groupID, $creater) {
 
     $groupDAO = new GroupDAO();
@@ -152,7 +193,6 @@ function addUserToGroup($userID, $groupID, $creater) {
 
 
     if($creater != $userID){
-
         $userDAO = new UserDAO();
         $contactFirebaseToken = $userDAO->getFirebaseTokenByUser($userID);
 

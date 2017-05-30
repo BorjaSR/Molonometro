@@ -58,10 +58,31 @@
     </RelativeLayout>
 
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/main_view_pager"
+    <RelativeLayout
+        android:id="@+id/view_pager_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="1" >
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/main_view_pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <LinearLayout
+            android:id="@+id/progress_main_contain"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:gravity="center_horizontal"
+            android:visibility="visible">
+
+            <ProgressBar
+                android:layout_marginTop="40dp"
+                android:layout_width="45dp"
+                android:layout_height="45dp" />
+        </LinearLayout>
+
+    </RelativeLayout>
 
 </LinearLayout>

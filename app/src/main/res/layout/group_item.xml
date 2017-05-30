@@ -45,7 +45,7 @@
                 android:singleLine="true"/>
 
             <TextView
-                android:id="@+id/group_detail"
+                android:id="@+id/participant_state"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="7dp"

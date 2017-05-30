@@ -34,4 +34,11 @@
     <string name="votar">Votar</string>
     <string name="no_reactions">No hay reacciones</string>
     <string name="group_detail_activity">Detalle grupo</string>
+    <string name="add_participant">Añadir participante</string>
+    <string name="add_participant_activity">Añadir participante</string>
+    <string name="already_in_group">Ya esta en el grupo.</string>
+    <string name="sure_to_add_it">¿Deseas añadirle a %1$s?</string>
+    <string name="change_name">Cambiar nombre</string>
+    <string name="edit_group_name">Editar grupo</string>
+    <string name="group_creation">Creación del grupo</string>
 </resources>

@@ -43,10 +43,6 @@
             android:name=".area_dashboard_group.DashboardGroupActivity"
             android:label="@string/group_activity"
             android:parentActivityName=".MainActivity">
-            <!-- Parent activity meta-data to support 4.0 and lower -->
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
         </activity>
 
         <activity
@@ -55,26 +51,24 @@
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
+        <activity
+            android:name=".area_dashboard_group.AddParticipantActivity"
+            android:label="@string/add_participant_activity"
+            android:parentActivityName=".area_dashboard_group.GroupDetailActivity">
+        </activity>
+
 
 
         <activity
             android:name=".area_new_group.NewGroupActivity"
             android:label="@string/new_group"
             android:parentActivityName=".MainActivity">
-            <!-- Parent activity meta-data to support 4.0 and lower -->
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
         </activity>
 
         <activity
             android:name=".area_new_group.FinishGroupActivity"
             android:label="@string/finish_group"
             android:parentActivityName=".area_new_group.NewGroupActivity">
-            <!-- Parent activity meta-data to support 4.0 and lower -->
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".area_new_group.NewGroupActivity" />
         </activity>
 
 
@@ -83,20 +77,12 @@
             android:name=".area_adjust.AccountActivity"
             android:label="@string/adjust_activity"
             android:parentActivityName=".MainActivity">
-            <!-- Parent activity meta-data to support 4.0 and lower -->
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
         </activity>
 
         <activity
             android:name=".area_adjust.EditFieldActivity"
             android:label="@string/edit_field"
             android:parentActivityName=".area_adjust.AccountActivity">
-            <!-- Parent activity meta-data to support 4.0 and lower -->
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".area_adjust.AccountActivity" />
         </activity>
 
 
@@ -107,10 +93,6 @@
             android:label="@string/edit_field"
             android:theme="@style/AppTheme.Transparent"
             android:parentActivityName=".MainActivity" >
-
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity"/>
         </activity>
 
 
