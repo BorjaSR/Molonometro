@@ -13,11 +13,12 @@ $app->post('/comments/addCommentToGroup', function() use ($app) {
     $userID = (int)$input->UserID;
     $destinationUserID = (int)$input->DestinationUserID;
     $text = (string)$input->Text;
+    $image = (string)$input->Image;
 
 	if($userID != $destinationUserID){
 
 	    $commentsDAO = new CommentsDAO();
-	    $DBresponse = $commentsDAO->addComment($groupID, $userID, $destinationUserID, $text);
+	    $DBresponse = $commentsDAO->addComment($groupID, $userID, $destinationUserID, $text, $image);
 
 	    if($DBresponse["status"] == 200){
 	    	$isAddMolopuntos = addMolopuntosByComment($destinationUserID, $groupID);

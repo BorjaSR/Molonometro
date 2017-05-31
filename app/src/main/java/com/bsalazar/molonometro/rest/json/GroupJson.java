@@ -9,9 +9,18 @@ public class GroupJson {
     private String Name;
     private String Image;
     private String FirebaseTopic;
+    private String LastUpdate;
     private LastEventJson lastEvent;
 
     public GroupJson() {
+    }
+
+    public String getLastUpdate() {
+        return LastUpdate;
+    }
+
+    public void setLastUpdate(String lastUpdate) {
+        LastUpdate = lastUpdate;
     }
 
     public String getFirebaseTopic() {

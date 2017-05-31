@@ -84,7 +84,6 @@ public class NewGroupActivity extends AppCompatActivity implements View.OnClickL
                 Variables.createGroupJson.setContacts(contacts_selected_id);
 
                 startActivity(new Intent(getApplicationContext(), FinishGroupActivity.class));
-                finish();
             }
         });
 

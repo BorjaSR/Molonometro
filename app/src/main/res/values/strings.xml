@@ -40,5 +40,7 @@
     <string name="sure_to_add_it">¿Deseas añadirle a %1$s?</string>
     <string name="change_name">Cambiar nombre</string>
     <string name="edit_group_name">Editar grupo</string>
-    <string name="group_creation">Creación del grupo</string>
+    <string name="group_creation">Grupo creado</string>
+    <string name="wish_exit_group">¿Quieres salir del grupo?</string>
+    <string name="today">Hoy</string>
 </resources>

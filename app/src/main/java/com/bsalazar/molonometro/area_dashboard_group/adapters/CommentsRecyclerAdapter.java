@@ -22,6 +22,8 @@ import com.bsalazar.molonometro.rest.controllers.LikesController;
 import com.bsalazar.molonometro.rest.services.ServiceCallbackInterface;
 import com.bumptech.glide.Glide;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 /**
@@ -60,7 +62,28 @@ public class CommentsRecyclerAdapter extends RecyclerView.Adapter<CommentsRecycl
 
             holder.comment_from.setText(Tools.cropName(comment.getUserName()));
             holder.comment_to.setText(Tools.cropName(comment.getDestinationUserName()));
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM HH:mm");//SimpleDateFormat.getDateTimeInstance();//new SimpleDateFormat("dd/MM/yyyy HH:mm");
+            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+            if (Tools.isToday(comment.getDate()))
+                holder.comment_date.setText(mContext.getString(R.string.today) + " " + timeFormat.format(comment.getDate()));
+            else
+                holder.comment_date.setText(dateFormat.format(comment.getDate()));
+
             holder.comment.setText(comment.getText());
+
+            if(comment.getImage() == null || comment.getImage().length() == 0)
+                holder.comment_image.setVisibility(View.GONE);
+            else{
+                holder.comment_image.setVisibility(View.VISIBLE);
+                byte[] imageByteArray = Base64.decode(comment.getImage(), Base64.DEFAULT);
+
+                Glide.with(mContext)
+                        .load(imageByteArray)
+                        .asBitmap()
+                        .listener(new MyRequestListener(mContext, holder.user_image))
+                        .into(holder.comment_image);
+            }
 
             int number_comments = comment.getComments().size();
             int number_likes = comment.getLikes().size();
@@ -158,8 +181,10 @@ public class CommentsRecyclerAdapter extends RecyclerView.Adapter<CommentsRecycl
         LinearLayout comment_container;
         LinearLayout likes_and_comments;
         ImageView user_image;
+        ImageView comment_image;
         TextView comment_from;
         TextView comment_to;
+        TextView comment_date;
         TextView comment;
         TextView likes;
         TextView comments;
@@ -177,8 +202,10 @@ public class CommentsRecyclerAdapter extends RecyclerView.Adapter<CommentsRecycl
             comment_container = (LinearLayout) itemView.findViewById(R.id.comment_container);
             likes_and_comments = (LinearLayout) itemView.findViewById(R.id.likes_and_comments);
             user_image = (ImageView) itemView.findViewById(R.id.user_image);
+            comment_image = (ImageView) itemView.findViewById(R.id.comment_image);
             comment_from = (TextView) itemView.findViewById(R.id.comment_from);
             comment_to = (TextView) itemView.findViewById(R.id.comment_to);
+            comment_date = (TextView) itemView.findViewById(R.id.comment_date);
             comment = (TextView) itemView.findViewById(R.id.comment);
             likes = (TextView) itemView.findViewById(R.id.likes);
             comments = (TextView) itemView.findViewById(R.id.comments);

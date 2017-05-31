@@ -56,6 +56,13 @@ public class Parser {
         group.setImageBase64(groupJson.getImage());
         group.setFirebaseTopic(groupJson.getFirebaseTopic());
 
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            group.setLastUpdate(dateFormat.parse(groupJson.getLastUpdate()));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
         group.setLastEvent(parseLastEvent(groupJson.getLastEvent()));
 
         group.setParticipants(new ArrayList<Participant>());
@@ -65,6 +72,9 @@ public class Parser {
 
     private static LastEvent parseLastEvent(LastEventJson lastEventJson){
         LastEvent lastEvent = new LastEvent();
+
+        if(lastEventJson.getLastUpdate() == null)
+            return null;
 
         lastEvent.setCommentID(lastEventJson.getCommentID());
         lastEvent.setUserID(lastEventJson.getUserID());
@@ -140,6 +150,13 @@ public class Parser {
             comment.setHasAnswers(commentJson.isHasAnswers());
             comment.setText(commentJson.getText());
             comment.setImage(commentJson.getImage());
+
+            try {
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                comment.setDate(dateFormat.parse(commentJson.getLastUpdate()));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
 
             if (commentJson.getComments() != null)
                 comment.setComments(commentJson.getComments());

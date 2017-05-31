@@ -141,7 +141,7 @@ public class AddParticipantActivity extends AppCompatActivity implements View.On
 
                     }
                 })
-                .setIcon(R.drawable.user_icon)
+                .setIcon(R.drawable.user_icon_green)
                 .show();
     }
 }

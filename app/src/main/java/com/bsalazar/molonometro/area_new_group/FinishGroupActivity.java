@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bsalazar.molonometro.MainActivity;
 import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.entities.Contact;
 import com.bsalazar.molonometro.general.Tools;
@@ -148,7 +149,9 @@ public class FinishGroupActivity extends AppCompatActivity implements View.OnCli
                                 new GroupController().updateGroupImage(getApplicationContext(), groupJson, new ServiceCallbackInterface() {
                                     @Override
                                     public void onSuccess(String result) {
-                                        finish();
+                                        Intent main = new Intent(getApplicationContext(), MainActivity.class);
+                                        main.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        startActivity(main);
                                     }
 
                                     @Override
@@ -157,7 +160,9 @@ public class FinishGroupActivity extends AppCompatActivity implements View.OnCli
                                     }
                                 });
                             } else {
-                                finish();
+                                Intent main = new Intent(getApplicationContext(), MainActivity.class);
+                                main.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(main);
                             }
                         }
 

@@ -139,7 +139,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     PERMISSION_RESULT_READ_CONTACTS);
         }
 
-        refreshGroups(true);
 
 
         // Save the screen size
@@ -289,6 +288,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if(firstTime){
                     contactsReady = true;
                     showContent();
+                    refreshGroups(true);
                 }
             }
 

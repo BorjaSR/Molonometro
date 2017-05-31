@@ -62,13 +62,17 @@ public class GroupsRecyclerAdapter extends RecyclerView.Adapter<GroupsRecyclerAd
 
         SimpleDateFormat formatTime = new SimpleDateFormat("HH:mm");
         SimpleDateFormat formatDate = new SimpleDateFormat("dd/MM/yyyy");
-        Date today = new Date();
-        Date eventDate = group.getLastEvent().getLastUpdate();
 
-        if (today.getYear() == eventDate.getYear() && today.getMonth() == eventDate.getMonth() && today.getDay() == eventDate.getDay()) {
-            holder.last_event_date.setText(formatTime.format(group.getLastEvent().getLastUpdate()));
+        Date eventDate;
+        if (group.getLastEvent() != null)
+            eventDate = group.getLastEvent().getLastUpdate();
+        else
+            eventDate = group.getLastUpdate();
+
+        if (Tools.isToday(eventDate)) {
+            holder.last_event_date.setText(formatTime.format(eventDate));
         } else
-            holder.last_event_date.setText(formatDate.format(group.getLastEvent().getLastUpdate()));
+            holder.last_event_date.setText(formatDate.format(eventDate));
 
         try {
             if (group.getImageBase64() != null)

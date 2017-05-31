@@ -6,17 +6,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -34,12 +31,10 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
-import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,11 +50,8 @@ import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.controllers.CommentsController;
 import com.bsalazar.molonometro.rest.services.ServiceCallbackInterface;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
 import com.google.gson.Gson;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -68,6 +60,8 @@ import java.util.Date;
  */
 
 public class DashboardGroupActivity extends AppCompatActivity implements View.OnClickListener {
+
+    private final int GALERY_INPUT = 1;
 
     private float ter_height;
     private int highestScore = 1;
@@ -82,12 +76,15 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
     private AutoCompleteTextView destinationUser;
     private TextView send_button, no_comments;
     private EditText comment_text;
+    private ImageView comment_camera;
+    private ImageView comment_image;
     private ProgressBar loading_comments;
 
     private AutoCompleteAdapter autoCompleteAdapter;
     private boolean isAddCommentShowed = false;
     private boolean isUSerInGroup = false;
     private Participant participantToSend;
+    private Bitmap comment_bitmap;
 
     private int ScrollY = 0;
 
@@ -123,6 +120,8 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
         send_button = (TextView) findViewById(R.id.send_button);
         no_comments = (TextView) findViewById(R.id.no_comments);
         comment_text = (EditText) findViewById(R.id.comment_text);
+        comment_camera = (ImageView) findViewById(R.id.comment_camera);
+        comment_image = (ImageView) findViewById(R.id.comment_image);
         loading_comments = (ProgressBar) findViewById(R.id.loading_comments);
 
         participants_without_you = new ArrayList<>();
@@ -130,6 +129,7 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
         fab.setOnClickListener(this);
         send_button.setOnClickListener(this);
         add_comment_container.setOnClickListener(this);
+        comment_camera.setOnClickListener(this);
 
         ter_height = termometer_container.getLayoutParams().height;
 
@@ -228,7 +228,7 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
 
     }
 
-    private void paintTermometer(){
+    private void paintTermometer() {
         participants_without_you.clear();
         users_container.removeAllViews();
         for (Participant user : Variables.Group.getParticipants()) {
@@ -319,6 +319,10 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
                         comment.setUserID(Variables.User.getUserID());
                         comment.setDestinationUserID(participantToSend.getUserID());
                         comment.setText(comment_text.getText().toString());
+                        if (comment_bitmap == null)
+                            comment.setImage("");
+                        else
+                            comment.setImage(Tools.encodeBitmapToBase64(comment_bitmap));
 
                         new CommentsController().addCommentToGroup(this, comment, new ServiceCallbackInterface() {
                             @Override
@@ -326,6 +330,7 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
                                 comment.setUserName(Variables.User.getName());
                                 comment.setUserImage(Variables.User.getImageBase64());
                                 comment.setDestinationUserName(participantToSend.getName());
+                                comment.setDate(new Date());
 
                                 comment.setComments(new ArrayList<Integer>());
                                 comment.setLikes(new ArrayList<Integer>());
@@ -373,6 +378,9 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
             case R.id.add_comment_container:
                 hideAddComment();
                 break;
+            case R.id.comment_camera:
+                openGalery();
+                break;
         }
     }
 
@@ -415,7 +423,7 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
         }
     }
 
-    public void addLikePoint(int destinationUserID){
+    public void addLikePoint(int destinationUserID) {
 
         for (Participant participant : Variables.Group.getParticipants())
             if (participant.getUserID() == destinationUserID)
@@ -428,6 +436,7 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
 //        fab.setVisibility(View.GONE);
         add_comment_container.setVisibility(View.VISIBLE);
         isAddCommentShowed = true;
+        comment_bitmap = null;
     }
 
     private void hideAddComment() {
@@ -441,6 +450,8 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
 
         destinationUser.setText("");
         comment_text.setText("");
+        comment_bitmap = null;
+        comment_image.setImageBitmap(null);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -476,7 +487,7 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
         return highestScore;
     }
 
-    public void showCommentsDialog(int commentID, boolean needFocus, ArrayList<Integer> likes){
+    public void showCommentsDialog(int commentID, boolean needFocus, ArrayList<Integer> likes) {
         CommentsDialogFragment commentsDialogFragment = new CommentsDialogFragment();
 
         Bundle args = new Bundle();
@@ -486,5 +497,27 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
         commentsDialogFragment.setArguments(args);
 
         commentsDialogFragment.show(getFragmentManager(), "COMMENTS");
+    }
+
+
+    public void openGalery() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), GALERY_INPUT);
+    }
+
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == GALERY_INPUT) {
+                try {
+                    comment_bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
+                    comment_image.setImageBitmap(comment_bitmap);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 }

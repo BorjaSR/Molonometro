@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import com.bsalazar.molonometro.rest.json.LastEventJson;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by bsalazar on 14/10/2016.
@@ -16,20 +17,13 @@ public class Group {
     private String imageBase64;
     private String name;
     private String FirebaseTopic;
+    private Date LastUpdate;
     private LastEvent lastEvent;
 
     private ArrayList<Participant> participants;
     private ArrayList<Comment> comments;
 
     public Group() {
-    }
-
-    public String getFirebaseTopic() {
-        return FirebaseTopic;
-    }
-
-    public void setFirebaseTopic(String firebaseTopic) {
-        FirebaseTopic = firebaseTopic;
     }
 
     public Group(int id, String groupName) {
@@ -41,6 +35,22 @@ public class Group {
         this.id = id;
         image = groupImage;
         name = groupName;
+    }
+
+    public Date getLastUpdate() {
+        return LastUpdate;
+    }
+
+    public void setLastUpdate(Date lastUpdate) {
+        LastUpdate = lastUpdate;
+    }
+
+    public String getFirebaseTopic() {
+        return FirebaseTopic;
+    }
+
+    public void setFirebaseTopic(String firebaseTopic) {
+        FirebaseTopic = firebaseTopic;
     }
 
     public ArrayList<Comment> getComments() {

@@ -12,12 +12,16 @@ import android.util.Log;
 
 import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.MainActivity;
+import com.bsalazar.molonometro.entities.Comment;
+import com.bsalazar.molonometro.entities.Contact;
 import com.bsalazar.molonometro.entities.Group;
+import com.bsalazar.molonometro.general.Tools;
 import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.controllers.GroupController;
 import com.bsalazar.molonometro.rest.json.GroupJson;
 import com.bsalazar.molonometro.rest.services.Parser;
 import com.bsalazar.molonometro.rest.services.ServiceCallbackInterface;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
@@ -60,8 +64,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         new GroupController().getGroupByID(getApplicationContext(), groupJson, new ServiceCallbackInterface() {
                             @Override
                             public void onSuccess(String result) {
+
                                 Group group = Parser.parseGroup(new Gson().fromJson(result, GroupJson.class));
                                 Variables.groups.add(0, group);
+
+                                FirebaseMessaging.getInstance().subscribeToTopic(group.getFirebaseTopic());
 
                                 sendNotification(group.getName(), getString(R.string.added_to_group));
                             }
@@ -72,8 +79,43 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                             }
                         });
                         break;
+
                     case COMMENT_NOTIFICATION:
-                        sendNotification("GRUPO 23", "Pepito ha votado a Fulanito");
+                        String json_comment = new JSONObject(remoteMessage.getData().toString()).get("comment").toString();
+                        final Comment comment = new Gson().fromJson(json_comment, Comment.class);
+
+                        GroupJson groupJson2 = new GroupJson();
+                        groupJson2.setGroupID(comment.getGroupID());
+                        new GroupController().getGroupByID(getApplicationContext(), groupJson2, new ServiceCallbackInterface() {
+                            @Override
+                            public void onSuccess(String result) {
+
+                                GroupJson group = new Gson().fromJson(result, GroupJson.class);
+                                String userName = null, destinationUserName = null;
+
+                                for (Contact contact : Variables.contactsWithApp){
+                                    if (contact.getUserID() == comment.getUserID())
+                                        userName = contact.getName();
+                                    if (contact.getUserID() == comment.getDestinationUserID())
+                                        destinationUserName = contact.getName();
+                                }
+
+                                if(comment.getUserID() == Variables.User.getUserID()) userName = Variables.User.getName();
+                                if(comment.getDestinationUserID() == Variables.User.getUserID()) destinationUserName = Variables.User.getName();
+
+                                if(userName == null || destinationUserName == null)
+                                    sendNotification(group.getName(), "Alguien ha votado!");
+                                else
+                                    sendNotification(group.getName(), Tools.cropName(userName) + " ha votado a " + Tools.cropName(destinationUserName) + "!");
+
+                            }
+
+                            @Override
+                            public void onFailure(String result) {
+
+                            }
+                        });
+
                         break;
                 }
             } catch (JSONException e) {

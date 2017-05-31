@@ -82,9 +82,9 @@ public class CommentsController {
     public void addCommentToGroup(final Context mContext, Comment comment, final ServiceCallbackInterface callback) {
 
         Constants.restController.getService().addCommentToGroup(comment
-                , new Callback<Boolean>() {
+                , new Callback<Comment>() {
                     @Override
-                    public void success(Boolean result, Response response) {
+                    public void success(Comment result, Response response) {
                         if (callback != null)
                             callback.onSuccess(result.toString());
                     }

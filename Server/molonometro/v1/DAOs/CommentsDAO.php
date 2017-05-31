@@ -20,7 +20,7 @@ class CommentsDAO {
 
 
     // creating new user if not existed
-    public function addComment($groupID, $userID, $destinationUserID, $text) {
+    public function addComment($groupID, $userID, $destinationUserID, $text, $image) {
         $userDAO = new UserDAO();
         $groupDAO = new GroupDAO();
         if ($userDAO->isUserExistsById($userID) &&
@@ -34,8 +34,8 @@ class CommentsDAO {
         $db = new DbConnect();
         $this->conn = $db->connect();
 
-            $stmt = $this->conn->prepare("INSERT INTO comments(GroupID, UserID, DestinationUserID, Text, Created, LastUpdate, Deleted) values(?, ?, ?, ?, now(), now(), 0)");
-            $stmt->bind_param("iiis", $groupID, $userID, $destinationUserID, $text);
+            $stmt = $this->conn->prepare("INSERT INTO comments(GroupID, UserID, DestinationUserID, Text, Image, Created, LastUpdate, Deleted) values(?, ?, ?, ?, ?, now(), now(), 0)");
+            $stmt->bind_param("iiiss", $groupID, $userID, $destinationUserID, $text, $image);
 
             $result = $stmt->execute();
 
@@ -46,7 +46,7 @@ class CommentsDAO {
 
                 // User successfully inserted
                 $response["status"] = 200;
-                $response["comment"] = true;
+                $response["comment"] = $this->getLastCommentByUserInGroup($userID, $groupID);
             } else {
                 // Failed to create user
                 $response["status"] = 430;
@@ -127,13 +127,13 @@ class CommentsDAO {
         $db = new DbConnect();
         $this->conn = $db->connect();
         
-        $stmt = $this->conn->prepare("SELECT CommentID, UserID, DestinationUserID, hasAnswers, Text, Image From comments where GroupID = ? and AssociatedCommentID IS NULL and Deleted = 0 ORDER BY Created DESC");
+        $stmt = $this->conn->prepare("SELECT CommentID, UserID, DestinationUserID, hasAnswers, Text, Image, Created From comments where GroupID = ? and AssociatedCommentID IS NULL and Deleted = 0 ORDER BY Created DESC");
         $stmt->bind_param("i", $groupID);
         
         $response = array();
 
         if ($stmt->execute()) {
-            $stmt->bind_result($CommentID, $UserID, $DestinationUserID, $hasAnswers, $Text, $Image);
+            $stmt->bind_result($CommentID, $UserID, $DestinationUserID, $hasAnswers, $Text, $Image, $LastUpdate);
 
             $commentsList = array();
             $i = 0;
@@ -153,6 +153,7 @@ class CommentsDAO {
 
                 $comment["Text"] = $Text;
                 $comment["Image"] = $Image;
+                $comment["LastUpdate"] = $LastUpdate;
                 $comment["Comments"] = $this->getSimpleReplies($CommentID);
 
                 $likesDAO = new LikesDAO();
@@ -178,6 +179,36 @@ class CommentsDAO {
 
         $db->disconnect();
         return $response;
+    }
+
+
+    public function getLastCommentByUserInGroup($userID, $groupID){
+        //SELECT CommentID, UserID, DestinationUserID, LastUpdate From comments where GroupID = 15 and AssociatedCommentID IS NULL and Deleted = 0 ORDER BY Created DESC LIMIT 1
+        $db = new DbConnect();
+        $this->conn = $db->connect();
+        $response = array();
+
+        $stmt = $this->conn->prepare("SELECT CommentID, DestinationUserID, Text, Created, LastUpdate From comments where GroupID = ? and UserID = ? and AssociatedCommentID IS NULL and Deleted = 0 ORDER BY Created DESC LIMIT 1");
+        $stmt->bind_param("ii", $groupID, $userID);
+        
+        if ($stmt->execute()) {
+            $stmt->bind_result($CommentID, $DestinationUserID, $Text, $Created, $LastUpdate);
+            $stmt->fetch();
+
+            $comment = array();
+            $comment["CommentID"] = $CommentID;
+            $comment["GroupID"] = $groupID;
+            $comment["UserID"] = $userID;
+            $comment["DestinationUserID"] = $DestinationUserID;
+            $comment["Text"] = $Text;
+            $comment["LastUpdate"] = $LastUpdate;
+            $comment["Created"] = $Created;
+        }
+
+
+        $stmt->close();
+        $db->disconnect();
+        return $comment;
     }
 
     public function getLastCommentByGroup($groupID){

@@ -186,6 +186,35 @@ $app->post('/group/makeUserAdmin', function() use ($app) {
 
 });
 
+
+$app->post('/group/removeUserFromGroup', function() use ($app) {
+    $body = $app->request()->getBody(); 
+    $input = json_decode($body);
+
+    // reading post params
+    $userID = (int) $input->UserID;
+    $groupID = (int) $input->GroupID;
+    $contactID = (int) $input->ContactID;
+
+    $userDAO = new UserDAO();
+    if($userDAO->isUserExistsById($userID) &&
+    	$userDAO->isUserExistsById($contactID)){
+
+		$groupDAO = new GroupDAO();
+		$DBresponse = $groupDAO->removeUserFromGroup($contactID, $groupID);
+
+    	if($DBresponse["status"] == 200){
+		    echoResponse(200, true);
+
+		}else{
+		    echoResponse(455, false);
+		}
+
+	}
+
+
+});
+
 function addUserToGroup($userID, $groupID, $creater) {
 
     $groupDAO = new GroupDAO();

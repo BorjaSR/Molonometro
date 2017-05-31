@@ -46,8 +46,6 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="15dp"
-                    android:layout_marginTop="5dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
@@ -77,6 +75,16 @@
                         android:textSize="16sp"
                         android:textStyle="bold" />
                 </LinearLayout>
+
+                <TextView
+                    android:id="@+id/comment_date"
+                    android:layout_marginBottom="15dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="25/05/2017 14:12"
+                    android:textStyle="italic"
+                    android:textSize="12sp"
+                    android:textColor="@color/gray"/>
 
                 <TextView
                     android:id="@+id/comment"

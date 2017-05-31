@@ -99,6 +99,10 @@ public interface RestService {
             @Body AddUserToGroupJson addUserToGroupJson,
             Callback<Boolean> callback);
 
+    @POST("/group/removeUserFromGroup")
+    void removeUserFromGroup(
+            @Body AddUserToGroupJson addUserToGroupJson,
+            Callback<Boolean> callback);
 
     // COMENTS //
     @POST("/comments/getCommentByGroup")
@@ -114,7 +118,7 @@ public interface RestService {
     @POST("/comments/addCommentToGroup")
     void addCommentToGroup(
             @Body Comment comment,
-            Callback<Boolean> callback);
+            Callback<Comment> callback);
 
     @POST("/comments/addReplyToComment")
     void addReplyToComment(

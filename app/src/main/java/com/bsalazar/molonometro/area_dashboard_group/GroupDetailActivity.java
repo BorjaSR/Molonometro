@@ -2,6 +2,7 @@ package com.bsalazar.molonometro.area_dashboard_group;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
@@ -10,8 +11,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.transition.TransitionManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.transition.Explode;
@@ -24,6 +27,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bsalazar.molonometro.MainActivity;
 import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.area_adjust.EditFieldActivity;
 import com.bsalazar.molonometro.entities.Participant;
@@ -32,9 +36,11 @@ import com.bsalazar.molonometro.general.Tools;
 import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.controllers.GroupController;
 import com.bsalazar.molonometro.rest.controllers.UserController;
+import com.bsalazar.molonometro.rest.json.AddUserToGroupJson;
 import com.bsalazar.molonometro.rest.json.GroupJson;
 import com.bsalazar.molonometro.rest.services.ServiceCallbackInterface;
 import com.bumptech.glide.Glide;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 /**
  * Created by bsalazar on 28/02/2017.
@@ -180,13 +186,59 @@ public class GroupDetailActivity extends AppCompatActivity {
             contact_name.setText(Name);
             contact_state.setText(State);
 
-            if(participant.isAdmin())
+            if (participant.isAdmin())
                 admin_signal.setVisibility(View.VISIBLE);
             else
                 admin_signal.setVisibility(View.GONE);
 
             participants_container.addView(participant_view);
         }
+
+        LinearLayout exit_group_button = (LinearLayout) findViewById(R.id.exit_group_button);
+        exit_group_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showDialogExitGroup();
+            }
+        });
+    }
+
+    private void showDialogExitGroup() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(Variables.Group.getName())
+                .setMessage(getString(R.string.wish_exit_group))
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        AddUserToGroupJson addUserToGroupJson = new AddUserToGroupJson();
+                        addUserToGroupJson.setUserID(Variables.User.getUserID());
+                        addUserToGroupJson.setGroupID(Variables.Group.getId());
+                        addUserToGroupJson.setContactID(Variables.User.getUserID());
+
+                        new GroupController().removeUserFromGroup(getApplicationContext(), addUserToGroupJson, new ServiceCallbackInterface() {
+                            @Override
+                            public void onSuccess(String result) {
+                                FirebaseMessaging.getInstance().unsubscribeFromTopic(Variables.Group.getFirebaseTopic());
+
+                                for (Participant participant : Variables.Group.getParticipants())
+                                    if (participant.getUserID() == Variables.User.getUserID()) {
+                                        Variables.Group.getParticipants().remove(participant);
+                                        break;
+                                    }
+                                Intent main = new Intent(getApplicationContext(), MainActivity.class);
+                                main.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(main);
+                            }
+                        });
+                    }
+                })
+                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .setIcon(R.drawable.group_icon_green)
+                .show();
     }
 
     private boolean userIsAdmin() {
@@ -234,28 +286,19 @@ public class GroupDetailActivity extends AppCompatActivity {
             if (requestCode == GALERY_INPUT) {
                 try {
                     final Bitmap new_image = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
-                    group_image.setImageBitmap(null);
+//                    group_image.setImageBitmap(null);
 
                     GroupJson groupJson = new GroupJson();
                     groupJson.setGroupID(Variables.Group.getId());
-                    groupJson.setImage(Tools.encodeBitmapToBase64(new_image));
+                    final String new_image_64 = Tools.encodeBitmapToBase64(new_image);
+                    groupJson.setImage(new_image_64);
 
                     new GroupController().updateGroupImage(this, groupJson, new ServiceCallbackInterface() {
                         @Override
                         public void onSuccess(String result) {
 
-//                            Variables.Group.setImageBase64(Tools.encodeBitmapToBase64(new_image));
-
-                            byte[] bitmapdata = Base64.decode(Variables.Group.getImageBase64(), Base64.DEFAULT);
-
-                            Glide.with(getApplicationContext())
-                                    .load(bitmapdata)
-                                    .asBitmap()
-                                    .dontAnimate()
-                                    .listener(new MyRequestListener(activity, group_image))
-                                    .into(group_image);
-
-
+                            Variables.Group.setImageBase64(new_image_64);
+                            setCollapsing();
                         }
 
                         @Override

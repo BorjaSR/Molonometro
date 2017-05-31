@@ -1,6 +1,7 @@
 package com.bsalazar.molonometro.entities;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by bsalazar on 23/03/2017.
@@ -15,6 +16,7 @@ public class Comment {
     private boolean hasAnswers;
     private String Text;
     private String Image;
+    private String LastUpdate;
     private ArrayList<Integer> Comments;
     private ArrayList<Integer> Likes;
 
@@ -24,8 +26,25 @@ public class Comment {
     private String DestinationUserName;
     private ArrayList<Comment> replies;
     private Boolean showReplies = false;
+    private Date date;
 
     public Comment() {
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public String getLastUpdate() {
+        return LastUpdate;
+    }
+
+    public void setLastUpdate(String lastUpdate) {
+        LastUpdate = lastUpdate;
     }
 
     public ArrayList<Integer> getComments() {

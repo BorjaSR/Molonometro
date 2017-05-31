@@ -189,6 +189,31 @@ class GroupDAO {
         return $response;
     }
 
+
+    public function removeUserFromGroup($userId, $groupId) {
+        $db = new DbConnect();
+        $this->conn = $db->connect();
+
+        // insert query
+        $stmt = $this->conn->prepare("UPDATE groupuser SET Deleted = 1, LastUpdate = now() WHERE GroupID = ? AND UserID = ?");
+        $stmt->bind_param("ss", $groupId, $userId);
+        $result = $stmt->execute();
+        $stmt->close();
+
+        
+        if ($result) {
+            $response["status"] = 200;
+            $response["message"] = "User remove correctly from group";
+        } else {
+            $response["status"] = 433;
+            $response["error"] = "Oops! An error occurred while add user to group";
+        }
+
+        $db->disconnect();
+        return $response;
+    }
+
+
     public function isGroupExistsById($id) {
         $db = new DbConnect();
         $this->conn = $db->connect();
@@ -275,7 +300,7 @@ class GroupDAO {
         $response = array();
 
         $stmt = $this->conn->prepare(
-            "SELECT groups.GroupID, groups.Name, groups.Image, groups.FirebaseTopic 
+            "SELECT groups.GroupID, groups.Name, groups.Image, groups.FirebaseTopic, groups.LastUpdate 
             From groups INNER JOIN groupuser
             ON groups.GroupID = groupuser.GroupID
             WHERE groupuser.UserID = ? and groupuser.Deleted = 0");
@@ -283,7 +308,7 @@ class GroupDAO {
 
         if($stmt->execute()){
 
-            $stmt->bind_result($GroupID, $Name, $Image, $firebaseTopic);
+            $stmt->bind_result($GroupID, $Name, $Image, $firebaseTopic, $LastUpdate);
 
             $groupsList = array();
 
@@ -294,6 +319,7 @@ class GroupDAO {
                 $group["Name"] = $Name;
                 $group["Image"] = $Image;
                 $group["FirebaseTopic"] = $firebaseTopic;
+                $group["LastUpdate"] = $LastUpdate;
 
 
                 $commentsDAO = new CommentsDAO();

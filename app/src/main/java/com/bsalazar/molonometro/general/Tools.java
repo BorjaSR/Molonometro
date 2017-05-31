@@ -15,6 +15,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.util.Date;
 
 /**
  * Created by bsalazar on 14/10/2016.
@@ -138,5 +139,10 @@ public class Tools {
                 bm, 0, 0, width, height, matrix, false);
         bm.recycle();
         return resizedBitmap;
+    }
+
+    public static boolean isToday(Date date){
+        Date today = new Date();
+        return today.getYear() == date.getYear() && today.getMonth() == date.getMonth() && today.getDay() == date.getDay();
     }
 }
