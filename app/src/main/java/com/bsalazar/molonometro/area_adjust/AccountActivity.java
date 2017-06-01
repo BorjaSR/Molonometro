@@ -7,7 +7,9 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
@@ -55,6 +57,7 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
     private TextView profile_phone;
 
     private Activity activity;
+    String mCurrentPhotoPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,7 +139,8 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
                 .setPositiveButton(getString(R.string.camera), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        startCamera();
+//                        startCamera();
+                        dispatchTakePictureIntent();
                     }
                 })
                 .setNegativeButton(getString(R.string.galery), new DialogInterface.OnClickListener() {
@@ -151,19 +155,66 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
         dialog.show();
     }
 
-    public void startCamera() {
-        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(cameraIntent, CAMERA_INPUT);
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+        File f;
+
+        try {
+            f = setUpPhotoFile();
+            mCurrentPhotoPath = f.getAbsolutePath();
+            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
+        } catch (IOException e) {
+            e.printStackTrace();
+            mCurrentPhotoPath = null;
+        }
+
+        startActivityForResult(takePictureIntent, CAMERA_INPUT);
     }
 
+    private File setUpPhotoFile() throws IOException {
+        File f = createImageFile();
+        mCurrentPhotoPath = f.getAbsolutePath();
+        return f;
+    }
 
-//    private File setUpPhotoFile() throws IOException {
-//
-//        File f = createImageFile();
-//        mCurrentPhotoPath = f.getAbsolutePath();
-//
-//        return f;
-//    }
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String imageFileName = "temp.jpeg";
+        File albumF = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        File imageF = new File(albumF.getPath()+"/"+imageFileName);
+
+        if (imageF.exists()){
+            imageF.delete();
+        }
+        Boolean res = imageF.createNewFile();
+        return imageF;
+    }
+
+    private Bitmap handleBigCameraPhoto() {
+        Bitmap bitmap = null;
+        if (mCurrentPhotoPath != null) {
+            bitmap = setPic();
+            mCurrentPhotoPath = null;
+        }
+        return bitmap;
+    }
+
+    private Bitmap setPic() {
+
+		/* Get the size of the image */
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        bmOptions.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
+
+		/* Set bitmap options to scale the image decode target */
+        bmOptions.inJustDecodeBounds = false;
+        bmOptions.inSampleSize = 1;
+        bmOptions.inPurgeable = true;
+
+		/* Decode the JPEG file into a Bitmap */
+        return BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
+    }
 
     public void openGalery() {
         Intent intent = new Intent(Intent.ACTION_PICK);
@@ -182,10 +233,7 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
                 }
 
             } else if (requestCode == CAMERA_INPUT) {
-                if (data != null && data.getExtras() != null) {
-                    Bitmap new_image = Bitmap.createBitmap((Bitmap) data.getExtras().get("data"));
-                    setImage(new_image);
-                }
+                setImage(handleBigCameraPhoto());
             }
         }
     }

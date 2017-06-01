@@ -10,8 +10,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -55,6 +58,8 @@ import com.bsalazar.molonometro.rest.services.ServiceCallbackInterface;
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -93,6 +98,7 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
     private int ScrollY = 0;
 
     private Activity activity;
+    private String mCurrentPhotoPath;
 
     ArrayList<Participant> participants_without_you;
 
@@ -463,27 +469,6 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
         comment_image.setImageBitmap(null);
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    void enterReveal() {
-        // previously invisible view
-        final View myView = findViewById(R.id.text);
-
-        // get the center for the clipping circle
-        int cx = myView.getMeasuredWidth() / 2;
-        int cy = myView.getMeasuredHeight() / 2;
-
-        // get the final radius for the clipping circle
-        int finalRadius = Math.max(myView.getWidth(), myView.getHeight()) / 2;
-
-        // create the animator for this view (the start radius is zero)
-        Animator anim =
-                ViewAnimationUtils.createCircularReveal(myView, cx, cy, 0, finalRadius);
-
-        // make the view visible and start the animation
-        myView.setVisibility(View.VISIBLE);
-        anim.start();
-    }
-
     private int getPositionUser(int molopuntos) {
         int relative_position = (molopuntos * Constants.HEIGHT_OF_TEMOMETER) / highestScore;
         return Constants.HEIGHT_OF_TEMOMETER - relative_position;
@@ -514,7 +499,7 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
                 .setPositiveButton(getString(R.string.camera), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        startCamera();
+                        dispatchTakePictureIntent();
                     }
                 })
                 .setNegativeButton(getString(R.string.galery), new DialogInterface.OnClickListener() {
@@ -529,11 +514,66 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
         dialog.show();
     }
 
-    public void startCamera() {
-        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(cameraIntent, CAMERA_INPUT);
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+        File f;
+
+        try {
+            f = setUpPhotoFile();
+            mCurrentPhotoPath = f.getAbsolutePath();
+            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
+        } catch (IOException e) {
+            e.printStackTrace();
+            mCurrentPhotoPath = null;
+        }
+
+        startActivityForResult(takePictureIntent, CAMERA_INPUT);
     }
 
+    private File setUpPhotoFile() throws IOException {
+        File f = createImageFile();
+        mCurrentPhotoPath = f.getAbsolutePath();
+        return f;
+    }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String imageFileName = "temp.jpeg";
+        File albumF = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        File imageF = new File(albumF.getPath() + "/" + imageFileName);
+
+        if (imageF.exists()) {
+            imageF.delete();
+        }
+        Boolean res = imageF.createNewFile();
+        return imageF;
+    }
+
+    private Bitmap handleBigCameraPhoto() {
+        Bitmap bitmap = null;
+        if (mCurrentPhotoPath != null) {
+            bitmap = setPic();
+            mCurrentPhotoPath = null;
+        }
+        return bitmap;
+    }
+
+    private Bitmap setPic() {
+
+		/* Get the size of the image */
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        bmOptions.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
+
+		/* Set bitmap options to scale the image decode target */
+        bmOptions.inJustDecodeBounds = false;
+        bmOptions.inSampleSize = 1;
+        bmOptions.inPurgeable = true;
+
+		/* Decode the JPEG file into a Bitmap */
+        return BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
+    }
 
     public void openGalery() {
         Intent intent = new Intent(Intent.ACTION_PICK);
@@ -553,10 +593,8 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
                     e.printStackTrace();
                 }
             } else if (requestCode == CAMERA_INPUT) {
-                if (data != null && data.getExtras() != null) {
-                    comment_bitmap = Bitmap.createBitmap((Bitmap) data.getExtras().get("data"));
-                    comment_image.setImageBitmap(comment_bitmap);
-                }
+                comment_bitmap = handleBigCameraPhoto();
+                comment_image.setImageBitmap(comment_bitmap);
             }
         }
     }

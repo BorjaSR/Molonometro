@@ -7,7 +7,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -34,6 +37,9 @@ import com.bumptech.glide.Glide;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.gson.Gson;
 
+import java.io.File;
+import java.io.IOException;
+
 /**
  * Created by bsalazar on 24/02/2017.
  */
@@ -47,6 +53,7 @@ public class FinishGroupActivity extends AppCompatActivity implements View.OnCli
     private ImageView group_image;
 
     private Bitmap group_image_bitmap;
+    private String mCurrentPhotoPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +89,7 @@ public class FinishGroupActivity extends AppCompatActivity implements View.OnCli
 
             } else {
                 Contact contact = getContactByID(id);
-                if (contact != null){
+                if (contact != null) {
                     image64 = contact.getImageBase64();
                     Name = contact.getName();
                     State = contact.getState();
@@ -144,10 +151,10 @@ public class FinishGroupActivity extends AppCompatActivity implements View.OnCli
                         public void onSuccess(String result) {
 
                             GroupJson groupJson = new Gson().fromJson(result, GroupJson.class);
-                            if(groupJson.getFirebaseTopic() != null && !groupJson.getFirebaseTopic().equals(""))
+                            if (groupJson.getFirebaseTopic() != null && !groupJson.getFirebaseTopic().equals(""))
                                 FirebaseMessaging.getInstance().subscribeToTopic(groupJson.getFirebaseTopic());
 
-                            if(group_image_bitmap != null){
+                            if (group_image_bitmap != null) {
                                 groupJson.setImage(Tools.encodeBitmapToBase64(group_image_bitmap));
                                 new GroupController().updateGroupImage(getApplicationContext(), groupJson, new ServiceCallbackInterface() {
                                     @Override
@@ -201,7 +208,7 @@ public class FinishGroupActivity extends AppCompatActivity implements View.OnCli
                 .setPositiveButton(getString(R.string.camera), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        startCamera();
+                        dispatchTakePictureIntent();
                     }
                 })
                 .setNegativeButton(getString(R.string.galery), new DialogInterface.OnClickListener() {
@@ -216,9 +223,65 @@ public class FinishGroupActivity extends AppCompatActivity implements View.OnCli
         dialog.show();
     }
 
-    public void startCamera() {
-        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(cameraIntent, CAMERA_INPUT);
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+        File f;
+
+        try {
+            f = setUpPhotoFile();
+            mCurrentPhotoPath = f.getAbsolutePath();
+            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
+        } catch (IOException e) {
+            e.printStackTrace();
+            mCurrentPhotoPath = null;
+        }
+
+        startActivityForResult(takePictureIntent, CAMERA_INPUT);
+    }
+
+    private File setUpPhotoFile() throws IOException {
+        File f = createImageFile();
+        mCurrentPhotoPath = f.getAbsolutePath();
+        return f;
+    }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String imageFileName = "temp.jpeg";
+        File albumF = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        File imageF = new File(albumF.getPath() + "/" + imageFileName);
+
+        if (imageF.exists()) {
+            imageF.delete();
+        }
+        Boolean res = imageF.createNewFile();
+        return imageF;
+    }
+
+    private Bitmap handleBigCameraPhoto() {
+        Bitmap bitmap = null;
+        if (mCurrentPhotoPath != null) {
+            bitmap = setPic();
+            mCurrentPhotoPath = null;
+        }
+        return bitmap;
+    }
+
+    private Bitmap setPic() {
+
+		/* Get the size of the image */
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        bmOptions.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
+
+		/* Set bitmap options to scale the image decode target */
+        bmOptions.inJustDecodeBounds = false;
+        bmOptions.inSampleSize = 1;
+        bmOptions.inPurgeable = true;
+
+		/* Decode the JPEG file into a Bitmap */
+        return BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
     }
 
     public void openGalery() {
@@ -239,10 +302,8 @@ public class FinishGroupActivity extends AppCompatActivity implements View.OnCli
                 }
 
             } else if (requestCode == CAMERA_INPUT) {
-                if (data != null && data.getExtras() != null) {
-                    group_image_bitmap = Bitmap.createBitmap((Bitmap) data.getExtras().get("data"));
-                    group_image.setImageBitmap(group_image_bitmap);
-                }
+                group_image_bitmap = handleBigCameraPhoto();
+                group_image.setImageBitmap(group_image_bitmap);
             }
         }
     }

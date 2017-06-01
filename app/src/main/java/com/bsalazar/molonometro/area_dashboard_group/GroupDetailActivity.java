@@ -8,8 +8,10 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.transition.TransitionManager;
@@ -44,6 +46,9 @@ import com.bsalazar.molonometro.rest.services.ServiceCallbackInterface;
 import com.bumptech.glide.Glide;
 import com.google.firebase.messaging.FirebaseMessaging;
 
+import java.io.File;
+import java.io.IOException;
+
 /**
  * Created by bsalazar on 28/02/2017.
  */
@@ -57,6 +62,7 @@ public class GroupDetailActivity extends AppCompatActivity {
     private int highestScore = 1;
     private ImageView group_image;
     private Activity activity;
+    private String mCurrentPhotoPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -282,7 +288,7 @@ public class GroupDetailActivity extends AppCompatActivity {
                 .setPositiveButton(getString(R.string.camera), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        startCamera();
+                        dispatchTakePictureIntent();
                     }
                 })
                 .setNegativeButton(getString(R.string.galery), new DialogInterface.OnClickListener() {
@@ -297,9 +303,65 @@ public class GroupDetailActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    public void startCamera() {
-        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(cameraIntent, CAMERA_INPUT);
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+        File f;
+
+        try {
+            f = setUpPhotoFile();
+            mCurrentPhotoPath = f.getAbsolutePath();
+            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
+        } catch (IOException e) {
+            e.printStackTrace();
+            mCurrentPhotoPath = null;
+        }
+
+        startActivityForResult(takePictureIntent, CAMERA_INPUT);
+    }
+
+    private File setUpPhotoFile() throws IOException {
+        File f = createImageFile();
+        mCurrentPhotoPath = f.getAbsolutePath();
+        return f;
+    }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String imageFileName = "temp.jpeg";
+        File albumF = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        File imageF = new File(albumF.getPath() + "/" + imageFileName);
+
+        if (imageF.exists()) {
+            imageF.delete();
+        }
+        Boolean res = imageF.createNewFile();
+        return imageF;
+    }
+
+    private Bitmap handleBigCameraPhoto() {
+        Bitmap bitmap = null;
+        if (mCurrentPhotoPath != null) {
+            bitmap = setPic();
+            mCurrentPhotoPath = null;
+        }
+        return bitmap;
+    }
+
+    private Bitmap setPic() {
+
+		/* Get the size of the image */
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        bmOptions.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
+
+		/* Set bitmap options to scale the image decode target */
+        bmOptions.inJustDecodeBounds = false;
+        bmOptions.inSampleSize = 1;
+        bmOptions.inPurgeable = true;
+
+		/* Decode the JPEG file into a Bitmap */
+        return BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
     }
 
     public void openGalery() {
@@ -319,16 +381,13 @@ public class GroupDetailActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-            }  else if (requestCode == CAMERA_INPUT) {
-                if (data != null && data.getExtras() != null) {
-                    Bitmap new_image = Bitmap.createBitmap((Bitmap) data.getExtras().get("data"));
-                    setGroupImage(new_image);
-                }
+            } else if (requestCode == CAMERA_INPUT) {
+                setGroupImage(handleBigCameraPhoto());
             }
         }
     }
 
-    public void setGroupImage(Bitmap bitmap){
+    public void setGroupImage(Bitmap bitmap) {
         GroupJson groupJson = new GroupJson();
         groupJson.setGroupID(Variables.Group.getId());
         final String new_image_64 = Tools.encodeBitmapToBase64(bitmap);
