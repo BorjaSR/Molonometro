@@ -55,9 +55,16 @@ public class GroupsRecyclerAdapter extends RecyclerView.Adapter<GroupsRecyclerAd
         final Group group = groups.get(position);
 
         holder.group_name.setText(group.getName());
-        if (group.getLastEvent() != null)
-            holder.group_detail.setText(Tools.cropName(group.getLastEvent().getUserName()) + " ha votado a " + Tools.cropName(group.getLastEvent().getDestinationUserName()));
-        else
+        if (group.getLastEvent() != null) {
+            String userName = "????";
+            String destinationUserName = "????";
+            if (group.getLastEvent().getUserName() != null)
+                userName = Tools.cropName(group.getLastEvent().getUserName());
+            if (group.getLastEvent().getDestinationUserName() != null)
+                destinationUserName = Tools.cropName(group.getLastEvent().getDestinationUserName());
+
+            holder.group_detail.setText(userName + " ha votado a " + destinationUserName);
+        } else
             holder.group_detail.setText(mContext.getString(R.string.group_creation));
 
         SimpleDateFormat formatTime = new SimpleDateFormat("HH:mm");
@@ -65,16 +72,23 @@ public class GroupsRecyclerAdapter extends RecyclerView.Adapter<GroupsRecyclerAd
 
         Date eventDate;
         if (group.getLastEvent() != null)
-            eventDate = group.getLastEvent().getLastUpdate();
+            eventDate = group.getLastEvent().
+
+                    getLastUpdate();
+
         else
             eventDate = group.getLastUpdate();
 
-        if (Tools.isToday(eventDate)) {
+        if (Tools.isToday(eventDate))
+
+        {
             holder.last_event_date.setText(formatTime.format(eventDate));
         } else
             holder.last_event_date.setText(formatDate.format(eventDate));
 
-        try {
+        try
+
+        {
             if (group.getImageBase64() != null)
                 try {
                     byte[] imageByteArray = Base64.decode(group.getImageBase64(), Base64.DEFAULT);
@@ -91,54 +105,62 @@ public class GroupsRecyclerAdapter extends RecyclerView.Adapter<GroupsRecyclerAd
             else
                 holder.group_image.setImageResource(R.drawable.group_icon);
 
-        } catch (Exception e) {
+        } catch (
+                Exception e
+                )
+
+        {
             holder.group_image.setImageResource(R.drawable.group_icon);
         }
 
-        holder.group_image.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        holder.group_image.setOnClickListener(new View.OnClickListener()
+
+                                              {
+                                                  @Override
+                                                  public void onClick(View view) {
 //
-                // Supply index input as an argument.
-                Bundle args = new Bundle();
-                args.putString("image", group.getImageBase64());
-                args.putInt("noImage", R.drawable.group_icon);
+                                                      // Supply index input as an argument.
+                                                      Bundle args = new Bundle();
+                                                      args.putString("image", group.getImageBase64());
+                                                      args.putInt("noImage", R.drawable.group_icon);
 
-//                PhotoDetailDialogFragment dialogSample = new PhotoDetailDialogFragment();
-//                dialogSample.setArguments(args);
-//                dialogSample.show(Constants.fragmentManager, "TAG");
-
-                Intent intent = new Intent(mContext, PhotoDetailActivity.class);
-                intent.putExtras(args);
+                                                      Intent intent = new Intent(mContext, PhotoDetailActivity.class);
+                                                      intent.putExtras(args);
 
 
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                    ActivityOptions options = ActivityOptions
-                            .makeSceneTransitionAnimation((Activity) mContext, holder.group_image, "imageTransition");
-                    mContext.startActivity(intent, options.toBundle());
-                } else
-                    mContext.startActivity(intent);
+                                                      if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                                                          ActivityOptions options = ActivityOptions
+                                                                  .makeSceneTransitionAnimation((Activity) mContext, holder.group_image, mContext.getString(R.string.image_transition));
+                                                          mContext.startActivity(intent, options.toBundle());
+                                                      } else
+                                                          mContext.startActivity(intent);
 
-            }
-        });
+                                                  }
+                                              }
 
-        holder.group_layout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Variables.Group = group;
-                new GroupController().getGroupParticipantsByID(mContext, group.getId(), new ServiceCallbackInterface() {
-                    @Override
-                    public void onSuccess(String result) {
-                        mContext.startActivity(new Intent(mContext, DashboardGroupActivity.class));
-                    }
+        );
 
-                    @Override
-                    public void onFailure(String result) {
+        holder.group_layout.setOnClickListener(new View.OnClickListener()
 
-                    }
-                });
-            }
-        });
+                                               {
+                                                   @Override
+                                                   public void onClick(View view) {
+                                                       Variables.Group = group;
+                                                       new GroupController().getGroupParticipantsByID(mContext, group.getId(), new ServiceCallbackInterface() {
+                                                           @Override
+                                                           public void onSuccess(String result) {
+                                                               mContext.startActivity(new Intent(mContext, DashboardGroupActivity.class));
+                                                           }
+
+                                                           @Override
+                                                           public void onFailure(String result) {
+
+                                                           }
+                                                       });
+                                                   }
+                                               }
+
+        );
     }
 
     @Override

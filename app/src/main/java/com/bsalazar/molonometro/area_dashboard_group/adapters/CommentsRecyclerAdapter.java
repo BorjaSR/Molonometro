@@ -1,6 +1,10 @@
 package com.bsalazar.molonometro.area_dashboard_group.adapters;
 
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.transition.TransitionManager;
@@ -15,7 +19,9 @@ import android.widget.TextView;
 import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.area_dashboard_group.DashboardGroupActivity;
 import com.bsalazar.molonometro.entities.Comment;
+import com.bsalazar.molonometro.general.ImageActivity;
 import com.bsalazar.molonometro.general.MyRequestListener;
+import com.bsalazar.molonometro.general.PhotoDetailActivity;
 import com.bsalazar.molonometro.general.Tools;
 import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.controllers.LikesController;
@@ -65,16 +71,20 @@ public class CommentsRecyclerAdapter extends RecyclerView.Adapter<CommentsRecycl
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM HH:mm");//SimpleDateFormat.getDateTimeInstance();//new SimpleDateFormat("dd/MM/yyyy HH:mm");
             SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+            final String date_string;
             if (Tools.isToday(comment.getDate()))
-                holder.comment_date.setText(mContext.getString(R.string.today) + " " + timeFormat.format(comment.getDate()));
+                date_string = mContext.getString(R.string.today) + " " + timeFormat.format(comment.getDate());
             else
-                holder.comment_date.setText(dateFormat.format(comment.getDate()));
+                date_string = dateFormat.format(comment.getDate());
 
+            holder.comment_date.setText(date_string);
             holder.comment.setText(comment.getText());
 
-            if(comment.getImage() == null || comment.getImage().length() == 0)
+
+            // IMAGE
+            if (comment.getImage() == null || comment.getImage().length() == 0)
                 holder.comment_image.setVisibility(View.GONE);
-            else{
+            else {
                 holder.comment_image.setVisibility(View.VISIBLE);
                 byte[] imageByteArray = Base64.decode(comment.getImage(), Base64.DEFAULT);
 
@@ -83,6 +93,27 @@ public class CommentsRecyclerAdapter extends RecyclerView.Adapter<CommentsRecycl
                         .asBitmap()
                         .listener(new MyRequestListener(mContext, holder.user_image))
                         .into(holder.comment_image);
+
+                holder.comment_image.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        Bundle args = new Bundle();
+                        args.putString("image", comment.getImage());
+                        args.putString("title", comment.getUserName());
+                        args.putString("subtitle", date_string);
+
+                        Intent intent = new Intent(mContext, ImageActivity.class);
+                        intent.putExtras(args);
+
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                            ActivityOptions options = ActivityOptions
+                                    .makeSceneTransitionAnimation((Activity) mContext, holder.comment_image, mContext.getString(R.string.image_transition));
+                            mContext.startActivity(intent, options.toBundle());
+                        } else
+                            mContext.startActivity(intent);
+                    }
+                });
             }
 
             int number_comments = comment.getComments().size();

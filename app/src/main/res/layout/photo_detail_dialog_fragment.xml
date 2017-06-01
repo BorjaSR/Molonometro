@@ -10,9 +10,9 @@
 
     <ImageView
         android:id="@+id/group_image_dialog"
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
         android:scaleType="centerCrop"
-        android:transitionName="imageTransition"
+        android:transitionName="@string/image_transition"
         android:visibility="visible"/>
 </LinearLayout>

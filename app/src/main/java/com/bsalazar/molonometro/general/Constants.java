@@ -18,4 +18,6 @@ public class Constants {
     public static int HEIGHT_OF_TEMOMETER = 830;
     public static RestController restController;
     public static FragmentManager fragmentManager;
+
+    public static String IMAGE_TRANSITION_NAME = "imageTransition";
 }

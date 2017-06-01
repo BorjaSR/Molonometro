@@ -15,11 +15,13 @@ import com.bsalazar.molonometro.MainActivity;
 import com.bsalazar.molonometro.entities.Comment;
 import com.bsalazar.molonometro.entities.Contact;
 import com.bsalazar.molonometro.entities.Group;
+import com.bsalazar.molonometro.general.Constants;
 import com.bsalazar.molonometro.general.Tools;
 import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.controllers.GroupController;
 import com.bsalazar.molonometro.rest.json.GroupJson;
 import com.bsalazar.molonometro.rest.services.Parser;
+import com.bsalazar.molonometro.rest.services.RestController;
 import com.bsalazar.molonometro.rest.services.ServiceCallbackInterface;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -50,6 +52,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public void onMessageReceived(RemoteMessage remoteMessage) {
 
         Log.d(TAG, "From: " + remoteMessage.getFrom());
+        if (Constants.restController == null)
+            Constants.restController = new RestController();
 
         // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
@@ -93,20 +97,28 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                                 GroupJson group = new Gson().fromJson(result, GroupJson.class);
                                 String userName = null, destinationUserName = null;
 
-                                for (Contact contact : Variables.contactsWithApp){
+                                for (Contact contact : Variables.contactsWithApp) {
                                     if (contact.getUserID() == comment.getUserID())
                                         userName = contact.getName();
                                     if (contact.getUserID() == comment.getDestinationUserID())
                                         destinationUserName = contact.getName();
                                 }
 
-                                if(comment.getUserID() == Variables.User.getUserID()) userName = Variables.User.getName();
-                                if(comment.getDestinationUserID() == Variables.User.getUserID()) destinationUserName = Variables.User.getName();
+                                boolean myself = false;
+                                if (Variables.User != null) {
+                                    if (comment.getUserID() == Variables.User.getUserID()) {
+                                        userName = Variables.User.getName();
+                                        myself = true;
+                                    }
+                                    if (comment.getDestinationUserID() == Variables.User.getUserID())
+                                        destinationUserName = Variables.User.getName();
+                                }
 
-                                if(userName == null || destinationUserName == null)
-                                    sendNotification(group.getName(), "Alguien ha votado!");
-                                else
-                                    sendNotification(group.getName(), Tools.cropName(userName) + " ha votado a " + Tools.cropName(destinationUserName) + "!");
+                                if (!myself)
+                                    if (userName == null || destinationUserName == null)
+                                        sendNotification(group.getName(), "Alguien ha votado!");
+                                    else
+                                        sendNotification(group.getName(), Tools.cropName(userName) + " ha votado a " + Tools.cropName(destinationUserName) + "!");
 
                             }
 

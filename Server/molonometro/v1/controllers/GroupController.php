@@ -221,20 +221,20 @@ function addUserToGroup($userID, $groupID, $creater) {
     $DBresponse = $groupDAO->addUserToGroup($userID, $groupID);
 
 
-    if($creater != $userID){
-        $userDAO = new UserDAO();
-        $contactFirebaseToken = $userDAO->getFirebaseTokenByUser($userID);
-
-        if ($contactFirebaseToken != null) {
-            $fcm = new FCM();
-            $fcm->sendNewGroupNotification($contactFirebaseToken, $groupID);
-        }
-    } else {
-        makeUserAdmin($userID, $groupID);
-    }
-
     if($DBresponse["status"] == 200){
+		if($creater != $userID){
+		    $userDAO = new UserDAO();
+		    $contactFirebaseToken = $userDAO->getFirebaseTokenByUser($userID);
+
+		    if ($contactFirebaseToken != null) {
+		        $fcm = new FCM();
+		        $fcm->sendNewGroupNotification($contactFirebaseToken, $groupID);
+		    }
+		} else {
+		    makeUserAdmin($userID, $groupID);
+		}
         return true;
+        
     } else {
         return false;
     }

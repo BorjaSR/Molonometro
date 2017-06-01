@@ -1,6 +1,9 @@
 package com.bsalazar.molonometro.area_home.adapters;
 
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
@@ -14,7 +17,9 @@ import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.MainActivity;
 import com.bsalazar.molonometro.entities.Contact;
 import com.bsalazar.molonometro.general.Constants;
+import com.bsalazar.molonometro.general.ImageActivity;
 import com.bsalazar.molonometro.general.MyRequestListener;
+import com.bsalazar.molonometro.general.PhotoDetailActivity;
 import com.bsalazar.molonometro.general.PhotoDetailDialogFragment;
 import com.bsalazar.molonometro.general.Tools;
 import com.bumptech.glide.Glide;
@@ -44,7 +49,7 @@ public class ContactsRecyclerAdapter  extends RecyclerView.Adapter<ContactsRecyc
     }
 
     @Override
-    public void onBindViewHolder(ContactViewHolder holder, int position) {
+    public void onBindViewHolder(final ContactViewHolder holder, int position) {
 
         final Contact contact = contacts.get(position);
 
@@ -77,14 +82,31 @@ public class ContactsRecyclerAdapter  extends RecyclerView.Adapter<ContactsRecyc
         holder.contact_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                PhotoDetailDialogFragment photoDetailDialogFragment = new PhotoDetailDialogFragment();
 
+                // Supply index input as an argument.
                 Bundle args = new Bundle();
                 args.putString("image", contact.getImageBase64());
                 args.putInt("noImage", R.drawable.user_icon);
-                photoDetailDialogFragment.setArguments(args);
 
-                photoDetailDialogFragment.show(Constants.fragmentManager, "Contact Image");
+                Intent intent = new Intent(mContext, PhotoDetailActivity.class);
+                intent.putExtras(args);
+
+
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                    ActivityOptions options = ActivityOptions
+                            .makeSceneTransitionAnimation((MainActivity) mContext, holder.contact_image, mContext.getString(R.string.image_transition));
+                    mContext.startActivity(intent, options.toBundle());
+                } else
+                    mContext.startActivity(intent);
+
+//                PhotoDetailDialogFragment photoDetailDialogFragment = new PhotoDetailDialogFragment();
+//
+//                Bundle args = new Bundle();
+//                args.putString("image", contact.getImageBase64());
+//                args.putInt("noImage", R.drawable.user_icon);
+//                photoDetailDialogFragment.setArguments(args);
+//
+//                photoDetailDialogFragment.show(Constants.fragmentManager, "Contact Image");
             }
         });
 

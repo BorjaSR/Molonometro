@@ -37,7 +37,7 @@ public class ContactsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        update();
+//        update();
     }
 
     public void update() {

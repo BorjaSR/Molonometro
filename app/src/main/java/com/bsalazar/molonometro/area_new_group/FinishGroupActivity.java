@@ -1,7 +1,9 @@
 package com.bsalazar.molonometro.area_new_group;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
@@ -39,6 +41,7 @@ import com.google.gson.Gson;
 public class FinishGroupActivity extends AppCompatActivity implements View.OnClickListener {
 
     private final int GALERY_INPUT = 1;
+    private final int CAMERA_INPUT = 2;
 
     private EditText group_name;
     private ImageView group_image;
@@ -186,9 +189,36 @@ public class FinishGroupActivity extends AppCompatActivity implements View.OnCli
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.group_image:
-                openGalery();
+                showImageDialog();
                 break;
         }
+    }
+
+
+    private void showImageDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.ask_image))
+                .setPositiveButton(getString(R.string.camera), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        startCamera();
+                    }
+                })
+                .setNegativeButton(getString(R.string.galery), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                        openGalery();
+                    }
+                });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    public void startCamera() {
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(cameraIntent, CAMERA_INPUT);
     }
 
     public void openGalery() {
@@ -201,25 +231,17 @@ public class FinishGroupActivity extends AppCompatActivity implements View.OnCli
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == GALERY_INPUT) {
                 try {
-
                     group_image_bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
-
                     group_image.setImageBitmap(group_image_bitmap);
-                    //TODO
-//
-//                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//                    group_image_bitmap.compress(Bitmap.CompressFormat.JPEG, 25, baos);
-//
-//                    group_image_bitmap = BitmapFactory.decodeByteArray(baos.toByteArray(), 0, baos.toByteArray().length);
-//
-//                    Glide.with(getApplicationContext())
-//                            .load(group_image_bitmap)
-//                            .asBitmap()
-//                            .dontAnimate()
-//                            .into(group_image);
 
                 } catch (Exception e) {
                     e.printStackTrace();
+                }
+
+            } else if (requestCode == CAMERA_INPUT) {
+                if (data != null && data.getExtras() != null) {
+                    group_image_bitmap = Bitmap.createBitmap((Bitmap) data.getExtras().get("data"));
+                    group_image.setImageBitmap(group_image_bitmap);
                 }
             }
         }

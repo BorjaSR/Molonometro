@@ -1,6 +1,8 @@
 package com.bsalazar.molonometro.area_register;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
@@ -28,6 +30,7 @@ import com.bsalazar.molonometro.rest.services.ServiceCallbackInterface;
 public class SetFirstProfileDataActivity extends AppCompatActivity implements View.OnClickListener {
 
     final int GALERY_INPUT = 6;
+    private final int CAMERA_INPUT = 2;
 
     ImageView profileImage;
     Bitmap profileBitmap = null;
@@ -102,7 +105,7 @@ public class SetFirstProfileDataActivity extends AppCompatActivity implements Vi
                 break;
 
             case R.id.profileImage:
-                openGalery();
+                showImageDialog();
                 break;
         }
     }
@@ -122,6 +125,32 @@ public class SetFirstProfileDataActivity extends AppCompatActivity implements Vi
         });
     }
 
+    private void showImageDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.ask_image))
+                .setPositiveButton(getString(R.string.camera), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        startCamera();
+                    }
+                })
+                .setNegativeButton(getString(R.string.galery), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                        openGalery();
+                    }
+                });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    public void startCamera() {
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(cameraIntent, CAMERA_INPUT);
+    }
+
     public void openGalery() {
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");
@@ -137,6 +166,12 @@ public class SetFirstProfileDataActivity extends AppCompatActivity implements Vi
 
                 } catch (Exception e) {
                     e.printStackTrace();
+                }
+
+            } else if (requestCode == CAMERA_INPUT) {
+                if (data != null && data.getExtras() != null) {
+                    profileBitmap = Bitmap.createBitmap((Bitmap) data.getExtras().get("data"));
+                    profileImage.setImageBitmap(Tools.getRoundedCroppedBitmap(profileBitmap));
                 }
             }
         }

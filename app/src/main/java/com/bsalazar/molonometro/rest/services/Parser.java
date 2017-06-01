@@ -63,17 +63,18 @@ public class Parser {
             e.printStackTrace();
         }
 
-        group.setLastEvent(parseLastEvent(groupJson.getLastEvent()));
+        if (groupJson.getLastEvent() != null)
+            group.setLastEvent(parseLastEvent(groupJson.getLastEvent()));
 
         group.setParticipants(new ArrayList<Participant>());
 
         return group;
     }
 
-    private static LastEvent parseLastEvent(LastEventJson lastEventJson){
+    private static LastEvent parseLastEvent(LastEventJson lastEventJson) {
         LastEvent lastEvent = new LastEvent();
 
-        if(lastEventJson.getLastUpdate() == null)
+        if (lastEventJson.getLastUpdate() == null)
             return null;
 
         lastEvent.setCommentID(lastEventJson.getCommentID());
@@ -87,17 +88,17 @@ public class Parser {
             e.printStackTrace();
         }
 
-        if(lastEventJson.getUserID() == Variables.User.getUserID())
+        if (lastEventJson.getUserID() == Variables.User.getUserID())
             lastEvent.setUserName(Variables.User.getName());
-        else{
+        else {
             for (Contact contact : Variables.contactsWithApp)
                 if (contact.getUserID() == lastEventJson.getUserID())
                     lastEvent.setUserName(contact.getName());
         }
 
-        if(lastEventJson.getDestinationUserID() == Variables.User.getUserID())
+        if (lastEventJson.getDestinationUserID() == Variables.User.getUserID())
             lastEvent.setDestinationUserName(Variables.User.getName());
-        else{
+        else {
             for (Contact contact : Variables.contactsWithApp)
                 if (contact.getUserID() == lastEventJson.getDestinationUserID())
                     lastEvent.setDestinationUserName(contact.getName());
@@ -168,17 +169,17 @@ public class Parser {
             else
                 comment.setLikes(new ArrayList<Integer>());
 
-            if (commentJson.getUserID() == Variables.User.getUserID()){
+            if (commentJson.getUserID() == Variables.User.getUserID()) {
                 comment.setUserName(Variables.User.getName());
                 comment.setUserImage(Variables.User.getImageBase64());
                 comment.setDestinationUserName(getContactByID(commentJson.getDestinationUserID()).getName());
-            } else{
+            } else {
                 Contact contact = getContactByID(commentJson.getUserID());
-                if(contact != null) {
+                if (contact != null) {
                     comment.setUserName(contact.getName());
                     comment.setUserImage(contact.getImageBase64());
 
-                    if(commentJson.getDestinationUserID() == Variables.User.getUserID())
+                    if (commentJson.getDestinationUserID() == Variables.User.getUserID())
                         comment.setDestinationUserName(Variables.User.getName());
                     else
                         comment.setDestinationUserName(getContactByID(commentJson.getDestinationUserID()).getName());
@@ -203,12 +204,12 @@ public class Parser {
             comment.setText(commentJson.getText());
             comment.setImage(commentJson.getImage());
 
-            if (commentJson.getUserID() == Variables.User.getUserID()){
+            if (commentJson.getUserID() == Variables.User.getUserID()) {
                 comment.setUserName(Variables.User.getName());
                 comment.setUserImage(Variables.User.getImageBase64());
-            } else{
+            } else {
                 Contact contact = getContactByID(commentJson.getUserID());
-                if(contact != null) {
+                if (contact != null) {
                     comment.setUserName(contact.getName());
                     comment.setUserImage(contact.getImageBase64());
                 }
@@ -220,7 +221,7 @@ public class Parser {
         return comments;
     }
 
-    private static Contact getContactByID(int id){
+    private static Contact getContactByID(int id) {
         for (Contact contact : Variables.contactsWithApp)
             if (contact.getUserID() == id)
                 return contact;

@@ -90,11 +90,17 @@
 
         <activity
             android:name=".general.PhotoDetailActivity"
-            android:label="@string/edit_field"
+            android:label="@string/photo_detail_activity"
             android:theme="@style/AppTheme.Transparent"
             android:parentActivityName=".MainActivity" >
         </activity>
 
+        <activity
+            android:name=".general.ImageActivity"
+            android:label="@string/image_activity"
+            android:theme="@style/AppTheme.ImageActivity"
+            android:parentActivityName=".area_dashboard_group.DashboardGroupActivity">
+        </activity>
 
 
         <service

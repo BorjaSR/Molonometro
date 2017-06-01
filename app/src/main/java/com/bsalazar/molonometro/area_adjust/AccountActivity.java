@@ -1,6 +1,8 @@
 package com.bsalazar.molonometro.area_adjust;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
@@ -31,6 +33,7 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 
 import retrofit.Callback;
@@ -44,6 +47,7 @@ import retrofit.client.Response;
 public class AccountActivity extends AppCompatActivity implements View.OnClickListener {
 
     private final int GALERY_INPUT = 1;
+    private final int CAMERA_INPUT = 2;
 
     private ImageView profile_image;
     private TextView profile_user_name;
@@ -111,7 +115,7 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.profile_image:
-                openGalery();
+                showImageDialog();
                 break;
             case R.id.profile_user_name:
                 Intent intent = new Intent(this, EditFieldActivity.class);
@@ -126,6 +130,41 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
 
+    private void showImageDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.ask_image))
+                .setPositiveButton(getString(R.string.camera), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        startCamera();
+                    }
+                })
+                .setNegativeButton(getString(R.string.galery), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                        openGalery();
+                    }
+                });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    public void startCamera() {
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(cameraIntent, CAMERA_INPUT);
+    }
+
+
+//    private File setUpPhotoFile() throws IOException {
+//
+//        File f = createImageFile();
+//        mCurrentPhotoPath = f.getAbsolutePath();
+//
+//        return f;
+//    }
+
     public void openGalery() {
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");
@@ -136,47 +175,55 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == GALERY_INPUT) {
                 try {
-
                     Bitmap new_image = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
-                    profile_image.setImageBitmap(null);
-
-                    new UserController().updateUserImage(this, new_image, new ServiceCallbackInterface() {
-                        @Override
-                        public void onSuccess(String result) {
-
-                            byte[] bitmapdata = Base64.decode(Variables.User.getImageBase64(), Base64.DEFAULT);
-
-                            Glide.with(getApplicationContext())
-                                    .load(bitmapdata)
-                                    .asBitmap()
-                                    .dontAnimate()
-                                    .listener(new MyRequestListener(activity, profile_image))
-                                    .into(profile_image);
-                        }
-
-                        @Override
-                        public void onFailure(String result) {
-
-                            try {
-                                byte[] imageByteArray = Base64.decode(Variables.User.getImageBase64(), Base64.DEFAULT);
-
-                                Glide.with(getApplicationContext())
-                                        .load(imageByteArray)
-                                        .asBitmap()
-                                        .dontAnimate()
-                                        .listener(new MyRequestListener(activity, profile_image))
-                                        .into(profile_image);
-
-                            } catch (Exception e) {
-                                profile_image.setImageDrawable(getResources().getDrawable(R.drawable.user_icon));
-                            }
-                        }
-                    });
-
+                    setImage(new_image);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+
+            } else if (requestCode == CAMERA_INPUT) {
+                if (data != null && data.getExtras() != null) {
+                    Bitmap new_image = Bitmap.createBitmap((Bitmap) data.getExtras().get("data"));
+                    setImage(new_image);
+                }
             }
         }
+    }
+
+    private void setImage(Bitmap bitmap){
+        profile_image.setImageBitmap(null);
+
+        new UserController().updateUserImage(this, bitmap, new ServiceCallbackInterface() {
+            @Override
+            public void onSuccess(String result) {
+
+                byte[] bitmapdata = Base64.decode(Variables.User.getImageBase64(), Base64.DEFAULT);
+
+                Glide.with(getApplicationContext())
+                        .load(bitmapdata)
+                        .asBitmap()
+                        .dontAnimate()
+                        .listener(new MyRequestListener(activity, profile_image))
+                        .into(profile_image);
+            }
+
+            @Override
+            public void onFailure(String result) {
+
+                try {
+                    byte[] imageByteArray = Base64.decode(Variables.User.getImageBase64(), Base64.DEFAULT);
+
+                    Glide.with(getApplicationContext())
+                            .load(imageByteArray)
+                            .asBitmap()
+                            .dontAnimate()
+                            .listener(new MyRequestListener(activity, profile_image))
+                            .into(profile_image);
+
+                } catch (Exception e) {
+                    profile_image.setImageDrawable(getResources().getDrawable(R.drawable.user_icon));
+                }
+            }
+        });
     }
 }

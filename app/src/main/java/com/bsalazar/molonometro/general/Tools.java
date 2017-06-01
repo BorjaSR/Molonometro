@@ -114,6 +114,9 @@ public class Tools {
     }
 
     public static String cropNameSurname(String Name){
+        if(Name == null)
+            return "";
+
         String[] split = Name.split(" ");
         if(split.length > 2){
             return split[0] + " " + split[1];
@@ -121,6 +124,9 @@ public class Tools {
             return Name;
     }
     public static String cropName(String Name){
+        if(Name == null)
+            return "";
+
         return Name.split(" ")[0];
     }
 

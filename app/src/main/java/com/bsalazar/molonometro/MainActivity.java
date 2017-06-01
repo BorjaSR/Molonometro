@@ -36,7 +36,10 @@ import com.bsalazar.molonometro.area_home.GroupsFragment;
 import com.bsalazar.molonometro.area_new_group.NewGroupActivity;
 import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.entities.PhoneContact;
+import com.bsalazar.molonometro.entities.User;
 import com.bsalazar.molonometro.general.Constants;
+import com.bsalazar.molonometro.general.Memo;
+import com.bsalazar.molonometro.general.Tools;
 import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.controllers.ContactController;
 import com.bsalazar.molonometro.rest.controllers.GroupController;
@@ -48,6 +51,7 @@ import com.bsalazar.molonometro.rest.json.UserIdJson;
 import com.bsalazar.molonometro.rest.json.UserJson;
 import com.bsalazar.molonometro.rest.services.ServiceCallbackInterface;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
@@ -78,6 +82,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         Constants.fragmentManager = getFragmentManager();
+
+        //Refresh user if don't exist
+        if(Variables.User == null){
+            String rememberedUser = Memo.doYouRemember(this);
+            if(rememberedUser != null){
+                Gson gson = new Gson();
+                Variables.User = gson.fromJson(rememberedUser, User.class);
+
+                if(Variables.User.getImageBase64() != null)
+                    Variables.User.setImage(Tools.decodeBase64(Variables.User.getImageBase64()));
+            }
+        }
 
         TextView groups_button = (TextView) findViewById(R.id.groups_button);
         TextView contacts_button = (TextView) findViewById(R.id.contacts_button);

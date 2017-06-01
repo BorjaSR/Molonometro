@@ -43,4 +43,10 @@
     <string name="group_creation">Grupo creado</string>
     <string name="wish_exit_group">¿Quieres salir del grupo?</string>
     <string name="today">Hoy</string>
+    <string name="image_transition">imageTransition</string>
+    <string name="photo_detail_activity">photo_detail</string>
+    <string name="image_activity">Imagen</string>
+    <string name="ask_image">¿De donde quieres la foto?</string>
+    <string name="camera">Camara</string>
+    <string name="galery">Galería</string>
 </resources>

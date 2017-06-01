@@ -2,6 +2,7 @@ package com.bsalazar.molonometro.area_dashboard_group;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -31,6 +32,7 @@ import com.bsalazar.molonometro.MainActivity;
 import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.area_adjust.EditFieldActivity;
 import com.bsalazar.molonometro.entities.Participant;
+import com.bsalazar.molonometro.general.ImageActivity;
 import com.bsalazar.molonometro.general.MyRequestListener;
 import com.bsalazar.molonometro.general.Tools;
 import com.bsalazar.molonometro.general.Variables;
@@ -49,6 +51,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 public class GroupDetailActivity extends AppCompatActivity {
 
     private final int GALERY_INPUT = 1;
+    private final int CAMERA_INPUT = 2;
     LinearLayout participants_container;
 
     private int highestScore = 1;
@@ -94,7 +97,7 @@ public class GroupDetailActivity extends AppCompatActivity {
         CollapsingToolbarLayout ctl = (CollapsingToolbarLayout) findViewById(R.id.ctl);
         group_image = (ImageView) findViewById(R.id.group_image);
 
-        String imageBase64 = Variables.Group.getImageBase64();
+        final String imageBase64 = Variables.Group.getImageBase64();
         if (imageBase64 != null) {
             byte[] imageByteArray = Base64.decode(imageBase64, Base64.DEFAULT);
             Bitmap bmp = BitmapFactory.decodeByteArray(imageByteArray, 0, imageByteArray.length);
@@ -107,7 +110,7 @@ public class GroupDetailActivity extends AppCompatActivity {
         group_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                openGalery();
+                showImageDialog();
             }
         });
 
@@ -273,6 +276,31 @@ public class GroupDetailActivity extends AppCompatActivity {
         participants_container.addView(participant_view);
     }
 
+    private void showImageDialog() {
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.ask_image))
+                .setPositiveButton(getString(R.string.camera), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        startCamera();
+                    }
+                })
+                .setNegativeButton(getString(R.string.galery), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                        openGalery();
+                    }
+                });
+
+        android.app.AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    public void startCamera() {
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(cameraIntent, CAMERA_INPUT);
+    }
 
     public void openGalery() {
         Intent intent = new Intent(Intent.ACTION_PICK);
@@ -286,44 +314,51 @@ public class GroupDetailActivity extends AppCompatActivity {
             if (requestCode == GALERY_INPUT) {
                 try {
                     final Bitmap new_image = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
-//                    group_image.setImageBitmap(null);
-
-                    GroupJson groupJson = new GroupJson();
-                    groupJson.setGroupID(Variables.Group.getId());
-                    final String new_image_64 = Tools.encodeBitmapToBase64(new_image);
-                    groupJson.setImage(new_image_64);
-
-                    new GroupController().updateGroupImage(this, groupJson, new ServiceCallbackInterface() {
-                        @Override
-                        public void onSuccess(String result) {
-
-                            Variables.Group.setImageBase64(new_image_64);
-                            setCollapsing();
-                        }
-
-                        @Override
-                        public void onFailure(String result) {
-
-                            try {
-                                byte[] imageByteArray = Base64.decode(Variables.Group.getImageBase64(), Base64.DEFAULT);
-
-                                Glide.with(getApplicationContext())
-                                        .load(imageByteArray)
-                                        .asBitmap()
-                                        .dontAnimate()
-                                        .listener(new MyRequestListener(activity, group_image))
-                                        .into(group_image);
-
-                            } catch (Exception e) {
-                                group_image.setImageDrawable(getResources().getDrawable(R.drawable.user_icon));
-                            }
-                        }
-                    });
-
+                    setGroupImage(new_image);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+
+            }  else if (requestCode == CAMERA_INPUT) {
+                if (data != null && data.getExtras() != null) {
+                    Bitmap new_image = Bitmap.createBitmap((Bitmap) data.getExtras().get("data"));
+                    setGroupImage(new_image);
+                }
             }
         }
+    }
+
+    public void setGroupImage(Bitmap bitmap){
+        GroupJson groupJson = new GroupJson();
+        groupJson.setGroupID(Variables.Group.getId());
+        final String new_image_64 = Tools.encodeBitmapToBase64(bitmap);
+        groupJson.setImage(new_image_64);
+
+        new GroupController().updateGroupImage(this, groupJson, new ServiceCallbackInterface() {
+            @Override
+            public void onSuccess(String result) {
+
+                Variables.Group.setImageBase64(new_image_64);
+                setCollapsing();
+            }
+
+            @Override
+            public void onFailure(String result) {
+
+                try {
+                    byte[] imageByteArray = Base64.decode(Variables.Group.getImageBase64(), Base64.DEFAULT);
+
+                    Glide.with(getApplicationContext())
+                            .load(imageByteArray)
+                            .asBitmap()
+                            .dontAnimate()
+                            .listener(new MyRequestListener(activity, group_image))
+                            .into(group_image);
+
+                } catch (Exception e) {
+                    group_image.setImageDrawable(getResources().getDrawable(R.drawable.user_icon));
+                }
+            }
+        });
     }
 }

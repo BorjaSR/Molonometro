@@ -167,22 +167,54 @@ class GroupDAO {
     }
 
     public function addUserToGroup($userId, $groupId) {
+
+
+        if($this->existUserInGroupDeleted($groupId, $userId)){
+
+            return $this->reAddUserFromGroup($userId, $groupId);
+
+        } else {
+            $db = new DbConnect();
+            $this->conn = $db->connect();
+
+            // insert query
+            $stmt = $this->conn->prepare("INSERT INTO groupuser(GroupID, UserID, Created, LastUpdate, Deleted) values(?, ?, now(), now(), 0)");
+            $stmt->bind_param("ss", $groupId, $userId);
+            $result = $stmt->execute();
+            $stmt->close();
+
+            
+            if ($result) {
+                $response["status"] = 200;
+                $response["message"] = "User add correctly to group";
+            } else {
+                $response["status"] = 433;
+                $response["error"] = "Oops! An error occurred while add user to group";
+            }
+
+            $db->disconnect();
+            return $response;
+        }
+    }
+
+
+    public function reAddUserFromGroup($userId, $groupId) {
         $db = new DbConnect();
         $this->conn = $db->connect();
 
         // insert query
-        $stmt = $this->conn->prepare("INSERT INTO groupuser(GroupID, UserID, Created, LastUpdate, Deleted) values(?, ?, now(), now(), 0)");
+        $stmt = $this->conn->prepare("UPDATE groupuser SET Deleted = 0, LastUpdate = now() WHERE GroupID = ? AND UserID = ?");
         $stmt->bind_param("ss", $groupId, $userId);
         $result = $stmt->execute();
         $stmt->close();
 
         
         if ($result) {
-	        $response["status"] = 200;
-	        $response["message"] = "User add correctly to group";
+            $response["status"] = 200;
+            $response["message"] = "User add correctly from group";
         } else {
-	        $response["status"] = 433;
-		    $response["error"] = "Oops! An error occurred while add user to group";
+            $response["status"] = 433;
+            $response["error"] = "Oops! An error occurred while add user to group";
         }
 
         $db->disconnect();
@@ -206,13 +238,26 @@ class GroupDAO {
             $response["message"] = "User remove correctly from group";
         } else {
             $response["status"] = 433;
-            $response["error"] = "Oops! An error occurred while add user to group";
+            $response["error"] = "Oops! An error occurred while remove user to group";
         }
 
         $db->disconnect();
         return $response;
     }
 
+
+    public function existUserInGroupDeleted($groupID, $userID) {
+        $db = new DbConnect();
+        $this->conn = $db->connect();
+        $stmt = $this->conn->prepare("SELECT GroupID from groupuser WHERE GroupID = ? and UserID = ?");
+        $stmt->bind_param("ii", $groupID, $userID);
+        $stmt->execute();
+        $stmt->store_result();
+        $num_rows = $stmt->num_rows;
+        $stmt->close();
+        $db->disconnect();
+        return $num_rows > 0;
+    }
 
     public function isGroupExistsById($id) {
         $db = new DbConnect();
@@ -230,16 +275,18 @@ class GroupDAO {
     public function getGroupById($groupID) {
         $db = new DbConnect();
         $this->conn = $db->connect();
-        $stmt = $this->conn->prepare("SELECT GroupID, Name, Image From groups where GroupID = ? and Deleted = 0");
+        $stmt = $this->conn->prepare("SELECT GroupID, Name, Image, FirebaseTopic, LastUpdate From groups where GroupID = ? and Deleted = 0");
         $stmt->bind_param("i", $groupID);
         
         if ($stmt->execute()) {
-            $stmt->bind_result($GroupID, $Name, $Image);
+            $stmt->bind_result($GroupID, $Name, $Image, $FirebaseTopic, $LastUpdate);
             $stmt->fetch();
             $group = array();
             $group["GroupID"] = $GroupID;
             $group["Name"] = $Name;
             $group["Image"] = $Image;
+            $group["FirebaseTopic"] = $FirebaseTopic;
+            $group["LastUpdate"] = $LastUpdate;
             $stmt->close();
         $db->disconnect();
             return $group;

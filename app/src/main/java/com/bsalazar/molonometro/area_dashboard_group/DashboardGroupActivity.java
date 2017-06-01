@@ -3,7 +3,10 @@ package com.bsalazar.molonometro.area_dashboard_group;
 import android.animation.Animator;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
@@ -62,6 +65,7 @@ import java.util.Date;
 public class DashboardGroupActivity extends AppCompatActivity implements View.OnClickListener {
 
     private final int GALERY_INPUT = 1;
+    private final int CAMERA_INPUT = 2;
 
     private float ter_height;
     private int highestScore = 1;
@@ -82,7 +86,7 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
 
     private AutoCompleteAdapter autoCompleteAdapter;
     private boolean isAddCommentShowed = false;
-    private boolean isUSerInGroup = false;
+    private boolean isUserInGroup = false;
     private Participant participantToSend;
     private Bitmap comment_bitmap;
 
@@ -160,10 +164,10 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (userIsInGroup(destinationUser.getText().toString())) {
                     destinationUser.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.charcoal_gray));
-                    isUSerInGroup = true;
+                    isUserInGroup = true;
                 } else {
                     destinationUser.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.wrong_color));
-                    isUSerInGroup = true;
+                    isUserInGroup = true;
                 }
             }
 
@@ -312,7 +316,7 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
 
-                if (isUSerInGroup) {
+                if (isUserInGroup) {
                     if (comment_text.getText().toString().length() != 0) {
                         final Comment comment = new Comment();
                         comment.setGroupID(Variables.Group.getId());
@@ -324,9 +328,14 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
                         else
                             comment.setImage(Tools.encodeBitmapToBase64(comment_bitmap));
 
+                        final ProgressDialog progress = ProgressDialog.show(this, "",
+                                "Enviando...", true);
+
                         new CommentsController().addCommentToGroup(this, comment, new ServiceCallbackInterface() {
                             @Override
                             public void onSuccess(String result) {
+                                progress.dismiss();
+
                                 comment.setUserName(Variables.User.getName());
                                 comment.setUserImage(Variables.User.getImageBase64());
                                 comment.setDestinationUserName(participantToSend.getName());
@@ -363,7 +372,7 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
 
                             @Override
                             public void onFailure(String result) {
-
+                                progress.dismiss();
                             }
                         });
 
@@ -379,7 +388,7 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
                 hideAddComment();
                 break;
             case R.id.comment_camera:
-                openGalery();
+                showImageDialog();
                 break;
         }
     }
@@ -499,6 +508,32 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
         commentsDialogFragment.show(getFragmentManager(), "COMMENTS");
     }
 
+    private void showImageDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.ask_image))
+                .setPositiveButton(getString(R.string.camera), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        startCamera();
+                    }
+                })
+                .setNegativeButton(getString(R.string.galery), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                        openGalery();
+                    }
+                });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    public void startCamera() {
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(cameraIntent, CAMERA_INPUT);
+    }
+
 
     public void openGalery() {
         Intent intent = new Intent(Intent.ACTION_PICK);
@@ -516,6 +551,11 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
 
                 } catch (Exception e) {
                     e.printStackTrace();
+                }
+            } else if (requestCode == CAMERA_INPUT) {
+                if (data != null && data.getExtras() != null) {
+                    comment_bitmap = Bitmap.createBitmap((Bitmap) data.getExtras().get("data"));
+                    comment_image.setImageBitmap(comment_bitmap);
                 }
             }
         }
