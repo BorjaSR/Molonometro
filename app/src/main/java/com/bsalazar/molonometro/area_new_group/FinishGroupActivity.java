@@ -1,11 +1,13 @@
 package com.bsalazar.molonometro.area_new_group;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -13,6 +15,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.view.LayoutInflater;
@@ -28,6 +32,7 @@ import android.widget.TextView;
 import com.bsalazar.molonometro.MainActivity;
 import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.entities.Contact;
+import com.bsalazar.molonometro.general.Constants;
 import com.bsalazar.molonometro.general.Tools;
 import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.controllers.GroupController;
@@ -54,6 +59,7 @@ public class FinishGroupActivity extends AppCompatActivity implements View.OnCli
 
     private Bitmap group_image_bitmap;
     private String mCurrentPhotoPath;
+    private Activity activity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +71,7 @@ public class FinishGroupActivity extends AppCompatActivity implements View.OnCli
         group_image = (ImageView) findViewById(R.id.group_image);
         group_name = (EditText) findViewById(R.id.group_name);
         group_image_bitmap = null;
+        activity = this;
 
         participants_text.setText(getString(R.string.participants) + " (" + Variables.createGroupJson.getContacts().size() + ")");
         group_image.setOnClickListener(this);
@@ -201,14 +208,22 @@ public class FinishGroupActivity extends AppCompatActivity implements View.OnCli
         }
     }
 
-
     private void showImageDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getString(R.string.ask_image))
                 .setPositiveButton(getString(R.string.camera), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        dispatchTakePictureIntent();
+
+                        int permissionCheck = ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                        if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
+                            dispatchTakePictureIntent();
+                        } else {
+                            ActivityCompat.requestPermissions(activity,
+                                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                    Constants.PERMISSION_RESULT_WRITE_EXTERNAL_STORAGE);
+                        }
+
                     }
                 })
                 .setNegativeButton(getString(R.string.galery), new DialogInterface.OnClickListener() {
@@ -221,6 +236,22 @@ public class FinishGroupActivity extends AppCompatActivity implements View.OnCli
 
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case Constants.PERMISSION_RESULT_WRITE_EXTERNAL_STORAGE:
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    dispatchTakePictureIntent();
+                } else
+                    Snackbar.make(group_image, "Sin permiso no se puede usar la camara.", Snackbar.LENGTH_SHORT).show();
+
+                break;
+            default:
+                break;
+        }
     }
 
     private void dispatchTakePictureIntent() {

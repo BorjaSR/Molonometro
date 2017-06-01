@@ -145,8 +145,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         initialFabPosition = fab.getTranslationX();
         fab.setOnClickListener(this);
 
-        int permissionCheck = ContextCompat.checkSelfPermission(this,
-                Manifest.permission.READ_CONTACTS);
+        int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS);
         if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
             getContacts(true);
         } else {

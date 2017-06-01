@@ -1,5 +1,6 @@
 package com.bsalazar.molonometro.area_dashboard_group;
 
+import android.Manifest;
 import android.animation.Animator;
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -9,6 +10,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -18,6 +20,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -499,7 +502,16 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
                 .setPositiveButton(getString(R.string.camera), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        dispatchTakePictureIntent();
+
+                        int permissionCheck = ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                        if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
+                            dispatchTakePictureIntent();
+                        } else {
+                            ActivityCompat.requestPermissions(activity,
+                                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                    Constants.PERMISSION_RESULT_WRITE_EXTERNAL_STORAGE);
+                        }
+
                     }
                 })
                 .setNegativeButton(getString(R.string.galery), new DialogInterface.OnClickListener() {
@@ -512,6 +524,22 @@ public class DashboardGroupActivity extends AppCompatActivity implements View.On
 
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case Constants.PERMISSION_RESULT_WRITE_EXTERNAL_STORAGE:
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    dispatchTakePictureIntent();
+                } else
+                    Snackbar.make(add_comment_container, "Sin permiso no se puede usar la camara.", Snackbar.LENGTH_SHORT).show();
+
+                break;
+            default:
+                break;
+        }
     }
 
     private void dispatchTakePictureIntent() {

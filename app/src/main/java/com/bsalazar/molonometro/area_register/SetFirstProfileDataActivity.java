@@ -1,10 +1,12 @@
 package com.bsalazar.molonometro.area_register;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -12,6 +14,9 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -41,15 +46,18 @@ public class SetFirstProfileDataActivity extends AppCompatActivity implements Vi
     ImageView profileImage;
     Bitmap profileBitmap = null;
     private String mCurrentPhotoPath;
+    private Activity activity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.set_first_profile_data_activity);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        activity = this;
+
+
         Constants.restController = new RestController();
 
         profileImage = (ImageView) findViewById(R.id.profileImage);
@@ -138,7 +146,16 @@ public class SetFirstProfileDataActivity extends AppCompatActivity implements Vi
                 .setPositiveButton(getString(R.string.camera), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        dispatchTakePictureIntent();
+
+                        int permissionCheck = ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                        if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
+                            dispatchTakePictureIntent();
+                        } else {
+                            ActivityCompat.requestPermissions(activity,
+                                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                    Constants.PERMISSION_RESULT_WRITE_EXTERNAL_STORAGE);
+                        }
+
                     }
                 })
                 .setNegativeButton(getString(R.string.galery), new DialogInterface.OnClickListener() {
@@ -151,6 +168,22 @@ public class SetFirstProfileDataActivity extends AppCompatActivity implements Vi
 
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case Constants.PERMISSION_RESULT_WRITE_EXTERNAL_STORAGE:
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    dispatchTakePictureIntent();
+                } else
+                    Snackbar.make(profileImage, "Sin permiso no se puede usar la camara.", Snackbar.LENGTH_SHORT).show();
+
+                break;
+            default:
+                break;
+        }
     }
 
     private void dispatchTakePictureIntent() {
