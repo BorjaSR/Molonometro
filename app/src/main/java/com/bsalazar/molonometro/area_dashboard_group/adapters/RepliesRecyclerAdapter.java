@@ -26,7 +26,11 @@ import com.google.gson.Gson;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by bsalazar on 23/03/2017.
@@ -69,8 +73,16 @@ public class RepliesRecyclerAdapter extends RecyclerView.Adapter<RepliesRecycler
         holder.comment_from.setText(comment.getUserName());
         holder.comment.setText(comment.getText());
 
-        holder.textView3.setVisibility(View.GONE);
-        holder.comment_to.setVisibility(View.GONE);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM HH:mm", Locale.getDefault());
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+
+        final String date_string;
+            if (Tools.isToday(comment.getDate()))
+                date_string = mContext.getString(R.string.today) + " " + timeFormat.format(comment.getDate());
+            else
+                date_string = dateFormat.format(comment.getDate());
+
+        holder.reply_date.setText(date_string);
     }
 
     @Override
@@ -82,18 +94,16 @@ public class RepliesRecyclerAdapter extends RecyclerView.Adapter<RepliesRecycler
 
         ImageView user_image;
         TextView comment_from;
-        TextView textView3;
-        TextView comment_to;
         TextView comment;
+        TextView reply_date;
 
         ReplyViewHolder(View itemView) {
             super(itemView);
 
             user_image = (ImageView) itemView.findViewById(R.id.user_image);
             comment_from = (TextView) itemView.findViewById(R.id.comment_from);
-            textView3 = (TextView) itemView.findViewById(R.id.textView3);
-            comment_to = (TextView) itemView.findViewById(R.id.comment_to);
             comment = (TextView) itemView.findViewById(R.id.comment);
+            reply_date = (TextView) itemView.findViewById(R.id.reply_date);
         }
     }
 }

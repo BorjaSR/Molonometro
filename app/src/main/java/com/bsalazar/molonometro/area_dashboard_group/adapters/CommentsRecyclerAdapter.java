@@ -21,16 +21,15 @@ import com.bsalazar.molonometro.area_dashboard_group.DashboardGroupActivity;
 import com.bsalazar.molonometro.entities.Comment;
 import com.bsalazar.molonometro.general.ImageActivity;
 import com.bsalazar.molonometro.general.MyRequestListener;
-import com.bsalazar.molonometro.general.PhotoDetailActivity;
 import com.bsalazar.molonometro.general.Tools;
 import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.controllers.LikesController;
 import com.bsalazar.molonometro.rest.services.ServiceCallbackInterface;
 import com.bumptech.glide.Glide;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  * Created by bsalazar on 23/03/2017.
@@ -48,7 +47,7 @@ public class CommentsRecyclerAdapter extends RecyclerView.Adapter<CommentsRecycl
 
     @Override
     public CommentViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.comment_item_v2, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.comment_item, parent, false);
         return new CommentsRecyclerAdapter.CommentViewHolder(v);
     }
 
@@ -69,8 +68,8 @@ public class CommentsRecyclerAdapter extends RecyclerView.Adapter<CommentsRecycl
             holder.comment_from.setText(Tools.cropName(comment.getUserName()));
             holder.comment_to.setText(Tools.cropName(comment.getDestinationUserName()));
 
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM HH:mm");//SimpleDateFormat.getDateTimeInstance();//new SimpleDateFormat("dd/MM/yyyy HH:mm");
-            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM HH:mm", Locale.getDefault());
+            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
             final String date_string;
             if (Tools.isToday(comment.getDate()))
                 date_string = mContext.getString(R.string.today) + " " + timeFormat.format(comment.getDate());

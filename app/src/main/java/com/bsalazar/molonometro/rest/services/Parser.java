@@ -16,6 +16,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by Borja on 29/10/2016.
@@ -203,6 +204,13 @@ public class Parser {
             comment.setUserID(commentJson.getUserID());
             comment.setText(commentJson.getText());
             comment.setImage(commentJson.getImage());
+
+            try {
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+                comment.setDate(dateFormat.parse(commentJson.getLastUpdate()));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
 
             if (commentJson.getUserID() == Variables.User.getUserID()) {
                 comment.setUserName(Variables.User.getName());

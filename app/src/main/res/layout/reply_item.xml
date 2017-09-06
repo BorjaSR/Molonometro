@@ -2,11 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:paddingTop="8dp"
-    android:paddingBottom="8dp"
     android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp">
+    android:layout_marginRight="16dp"
+    android:orientation="horizontal"
+    android:paddingBottom="16dp"
+    android:paddingTop="8dp">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/user_image"
@@ -20,41 +20,22 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <TextView
+            android:id="@+id/comment_from"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Borja"
+            android:textColor="@color/charcoal_gray"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/reply_date"
+            style="@style/textDateStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
             android:layout_marginBottom="10dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-
-            <TextView
-                android:id="@+id/comment_from"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/charcoal_gray"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:text="Borja"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/has_voted_to"
-                android:textColor="@color/charcoal_gray"
-                android:id="@+id/textView3" />
-
-            <TextView
-                android:id="@+id/comment_to"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/charcoal_gray"
-                android:textSize="16sp"
-                android:text="Borja"
-                android:textStyle="bold" />
-        </LinearLayout>
+            android:text="Mi comentario" />
 
 
         <TextView
@@ -63,6 +44,6 @@
             android:layout_height="wrap_content"
             android:text="Mi comentario"
             android:textColor="@color/charcoal_gray"
-            android:textSize="16sp"/>
+            android:textSize="16sp" />
     </LinearLayout>
 </LinearLayout>

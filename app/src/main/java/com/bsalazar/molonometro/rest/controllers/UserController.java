@@ -37,6 +37,10 @@ public class UserController {
                     public void success(UserJson userJson, Response response) {
                         Variables.User = Parser.parseUser(userJson);
 
+                        Gson gson = new Gson();
+                        String userStringJson = gson.toJson(Variables.User);
+                        Memo.rememberMe(mContext, userStringJson);
+
                         new SetFirebaseTokenThread(mContext).start();
 
                         mContext.startActivity(new Intent(mContext, SetFirstProfileDataActivity.class));

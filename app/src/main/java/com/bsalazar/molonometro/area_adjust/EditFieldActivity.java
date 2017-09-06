@@ -76,6 +76,8 @@ public class EditFieldActivity extends AppCompatActivity {
                 break;
         }
 
+        if(initial_String == null) initial_String = "";
+
         edit_text.requestFocus();
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 

@@ -24,6 +24,7 @@
     <string name="no_comments">Todavia no hay comentarios en este grupo.\n¡Se el primero en votar!</string>
     <string name="to">Para:</string>
     <string name="send">Enviar</string>
+    <!--<string name="has_voted_to">&#160;<b>%1$s</b> ha votado a <b>%2$s</b>&#160;</string>-->
     <string name="has_voted_to">&#160;ha votado a&#160;</string>
     <string name="view_plies">Ver respuestas</string>
     <string name="reply">Responder</string>
@@ -49,4 +50,6 @@
     <string name="ask_image">¿De donde quieres la foto?</string>
     <string name="camera">Camara</string>
     <string name="galery">Galería</string>
+    <string name="not_send_empty">Pero no lo envies vacío animal!</string>
+    <string name="vote_someone_real">Vota a alguien que exista!</string>
 </resources>

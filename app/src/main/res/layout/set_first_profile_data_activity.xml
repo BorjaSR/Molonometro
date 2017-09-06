@@ -48,16 +48,25 @@
             android:layout_height="wrap_content">
 
             <ImageView
-                android:layout_width="125dp"
-                android:layout_height="125dp"
+                android:layout_width="@dimen/imageSize_profile"
+                android:layout_height="@dimen/imageSize_profile"
                 android:layout_centerInParent="true"
                 android:src="@drawable/charcoal_gray_circle" />
 
-            <ImageView
+            <!--<ImageView-->
+                <!--android:id="@+id/profileImage"-->
+                <!--android:layout_width="@dimen/imageSize_profile"-->
+                <!--android:layout_height="@dimen/imageSize_profile"-->
+                <!--android:src="@drawable/user_icon"-->
+                <!--android:layout_centerInParent="true"/>-->
+
+            <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/profileImage"
-                android:layout_width="120dp"
-                android:layout_height="120dp"
-                android:src="@drawable/user_icon"
+                android:layout_width="@dimen/imageSize_profile"
+                android:layout_height="@dimen/imageSize_profile"
+                android:layout_margin="@dimen/margin_image_profile"
+                app:civ_border_color="@color/charcoal_gray"
+                app:civ_border_width="2dp"
                 android:layout_centerInParent="true"/>
 
         </RelativeLayout>

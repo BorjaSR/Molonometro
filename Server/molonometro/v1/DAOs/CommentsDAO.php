@@ -269,13 +269,13 @@ class CommentsDAO {
         if($this->isCommentExistById($commentID)){
             $db = new DbConnect();
             $this->conn = $db->connect();
-            $stmt = $this->conn->prepare("SELECT CommentID, UserID, Text, Image From comments where AssociatedCommentID = ? and Deleted = 0 ORDER BY Created DESC");
+            $stmt = $this->conn->prepare("SELECT CommentID, UserID, Text, Image, LastUpdate From comments where AssociatedCommentID = ? and Deleted = 0 ORDER BY Created ASC");
             $stmt->bind_param("i", $commentID);
             
             $response = array();
 
             if ($stmt->execute()) {
-                $stmt->bind_result($CommentID, $UserID, $Text, $Image);
+                $stmt->bind_result($CommentID, $UserID, $Text, $Image, $LastUpdate);
 
                 $repliesList = array();
                 $i = 0;
@@ -287,6 +287,7 @@ class CommentsDAO {
                     $reply["UserID"] = $UserID;
                     $reply["Text"] = $Text;
                     $reply["Image"] = $Image;
+                    $reply["LastUpdate"] = $LastUpdate;
 
                     $repliesList[$i] = $reply;
                     $i++;

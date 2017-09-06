@@ -1,9 +1,7 @@
 package com.bsalazar.molonometro.area_dashboard_group;
 
 import android.Manifest;
-import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.ActivityOptions;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -17,15 +15,16 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.Snackbar;
-import android.support.transition.TransitionManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.transition.Explode;
 import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -34,17 +33,16 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bsalazar.molonometro.BuildConfig;
 import com.bsalazar.molonometro.MainActivity;
 import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.area_adjust.EditFieldActivity;
 import com.bsalazar.molonometro.entities.Participant;
 import com.bsalazar.molonometro.general.Constants;
-import com.bsalazar.molonometro.general.ImageActivity;
 import com.bsalazar.molonometro.general.MyRequestListener;
 import com.bsalazar.molonometro.general.Tools;
 import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.controllers.GroupController;
-import com.bsalazar.molonometro.rest.controllers.UserController;
 import com.bsalazar.molonometro.rest.json.AddUserToGroupJson;
 import com.bsalazar.molonometro.rest.json.GroupJson;
 import com.bsalazar.molonometro.rest.services.ServiceCallbackInterface;
@@ -125,7 +123,7 @@ public class GroupDetailActivity extends AppCompatActivity {
         });
 
         ctl.setTitle(Variables.Group.getName());
-        ctl.setExpandedTitleTextAppearance(R.style.text_detail_style);
+        ctl.setExpandedTitleTextAppearance(R.style.CollapsingTextDetailStyle);
         ctl.setExpandedTitleColor(getResources().getColor(R.color.white));
         ctl.setCollapsedTitleTextColor(getResources().getColor(android.R.color.white));
     }
@@ -335,13 +333,11 @@ public class GroupDetailActivity extends AppCompatActivity {
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-        File f;
-
         try {
-            f = setUpPhotoFile();
-            mCurrentPhotoPath = f.getAbsolutePath();
-            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
-        } catch (IOException e) {
+            Uri uri = getOutputMediaFileUri();
+            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+
+        } catch (Exception e) {
             e.printStackTrace();
             mCurrentPhotoPath = null;
         }
@@ -349,23 +345,37 @@ public class GroupDetailActivity extends AppCompatActivity {
         startActivityForResult(takePictureIntent, CAMERA_INPUT);
     }
 
-    private File setUpPhotoFile() throws IOException {
-        File f = createImageFile();
-        mCurrentPhotoPath = f.getAbsolutePath();
-        return f;
+    private Uri getOutputMediaFileUri() {
+        //check for external storage
+        if(isExternalStorageAvaiable())
+        {
+            File mediaStorageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+            File mediaFile;
+
+            try {
+                mediaFile = new File(mediaStorageDir.getPath() + "/temp.jpg");
+                Log.i("st","File: "+Uri.fromFile(mediaFile));
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+                Log.i("St","Error creating file: " + mediaStorageDir.getAbsolutePath() + "/temp.jpg");
+                return null;
+            }
+
+            Uri uri = FileProvider.getUriForFile(getApplicationContext(),
+                    BuildConfig.APPLICATION_ID + ".provider",
+                    mediaFile);
+
+            mCurrentPhotoPath = mediaFile.getAbsolutePath();
+            return uri;
+        }
+        //something went wrong
+        return null;
     }
 
-    private File createImageFile() throws IOException {
-        // Create an image file name
-        String imageFileName = "temp.jpeg";
-        File albumF = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-        File imageF = new File(albumF.getPath() + "/" + imageFileName);
-
-        if (imageF.exists()) {
-            imageF.delete();
-        }
-        Boolean res = imageF.createNewFile();
-        return imageF;
+    private boolean isExternalStorageAvaiable() {
+        String state = Environment.getExternalStorageState();
+        return Environment.MEDIA_MOUNTED.equals(state);
     }
 
     private Bitmap handleBigCameraPhoto() {
