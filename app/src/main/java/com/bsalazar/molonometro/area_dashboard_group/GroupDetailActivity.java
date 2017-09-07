@@ -8,11 +8,13 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -21,6 +23,7 @@ import android.support.v4.content.FileProvider;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
 import android.transition.Explode;
 import android.util.Base64;
@@ -98,11 +101,12 @@ public class GroupDetailActivity extends AppCompatActivity {
         // Enable the Up button
         assert ab != null;
         ab.setDisplayHomeAsUpEnabled(true);
+
     }
 
     private void setCollapsing() {
 
-        CollapsingToolbarLayout ctl = (CollapsingToolbarLayout) findViewById(R.id.ctl);
+        final CollapsingToolbarLayout ctl = (CollapsingToolbarLayout) findViewById(R.id.ctl);
         group_image = (ImageView) findViewById(R.id.group_image);
 
         final String imageBase64 = Variables.Group.getImageBase64();
@@ -110,6 +114,12 @@ public class GroupDetailActivity extends AppCompatActivity {
             byte[] imageByteArray = Base64.decode(imageBase64, Base64.DEFAULT);
             Bitmap bmp = BitmapFactory.decodeByteArray(imageByteArray, 0, imageByteArray.length);
             group_image.setImageBitmap(bmp);
+
+            Palette p = Palette.from(bmp).generate();
+            if (Build.VERSION.SDK_INT >= 21) {
+                getWindow().setStatusBarColor(Tools.brightnessDown(p.getDominantSwatch().getRgb()));
+                ctl.setContentScrimColor(p.getDominantSwatch().getRgb());
+            }
 
         } else {
             group_image.setImageDrawable(getResources().getDrawable(R.drawable.group_icon));
@@ -347,18 +357,16 @@ public class GroupDetailActivity extends AppCompatActivity {
 
     private Uri getOutputMediaFileUri() {
         //check for external storage
-        if(isExternalStorageAvaiable())
-        {
+        if (isExternalStorageAvaiable()) {
             File mediaStorageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
             File mediaFile;
 
             try {
                 mediaFile = new File(mediaStorageDir.getPath() + "/temp.jpg");
-                Log.i("st","File: "+Uri.fromFile(mediaFile));
-            }
-            catch (Exception e) {
+                Log.i("st", "File: " + Uri.fromFile(mediaFile));
+            } catch (Exception e) {
                 e.printStackTrace();
-                Log.i("St","Error creating file: " + mediaStorageDir.getAbsolutePath() + "/temp.jpg");
+                Log.i("St", "Error creating file: " + mediaStorageDir.getAbsolutePath() + "/temp.jpg");
                 return null;
             }
 

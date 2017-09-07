@@ -151,4 +151,37 @@ public class Tools {
         Date today = new Date();
         return today.getYear() == date.getYear() && today.getMonth() == date.getMonth() && today.getDay() == date.getDay();
     }
+
+    public static int brightnessDown (int color) {
+        int r = Color.red( color );
+        int g = Color.green( color );
+        int b = Color.blue( color );
+
+        // Get saturation and brightness.
+        float[] hsbVals = new float[3];
+        Color.RGBToHSV(r, g, b, hsbVals);
+
+        if(hsbVals[2]-0.15f>0)
+            hsbVals[2]=hsbVals[2]-0.15f;
+        else
+            hsbVals[2]=0.1f;
+
+        return Color.HSVToColor(hsbVals);
+    }
+    public static int brightnessUp (int color) {
+        int r = Color.red( color );
+        int g = Color.green( color );
+        int b = Color.blue( color );
+
+        // Get saturation and brightness.
+        float[] hsbVals = new float[3];
+        Color.RGBToHSV(r, g, b, hsbVals);
+
+        if(hsbVals[2] + 0.15f < 1f)
+            hsbVals[2] = hsbVals[2] + 0.15f;
+        else
+            hsbVals[2] = 0.9f;
+
+        return Color.HSVToColor(hsbVals);
+    }
 }

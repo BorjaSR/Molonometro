@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "23.0.3"
+    buildToolsVersion "25.0.0"
 
     defaultConfig {
         applicationId "com.bsalazar.molonometro"
@@ -24,6 +24,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support:design:25.3.1'
+    compile 'com.android.support:palette-v7:25.3.1'
 
     //Retrofit
     compile 'com.squareup.okhttp:okhttp:2.4.0'
@@ -41,7 +42,6 @@ dependencies {
 
     //FastScroll RecyclerView
     compile 'com.futuremind.recyclerfastscroll:fastscroll:0.2.5'
-
 }
 
 // ADD THIS AT THE BOTTOM
