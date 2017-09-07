@@ -174,9 +174,30 @@ public class GroupController {
                 });
     }
 
-    public void removeUserFromGroup(final Context mContext, final AddUserToGroupJson addUserToGroupJson, final ServiceCallbackInterface callback) {
+    public void removeUserFromGroup(final AddUserToGroupJson addUserToGroupJson, final ServiceCallbackInterface callback) {
 
         Constants.restController.getService().removeUserFromGroup(addUserToGroupJson
+                , new Callback<Boolean>() {
+                    @Override
+                    public void success(Boolean result, Response response) {
+                        if (callback != null)
+                            if (result)
+                                callback.onSuccess(new Gson().toJson(true));
+                            else
+                                callback.onFailure(new Gson().toJson(result));
+
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        if (callback != null)
+                            callback.onFailure("");
+                    }
+                });
+    }
+    public void makeAdmin(final AddUserToGroupJson addUserToGroupJson, final ServiceCallbackInterface callback) {
+
+        Constants.restController.getService().makeUserAdmin(addUserToGroupJson
                 , new Callback<Boolean>() {
                     @Override
                     public void success(Boolean result, Response response) {

@@ -2,19 +2,18 @@ package com.bsalazar.molonometro.area_dashboard_group;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.annotation.RequiresApi;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -53,7 +52,7 @@ import com.bumptech.glide.Glide;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.io.File;
-import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * Created by bsalazar on 28/02/2017.
@@ -101,7 +100,6 @@ public class GroupDetailActivity extends AppCompatActivity {
         // Enable the Up button
         assert ab != null;
         ab.setDisplayHomeAsUpEnabled(true);
-
     }
 
     private void setCollapsing() {
@@ -170,9 +168,10 @@ public class GroupDetailActivity extends AppCompatActivity {
         if (userIsAdmin())
             setAddParticipantView();
 
-        for (Participant participant : Variables.Group.getParticipants()) {
+        for (final Participant participant : Variables.Group.getParticipants()) {
             LayoutInflater inflater = LayoutInflater.from(getApplicationContext());
             final View participant_view = inflater.inflate(R.layout.participant_group_item, participants_container, false);
+            participant_view.setTag(participant.getUserID());
 
             ImageView contact_image = (ImageView) participant_view.findViewById(R.id.group_image);
             TextView contact_name = (TextView) participant_view.findViewById(R.id.participant_name);
@@ -192,6 +191,15 @@ public class GroupDetailActivity extends AppCompatActivity {
                 image64 = participant.getImageBase64();
                 Name = participant.getName();
                 State = participant.getState();
+
+
+                participant_view.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        showParticipantOptionsDialog(participant);
+                        return false;
+                    }
+                });
             }
 
             try {
@@ -212,6 +220,7 @@ public class GroupDetailActivity extends AppCompatActivity {
             else
                 admin_signal.setVisibility(View.GONE);
 
+
             participants_container.addView(participant_view);
         }
 
@@ -220,6 +229,88 @@ public class GroupDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 showDialogExitGroup();
+            }
+        });
+    }
+
+    public void showParticipantOptionsDialog(final Participant participant) {
+
+        final ArrayList<String> items = new ArrayList<>();
+
+        items.add("Ver a " + participant.getName());
+        if (userIsAdmin()) {
+            items.add("Eliminar a " + participant.getName());
+            if (!participant.isAdmin())
+                items.add("Hacer administrador de grupo");
+        }
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder
+                .setItems(items.toArray(new String[items.size()]), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.d("[DIALOG RESPONSE]", dialog.toString() + " / " + which);
+                        switch (which) {
+                            case 0:
+                                break;
+                            case 1:
+                                removeParticipant(participant);
+                                break;
+                            case 2:
+                                makeUserAdmin(participant);
+                                break;
+                        }
+                    }
+                })
+                .show();
+    }
+
+    private void removeParticipant(final Participant participant) {
+
+        AddUserToGroupJson addUserToGroupJson = new AddUserToGroupJson();
+        addUserToGroupJson.setUserID(Variables.User.getUserID());
+        addUserToGroupJson.setGroupID(Variables.Group.getId());
+        addUserToGroupJson.setContactID(participant.getUserID());
+
+        new GroupController().removeUserFromGroup(addUserToGroupJson, new ServiceCallbackInterface() {
+            @Override
+            public void onSuccess(String result) {
+                for (Participant participantGroup : Variables.Group.getParticipants())
+                    if (participantGroup.getUserID() == participant.getUserID()) {
+                        Variables.Group.getParticipants().remove(participantGroup);
+                        break;
+                    }
+
+                for (int i = 0; i < participants_container.getChildCount(); i++)
+                    if ((int) participants_container.getChildAt(i).getTag() == participant.getUserID())
+                        participants_container.removeView(participants_container.getChildAt(i));
+
+            }
+        });
+    }
+
+    private void makeUserAdmin(final Participant participant) {
+
+        final ProgressDialog progress = ProgressDialog.show(this, "",
+                "Espere...", true);
+
+        AddUserToGroupJson makeAdmin = new AddUserToGroupJson();
+        makeAdmin.setContactID(participant.getUserID());
+        makeAdmin.setGroupID(Variables.Group.getId());
+        new GroupController().makeAdmin(makeAdmin, new ServiceCallbackInterface() {
+            @Override
+            public void onSuccess(String result) {
+                progress.dismiss();
+                for (int i = 0; i < participants_container.getChildCount(); i++)
+                    if ((int) participants_container.getChildAt(i).getTag() == participant.getUserID())
+                        participants_container.getChildAt(i).findViewById(R.id.admin_signal).setVisibility(View.VISIBLE);
+                participant.setAdmin(true);
+            }
+
+            @Override
+            public void onFailure(String result) {
+                super.onFailure(result);
+                progress.dismiss();
             }
         });
     }
@@ -236,7 +327,7 @@ public class GroupDetailActivity extends AppCompatActivity {
                         addUserToGroupJson.setGroupID(Variables.Group.getId());
                         addUserToGroupJson.setContactID(Variables.User.getUserID());
 
-                        new GroupController().removeUserFromGroup(getApplicationContext(), addUserToGroupJson, new ServiceCallbackInterface() {
+                        new GroupController().removeUserFromGroup(addUserToGroupJson, new ServiceCallbackInterface() {
                             @Override
                             public void onSuccess(String result) {
                                 FirebaseMessaging.getInstance().unsubscribeFromTopic(Variables.Group.getFirebaseTopic());
@@ -273,6 +364,7 @@ public class GroupDetailActivity extends AppCompatActivity {
 
         LayoutInflater inflater = LayoutInflater.from(getApplicationContext());
         final View participant_view = inflater.inflate(R.layout.participant_group_item, participants_container, false);
+        participant_view.setTag(-1);
 
         LinearLayout participant_group_container = (LinearLayout) participant_view.findViewById(R.id.participant_group_container);
         ImageView contact_image = (ImageView) participant_view.findViewById(R.id.group_image);

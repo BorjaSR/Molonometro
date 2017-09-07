@@ -175,11 +175,15 @@ $app->post('/group/makeUserAdmin', function() use ($app) {
     $groupID = (int)$input->GroupID;
     $contactID = (int)$input->ContactID;
 
-    $result = makeUserAdmin($contactID, $groupID);
+    $userDAO = new UserDAO();
+    if($userDAO->isUserExistsById($contactID)) {
+    	$result = makeUserAdmin($contactID, $groupID);
+	    if($result){
+	        echoResponse(200, true);
 
-    if($result){
-        echoResponse(200, true);
-
+	    }else{
+	        echoResponse(455, false);
+	    }
     }else{
         echoResponse(455, false);
     }

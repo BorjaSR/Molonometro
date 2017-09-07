@@ -227,7 +227,7 @@ class GroupDAO {
         $this->conn = $db->connect();
 
         // insert query
-        $stmt = $this->conn->prepare("UPDATE groupuser SET Deleted = 1, LastUpdate = now() WHERE GroupID = ? AND UserID = ?");
+        $stmt = $this->conn->prepare("UPDATE groupuser SET isAdmin = 0, Deleted = 1, LastUpdate = now() WHERE GroupID = ? AND UserID = ?");
         $stmt->bind_param("ss", $groupId, $userId);
         $result = $stmt->execute();
         $stmt->close();

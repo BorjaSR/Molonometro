@@ -178,7 +178,6 @@ public class DashboardGroupActivity extends AppCompatActivity {
                 super.onBackPressed();
                 return true;
             case R.id.action_comment:
-//                showAddComment();
                 addCommentDialogFragment = new AddCommentDialogFragment();
                 addCommentDialogFragment.show(getFragmentManager(), "ADD_COMMENT");
                 return true;
@@ -209,6 +208,7 @@ public class DashboardGroupActivity extends AppCompatActivity {
             else {
                 user_name.setText(Tools.cropNameSurname(user.getName()) + " (" + user.getMolopuntos() + " Mp)");
             }
+
             try {
                 byte[] imageByteArray = Base64.decode(user.getImageBase64(), Base64.DEFAULT);
 
