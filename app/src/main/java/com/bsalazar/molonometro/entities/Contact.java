@@ -1,5 +1,7 @@
 package com.bsalazar.molonometro.entities;
 
+import java.util.ArrayList;
+
 /**
  * Created by bsalazar on 23/02/2017.
  */
@@ -12,6 +14,8 @@ public class Contact {
     private String State;
     private String ImageBase64;
     private boolean isInApp;
+    private int Molopuntos;
+    private ArrayList<Integer> commonGroups;
 
     public Contact() {
     }
@@ -64,4 +68,19 @@ public class Contact {
         isInApp = inApp;
     }
 
+    public int getMolopuntos() {
+        return Molopuntos;
+    }
+
+    public void setMolopuntos(int molopuntos) {
+        Molopuntos = molopuntos;
+    }
+
+    public ArrayList<Integer> getCommonGroups() {
+        return commonGroups;
+    }
+
+    public void setCommonGroups(ArrayList<Integer> commonGroups) {
+        this.commonGroups = commonGroups;
+    }
 }

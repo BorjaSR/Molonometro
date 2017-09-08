@@ -1,9 +1,7 @@
 package com.bsalazar.molonometro.area_dashboard_group.adapters;
 
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.transition.TransitionManager;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +12,6 @@ import android.widget.TextView;
 
 import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.area_dashboard_group.AddParticipantActivity;
-import com.bsalazar.molonometro.area_new_group.NewGroupActivity;
 import com.bsalazar.molonometro.entities.Contact;
 import com.bsalazar.molonometro.entities.Participant;
 import com.bsalazar.molonometro.general.MyRequestListener;
@@ -136,8 +133,8 @@ public class AddParticipantAdapter extends RecyclerView.Adapter<AddParticipantAd
             contact_name_first_part = (TextView) itemView.findViewById(R.id.participant_name);
             match_contact_name = (TextView) itemView.findViewById(R.id.match_group_name);
             contact_name_second_part = (TextView) itemView.findViewById(R.id.group_name_second_part);
-            item_detail = (TextView) itemView.findViewById(R.id.participant_state);
-            contact_image = (ImageView) itemView.findViewById(R.id.group_image);
+            item_detail = (TextView) itemView.findViewById(R.id.contact_state);
+            contact_image = (ImageView) itemView.findViewById(R.id.contact_image);
         }
     }
 }

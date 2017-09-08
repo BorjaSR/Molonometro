@@ -129,8 +129,8 @@ public class ContactsForGroupRecyclerAdapter extends RecyclerView.Adapter<Contac
             contact_name_first_part = (TextView) itemView.findViewById(R.id.participant_name);
             match_contact_name = (TextView) itemView.findViewById(R.id.match_group_name);
             contact_name_second_part = (TextView) itemView.findViewById(R.id.group_name_second_part);
-            item_detail = (TextView) itemView.findViewById(R.id.participant_state);
-            contact_image = (ImageView) itemView.findViewById(R.id.group_image);
+            item_detail = (TextView) itemView.findViewById(R.id.contact_state);
+            contact_image = (ImageView) itemView.findViewById(R.id.contact_image);
         }
     }
 

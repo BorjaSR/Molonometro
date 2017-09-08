@@ -7,8 +7,10 @@ import com.bsalazar.molonometro.general.Constants;
 import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.json.ContactJson;
 import com.bsalazar.molonometro.rest.json.ContactsListJson;
+import com.bsalazar.molonometro.rest.json.GetContactDetailJson;
 import com.bsalazar.molonometro.rest.services.Parser;
 import com.bsalazar.molonometro.rest.services.ServiceCallbackInterface;
+import com.google.gson.Gson;
 
 import java.util.List;
 
@@ -46,6 +48,24 @@ public class ContactController {
                     public void failure(RetrofitError error) {
                         if (error.getResponse() != null)
                             Toast.makeText(mContext, "KO checkenado usuarios\n" + error.getResponse().getStatus() + " " + error.getResponse().getReason(), Toast.LENGTH_SHORT).show();
+                        callback.onFailure("");
+                    }
+                });
+    }
+
+    public void getContactByID(final Context mContext, GetContactDetailJson contactsJson, final ServiceCallbackInterface callback) {
+
+        Constants.restController.getService().getContactByID(contactsJson
+                , new Callback<ContactJson>() {
+                    @Override
+                    public void success(ContactJson contactJson, Response response) {
+                        callback.onSuccess(new Gson().toJson(contactJson));
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        if (error.getResponse() != null)
+                            Toast.makeText(mContext, "KO obteniendo usuario\n" + error.getResponse().getStatus() + " " + error.getResponse().getReason(), Toast.LENGTH_SHORT).show();
                         callback.onFailure("");
                     }
                 });

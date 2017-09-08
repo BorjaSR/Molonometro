@@ -46,7 +46,6 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.gson.Gson;
 
 import java.io.File;
-import java.io.IOException;
 
 /**
  * Created by bsalazar on 24/02/2017.
@@ -71,8 +70,8 @@ public class FinishGroupActivity extends AppCompatActivity implements View.OnCli
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         TextView participants_text = (TextView) findViewById(R.id.participants_text);
-        group_image = (ImageView) findViewById(R.id.group_image);
-        group_name = (EditText) findViewById(R.id.group_name);
+        group_image = (ImageView) findViewById(R.id.contact_image);
+        group_name = (EditText) findViewById(R.id.contact_name);
         group_image_bitmap = null;
         activity = this;
 
@@ -84,9 +83,9 @@ public class FinishGroupActivity extends AppCompatActivity implements View.OnCli
             LayoutInflater inflater = LayoutInflater.from(getApplicationContext());
             final View participant = inflater.inflate(R.layout.contact_for_group_item, participants_container, false);
 
-            ImageView contact_image = (ImageView) participant.findViewById(R.id.group_image);
+            ImageView contact_image = (ImageView) participant.findViewById(R.id.contact_image);
             TextView contact_name = (TextView) participant.findViewById(R.id.participant_name);
-            TextView contact_state = (TextView) participant.findViewById(R.id.participant_state);
+            TextView contact_state = (TextView) participant.findViewById(R.id.contact_state);
 
             String image64 = "";
             String Name = "";
@@ -205,7 +204,7 @@ public class FinishGroupActivity extends AppCompatActivity implements View.OnCli
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.group_image:
+            case R.id.contact_image:
                 showImageDialog();
                 break;
         }

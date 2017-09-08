@@ -37,5 +37,47 @@ class ContactDAO {
             return NULL;
         }
     }
+
+    public function getContactByID($userID) {
+        $stmt = $this->conn->prepare("SELECT UserID, Name, Phone, State, Image FROM users WHERE UserID = ? and Deleted = 0");
+        $stmt->bind_param("i", $userID);
+        
+        if ($stmt->execute()) {
+            $stmt->bind_result($UserID, $Name, $Phone, $State, $Image);
+            $stmt->fetch();
+            $user = array();
+            $user["UserID"] = $UserID;
+            $user["Name"] = $Name;
+            $user["Phone"] = $Phone;
+            $user["State"] = $State;
+            //$user["Image"] = $Image;
+            $stmt->close();
+            $user["Molopuntos"] =  $this->getTotalMolopuntosByUserID($userID);
+        } else {
+            return NULL;
+        }
+
+        return $user;
+    }
+
+
+    public function getTotalMolopuntosByUserID($userID) {
+        $stmt = $this->conn->prepare("SELECT SUM(Molopuntos) FROM groupuser WHERE UserID = ?");
+        $stmt->bind_param("i", $userID);
+        
+        if ($stmt->execute()) {
+            $stmt->bind_result($Molopuntos);
+            $stmt->fetch();
+
+            $molopuntos = $Molopuntos;
+
+            $stmt->close();
+
+            return $molopuntos;
+
+        } else {
+            return NULL;
+        }
+    }
 }
 ?>

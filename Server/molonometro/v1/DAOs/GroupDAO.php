@@ -546,5 +546,38 @@ class GroupDAO {
         return $response;
     }
     
+    public function getCommonGroups($contactID, $userID) {            
+        // update query
+        $db = new DbConnect();
+        $this->conn = $db->connect();
+
+        $stmt = $this->conn->prepare(
+            "SELECT GroupID
+            FROM `groupuser`
+            WHERE UserID = ? AND Deleted = 0
+            AND GroupID = ANY(
+                SELECT GroupID
+                FROM `groupuser`
+                WHERE UserID = ? AND Deleted = 0)");
+
+        $stmt->bind_param("ii", $userID, $contactID);
+
+        if ($stmt->execute()) {
+            $stmt->bind_result($GroupID);
+
+            $i = 0;
+            while ($stmt->fetch()) {
+                $commonGroups[$i] = $GroupID;
+                $i++;
+            }
+        } else{
+            $commonGroups = null;
+        }
+
+        $stmt->close();
+        $db->disconnect();
+
+        return $commonGroups;
+    }
 }
 ?>

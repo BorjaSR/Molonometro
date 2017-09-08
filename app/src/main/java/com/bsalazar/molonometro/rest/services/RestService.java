@@ -7,6 +7,7 @@ import com.bsalazar.molonometro.rest.json.ContactJson;
 import com.bsalazar.molonometro.rest.json.ContactsListJson;
 import com.bsalazar.molonometro.rest.json.CreateGroupJson;
 import com.bsalazar.molonometro.rest.json.CreateUserJson;
+import com.bsalazar.molonometro.rest.json.GetContactDetailJson;
 import com.bsalazar.molonometro.rest.json.GroupJson;
 import com.bsalazar.molonometro.rest.json.LikeJson;
 import com.bsalazar.molonometro.rest.json.PushTestJson;
@@ -55,6 +56,11 @@ public interface RestService {
     void checkContacts(
             @Body ContactsListJson updateUserJson,
             Callback<List<ContactJson>> callback);
+
+    @POST("/contact/getContactByID")
+    void getContactByID(
+            @Body GetContactDetailJson updateUserJson,
+            Callback<ContactJson> callback);
 
 
 

@@ -180,11 +180,11 @@ public class GroupsRecyclerAdapter extends RecyclerView.Adapter<GroupsRecyclerAd
         GroupViewHolder(View itemView) {
             super(itemView);
 
-            group_layout = (LinearLayout) itemView.findViewById(R.id.group_layout);
-            group_name = (TextView) itemView.findViewById(R.id.group_name);
-            group_detail = (TextView) itemView.findViewById(R.id.participant_state);
+            group_layout = (LinearLayout) itemView.findViewById(R.id.contact_layout);
+            group_name = (TextView) itemView.findViewById(R.id.contact_name);
+            group_detail = (TextView) itemView.findViewById(R.id.contact_state);
             last_event_date = (TextView) itemView.findViewById(R.id.last_event_date);
-            group_image = (ImageView) itemView.findViewById(R.id.group_image);
+            group_image = (ImageView) itemView.findViewById(R.id.contact_image);
         }
     }
 }

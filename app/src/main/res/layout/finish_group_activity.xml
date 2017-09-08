@@ -24,7 +24,7 @@
                 android:paddingRight="@dimen/general_padding_15">
 
                 <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/group_image"
+                    android:id="@+id/contact_image"
                     android:layout_width="@dimen/imageSize_profile"
                     android:layout_height="@dimen/imageSize_profile"
                     android:layout_gravity="center_horizontal"
@@ -34,7 +34,7 @@
                     app:civ_border_width="2dp" />
 
                 <EditText
-                    android:id="@+id/group_name"
+                    android:id="@+id/contact_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/general_padding_15"

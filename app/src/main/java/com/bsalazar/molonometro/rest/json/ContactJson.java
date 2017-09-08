@@ -1,5 +1,7 @@
 package com.bsalazar.molonometro.rest.json;
 
+import java.util.ArrayList;
+
 /**
  * Created by Borja on 29/10/2016.
  */
@@ -11,6 +13,8 @@ public class ContactJson {
     private String State;
     private String Image;
     private boolean isInApp;
+    private int Molopuntos;
+    private ArrayList<Integer> commonGroups;
 
     public ContactJson() {
     }
@@ -61,5 +65,21 @@ public class ContactJson {
 
     public void setInApp(boolean inApp) {
         isInApp = inApp;
+    }
+
+    public int getMolopuntos() {
+        return Molopuntos;
+    }
+
+    public void setMolopuntos(int molopuntos) {
+        Molopuntos = molopuntos;
+    }
+
+    public ArrayList<Integer> getCommonGroups() {
+        return commonGroups;
+    }
+
+    public void setCommonGroups(ArrayList<Integer> commonGroups) {
+        this.commonGroups = commonGroups;
     }
 }

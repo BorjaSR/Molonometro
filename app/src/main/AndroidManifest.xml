@@ -64,6 +64,12 @@
             android:parentActivityName=".area_dashboard_group.GroupDetailActivity">
         </activity>
 
+        <activity
+            android:name=".area_dashboard_group.ContactDetailActivity"
+            android:label="@string/contact_detail_activity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
 
 
         <activity

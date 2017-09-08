@@ -35,4 +35,25 @@ $app->post('/contact/checkContacts', function() use ($app) {
     echoResponse(200, $users);
 });
 
+// User update
+$app->post('/contact/getContactByID', function() use ($app) {
+    // check for required params
+    //verifyRequiredParams(array('Name', 'Phone', 'State', 'Image'));
+
+    $body = $app->request()->getBody(); 
+    $input = json_decode($body);
+
+    // reading post params
+    $contactID = (int)$input->ContactID;
+    $userID = (int)$input->UserID;
+
+    $contactDAO = new ContactDAO();
+    $contact = $contactDAO->getContactByID($contactID);
+
+    $groupDAO = new GroupDAO();
+    $contact["commonGroups"] = $groupDAO->getCommonGroups($contactID, $userID);
+
+    echoResponse(200, $contact);
+});
+
 ?>

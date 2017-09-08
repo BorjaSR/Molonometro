@@ -105,7 +105,7 @@ public class GroupDetailActivity extends AppCompatActivity {
     private void setCollapsing() {
 
         final CollapsingToolbarLayout ctl = (CollapsingToolbarLayout) findViewById(R.id.ctl);
-        group_image = (ImageView) findViewById(R.id.group_image);
+        group_image = (ImageView) findViewById(R.id.contact_image);
 
         final String imageBase64 = Variables.Group.getImageBase64();
         if (imageBase64 != null) {
@@ -173,9 +173,9 @@ public class GroupDetailActivity extends AppCompatActivity {
             final View participant_view = inflater.inflate(R.layout.participant_group_item, participants_container, false);
             participant_view.setTag(participant.getUserID());
 
-            ImageView contact_image = (ImageView) participant_view.findViewById(R.id.group_image);
+            ImageView contact_image = (ImageView) participant_view.findViewById(R.id.contact_image);
             TextView contact_name = (TextView) participant_view.findViewById(R.id.participant_name);
-            TextView contact_state = (TextView) participant_view.findViewById(R.id.participant_state);
+            TextView contact_state = (TextView) participant_view.findViewById(R.id.contact_state);
             LinearLayout admin_signal = (LinearLayout) participant_view.findViewById(R.id.admin_signal);
 
             String image64 = "";
@@ -192,6 +192,12 @@ public class GroupDetailActivity extends AppCompatActivity {
                 Name = participant.getName();
                 State = participant.getState();
 
+                participant_view.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        showParticipantOptionsDialog(participant);
+                    }
+                });
 
                 participant_view.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
@@ -249,9 +255,9 @@ public class GroupDetailActivity extends AppCompatActivity {
                 .setItems(items.toArray(new String[items.size()]), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Log.d("[DIALOG RESPONSE]", dialog.toString() + " / " + which);
                         switch (which) {
                             case 0:
+                                viewContact(participant.getUserID());
                                 break;
                             case 1:
                                 removeParticipant(participant);
@@ -263,6 +269,16 @@ public class GroupDetailActivity extends AppCompatActivity {
                     }
                 })
                 .show();
+    }
+
+    private void viewContact(int participantID) {
+        Bundle args = new Bundle();
+        args.putInt("contactID", participantID);
+
+        Intent intent = new Intent(getApplicationContext(), ContactDetailActivity.class);
+        intent.putExtras(args);
+
+        startActivity(intent);
     }
 
     private void removeParticipant(final Participant participant) {
@@ -367,9 +383,9 @@ public class GroupDetailActivity extends AppCompatActivity {
         participant_view.setTag(-1);
 
         LinearLayout participant_group_container = (LinearLayout) participant_view.findViewById(R.id.participant_group_container);
-        ImageView contact_image = (ImageView) participant_view.findViewById(R.id.group_image);
+        ImageView contact_image = (ImageView) participant_view.findViewById(R.id.contact_image);
         TextView contact_name = (TextView) participant_view.findViewById(R.id.participant_name);
-        TextView participant_state = (TextView) participant_view.findViewById(R.id.participant_state);
+        TextView participant_state = (TextView) participant_view.findViewById(R.id.contact_state);
 
         contact_image.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.add_participant_icon));
         contact_name.setText(getString(R.string.add_participant));
