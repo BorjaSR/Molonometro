@@ -110,6 +110,8 @@ public interface RestService {
             @Body AddUserToGroupJson addUserToGroupJson,
             Callback<Boolean> callback);
 
+
+
     // COMENTS //
     @POST("/comments/getCommentByGroup")
     void getCommentByGroup(

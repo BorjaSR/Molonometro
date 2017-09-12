@@ -97,6 +97,34 @@ class GroupDAO {
         return $response;
     }
 
+
+    // creating new user if not existed
+    public function deleteGroup($groupID) {
+
+        if ($this->isGroupExistsById($groupID)) {
+            $response = array();
+            
+            // update query
+            $db = new DbConnect();
+            $this->conn = $db->connect();
+            $stmt = $this->conn->prepare("UPDATE groups SET Deleted = 1, LastUpdate = now() WHERE GroupID = ?");
+            $stmt->bind_param("i", $groupID);
+
+            $result = $stmt->execute();
+            $stmt->close();
+            $db->disconnect();
+
+            if (!$result) {
+                return false;
+            }
+
+        } else {
+            return false;
+        }
+
+        return true;
+    }
+
     // creating new user if not existed
     public function updateGroupImage($groupID, $image) {
 
@@ -104,8 +132,8 @@ class GroupDAO {
             $response = array();
             
             // update query
-        $db = new DbConnect();
-        $this->conn = $db->connect();
+            $db = new DbConnect();
+            $this->conn = $db->connect();
             $stmt = $this->conn->prepare("UPDATE groups SET Image = ?, LastUpdate = now() WHERE GroupID = ?");
             $stmt->bind_param("si", $image, $groupID);
 
@@ -245,7 +273,7 @@ class GroupDAO {
         return $response;
     }
 
-
+                     
     public function existUserInGroupDeleted($groupID, $userID) {
         $db = new DbConnect();
         $this->conn = $db->connect();
@@ -259,6 +287,41 @@ class GroupDAO {
         return $num_rows > 0;
     }
 
+
+                     
+    public function existAdminInGroup($groupID) {
+        $db = new DbConnect();
+        $this->conn = $db->connect();
+        $stmt = $this->conn->prepare("SELECT GroupID from groupuser WHERE GroupID = ? and isAdmin = 1");
+        $stmt->bind_param("i", $groupID);
+        $stmt->execute();
+        $stmt->store_result();
+        $num_rows = $stmt->num_rows;
+        $stmt->close();
+        $db->disconnect();
+        return $num_rows > 0;
+    }
+
+
+    public function getOldestUserInGroup($groupID) {
+        $db = new DbConnect();
+        $this->conn = $db->connect();
+        $stmt = $this->conn->prepare("SELECT UserID from groupuser WHERE GroupID = ? AND Deleted = 0 ORDER BY Created ASC");
+        $stmt->bind_param("i", $groupID);
+        
+        if ($stmt->execute()) {
+            $stmt->bind_result($UserID);
+            $stmt->fetch();
+            $userID = $UserID;
+            $stmt->close();
+            $db->disconnect();
+            return $userID;
+        } else {
+            $db->disconnect();
+            return NULL;
+        }
+    }
+
     public function isGroupExistsById($id) {
         $db = new DbConnect();
         $this->conn = $db->connect();
@@ -270,6 +333,19 @@ class GroupDAO {
         $stmt->close();
         $db->disconnect();
         return $num_rows > 0;
+    }
+
+    public function isGroupEmpty($id) {
+        $db = new DbConnect();
+        $this->conn = $db->connect();
+        $stmt = $this->conn->prepare("SELECT GroupID from groupuser WHERE GroupID = ? and Deleted = 0");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $stmt->store_result();
+        $num_rows = $stmt->num_rows;
+        $stmt->close();
+        $db->disconnect();
+        return !($num_rows > 0);
     }
 
     public function getGroupById($groupID) {

@@ -13,6 +13,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -30,11 +31,13 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewAnimationUtils;
+import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -42,6 +45,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -122,6 +126,7 @@ public class DashboardGroupActivity extends AppCompatActivity {
         Variables.Group.setComments(new ArrayList<Comment>());
         commentsRecyclerView = (RecyclerView) findViewById(R.id.commentsRecyclerView);
         commentsRecyclerView.setHasFixedSize(false);
+        commentsRecyclerView.setClickable(false);
         commentsRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         commentsRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -196,7 +201,7 @@ public class DashboardGroupActivity extends AppCompatActivity {
         users_container.removeAllViews();
         for (Participant user : Variables.Group.getParticipants()) {
             LayoutInflater inflater = LayoutInflater.from(getApplicationContext());
-            View user_termometer_view = inflater.inflate(R.layout.termometer_user, users_container, false);
+            final View user_termometer_view = inflater.inflate(R.layout.termometer_user, users_container, false);
 
             user_termometer_view.setTag(user.getUserID());
 
@@ -223,9 +228,32 @@ public class DashboardGroupActivity extends AppCompatActivity {
 
             users_container.addView(user_termometer_view);
             users_container.getChildAt(users_container.getChildCount() - 1).setTranslationY(getPositionUser(user.getMolopuntos()));
+
+            user_termometer_view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    displayPopupWindow(user_termometer_view);
+                }
+            });
         }
     }
 
+    private void displayPopupWindow(View anchorView) {
+        PopupWindow popup = new PopupWindow(DashboardGroupActivity.this);
+        View layout = getLayoutInflater().inflate(R.layout.popup_content, null);
+        popup.setContentView(layout);
+        // Set content width and height
+        popup.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
+        popup.setWidth(WindowManager.LayoutParams.MATCH_PARENT);
+        // Closes the popup window when touch outside of it - when looses focus
+        popup.setOutsideTouchable(true);
+        popup.setFocusable(true);
+        popup.setBackgroundDrawable(new BitmapDrawable());
+        // Show anchored to button
+//        popup.showAtLocation(anchorView, Gravity.BOTTOM, 0, anchorView.getBottom() - 60);
+
+        popup.showAsDropDown(anchorView, 0, 0, Gravity.CENTER_HORIZONTAL);
+    }
 
     public void addComment(Comment comment){
         Variables.Group.getComments().add(0, comment);
@@ -301,14 +329,24 @@ public class DashboardGroupActivity extends AppCompatActivity {
     }
 
     private int getPositionUser(int molopuntos) {
-        int relative_position = (molopuntos * Constants.HEIGHT_OF_TEMOMETER) / highestScore;
+        int relative_position = ((molopuntos - minimumScore) * Constants.HEIGHT_OF_TEMOMETER) / highestScore;
+//        int relative_position = (molopuntos * Constants.HEIGHT_OF_TEMOMETER) / highestScore;
         return Constants.HEIGHT_OF_TEMOMETER - relative_position;
     }
 
+    int minimumScore = Integer.MAX_VALUE;
     public int getHighestScore() {
+        int highScore = Integer.MIN_VALUE;
         for (Participant user : Variables.Group.getParticipants())
-            if (user.getMolopuntos() > highestScore) highestScore = user.getMolopuntos();
+            highScore = Math.max(highScore, user.getMolopuntos());
 
+        for (Participant user : Variables.Group.getParticipants())
+            minimumScore = Math.min(minimumScore, user.getMolopuntos());
+
+        if(minimumScore > 2) minimumScore -= 2;
+
+        highestScore = highScore - minimumScore;
+//        highestScore = highScore;
         return highestScore;
     }
 

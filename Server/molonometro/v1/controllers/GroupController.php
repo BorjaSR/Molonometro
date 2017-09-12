@@ -207,6 +207,15 @@ $app->post('/group/removeUserFromGroup', function() use ($app) {
 		$groupDAO = new GroupDAO();
 		$DBresponse = $groupDAO->removeUserFromGroup($contactID, $groupID);
 
+		if(!$groupDAO->isGroupEmpty($groupID)){
+			if(!$groupDAO->existAdminInGroup($groupID)){
+				$nextAdmin = $groupDAO->getOldestUserInGroup($groupID);
+				$groupDAO->makeUserAdmin($nextAdmin, $groupID);
+			}
+		} else {
+			$groupDAO->deleteGroup($groupID);
+		}
+
     	if($DBresponse["status"] == 200){
 		    echoResponse(200, true);
 

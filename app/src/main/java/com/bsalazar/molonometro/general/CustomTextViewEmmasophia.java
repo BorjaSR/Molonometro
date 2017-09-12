@@ -28,7 +28,7 @@ public class CustomTextViewEmmasophia extends TextView {
     }
 
     private void fuente() {
-        Typeface myCustomFont = Typeface.createFromAsset(getContext().getAssets(), "fonts/emmasophia.ttf");
+        Typeface myCustomFont = Typeface.createFromAsset(getContext().getAssets(), "fonts/Vincentia.otf");
         this.setTypeface(myCustomFont);
     }
 
