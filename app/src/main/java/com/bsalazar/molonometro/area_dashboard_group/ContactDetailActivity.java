@@ -1,7 +1,5 @@
 package com.bsalazar.molonometro.area_dashboard_group;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,16 +10,23 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.transition.Explode;
 import android.util.Base64;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bsalazar.molonometro.R;
+import com.bsalazar.molonometro.area_dashboard_group.adapters.CommonGroupsRecyclerAdapter;
 import com.bsalazar.molonometro.entities.Contact;
+import com.bsalazar.molonometro.entities.Group;
 import com.bsalazar.molonometro.general.Tools;
 import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.controllers.ContactController;
@@ -30,6 +35,8 @@ import com.bsalazar.molonometro.rest.json.GetContactDetailJson;
 import com.bsalazar.molonometro.rest.services.ServiceCallbackInterface;
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
+
 /**
  * Created by bsalazar on 08/09/2017.
  */
@@ -37,8 +44,10 @@ import com.google.gson.Gson;
 public class ContactDetailActivity extends AppCompatActivity {
 
 
+    private LinearLayout loading_progress, content;
     private ImageView contact_image;
-    private TextView contact_molopuntos, contact_state, contact_phone;
+    private TextView contact_molopuntos, contact_state, contact_phone, no_common_groups;
+    private RecyclerView common_groups_recycler;
 
     private Contact contact;
     @Override
@@ -58,9 +67,13 @@ public class ContactDetailActivity extends AppCompatActivity {
                 break;
             }
 
+        content = (LinearLayout) findViewById(R.id.content);
+        loading_progress = (LinearLayout) findViewById(R.id.loading_progress);
         contact_molopuntos = (TextView) findViewById(R.id.contact_molopuntos);
         contact_state = (TextView) findViewById(R.id.contact_state);
         contact_phone = (TextView) findViewById(R.id.contact_phone);
+        no_common_groups = (TextView) findViewById(R.id.no_common_groups);
+        common_groups_recycler = (RecyclerView) findViewById(R.id.common_groups_recycler);
 
         setToolbar();
         setCollapsing();
@@ -146,5 +159,28 @@ public class ContactDetailActivity extends AppCompatActivity {
         contact_molopuntos.setText(contact.getMolopuntos() + " Molopuntos");
         contact_state.setText(contact.getState());
         contact_phone.setText(Tools.formatPhone(contact.getPhone()));
+
+        if(contact.getCommonGroups().size() > 0){
+            ArrayList<Group> groups = new ArrayList<>();
+            for (Integer groupID : contact.getCommonGroups())
+                for (Group group : Variables.groups)
+                    if(group.getId() == groupID) {
+                        groups.add(group);
+                        break;
+                    }
+
+
+            CommonGroupsRecyclerAdapter adapter = new CommonGroupsRecyclerAdapter(this, groups);
+            common_groups_recycler.setHasFixedSize(false);
+            common_groups_recycler.setLayoutManager(new LinearLayoutManager(this));
+            common_groups_recycler.setAdapter(adapter);
+
+        } else {
+            common_groups_recycler.setVisibility(View.GONE);
+            no_common_groups.setVisibility(View.VISIBLE);
+        }
+
+        content.setVisibility(View.VISIBLE);
+        loading_progress.setVisibility(View.GONE);
     }
 }

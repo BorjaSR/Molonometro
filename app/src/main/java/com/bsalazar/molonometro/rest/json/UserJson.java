@@ -10,6 +10,7 @@ public class UserJson {
     private String Phone;
     private String State;
     private String Image;
+    private String Molopuntos;
     private boolean isInApp;
 
     public UserJson() {
@@ -61,5 +62,13 @@ public class UserJson {
 
     public void setInApp(boolean inApp) {
         isInApp = inApp;
+    }
+
+    public String getMolopuntos() {
+        return Molopuntos;
+    }
+
+    public void setMolopuntos(String molopuntos) {
+        Molopuntos = molopuntos;
     }
 }

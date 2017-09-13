@@ -101,6 +101,7 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
                 Bundle args = new Bundle();
                 args.putString("image", contact.getImageBase64());
                 args.putInt("noImage", R.drawable.user_icon);
+                args.putString("title", contact.getName());
 
                 Intent intent = new Intent(mContext, PhotoDetailActivity.class);
                 intent.putExtras(args);

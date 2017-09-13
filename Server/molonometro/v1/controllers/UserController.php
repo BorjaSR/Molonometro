@@ -97,4 +97,22 @@ $app->post('/user/updateFirebaseToken', function() use ($app) {
 
 });
 
+
+// FirebaseToken User update
+$app->post('/user/getUser', function() use ($app) {
+    // check for required params
+    //verifyRequiredParams(array('Name', 'Phone', 'State', 'Image'));
+
+    $body = $app->request()->getBody(); 
+    $input = json_decode($body);
+
+    // reading post params
+    $userID = (string)$input->UserID;
+    
+    $contactDAO = new ContactDAO();
+    $contact = $contactDAO->getContactByID($userID);
+
+    echoResponse(200, $contact);
+});
+
 ?>

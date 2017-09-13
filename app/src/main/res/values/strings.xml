@@ -54,4 +54,6 @@
     <string name="not_send_empty">Pero no lo envies vacío animal!</string>
     <string name="vote_someone_real">Vota a alguien que exista!</string>
     <string name="common_groups">Grupos en común</string>
+    <string name="image">Imagen</string>
+    <string name="no_common_groups">No hay grupos en común.</string>
 </resources>

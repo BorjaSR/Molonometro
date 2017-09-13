@@ -172,4 +172,37 @@ public class UserController {
         userJson.setUserID(Variables.User.getUserID());
         return userJson;
     }
+
+    public void getUser(final Context mContext, final ServiceCallbackInterface callback) {
+
+        UpdateUserJson updateUserJson = new UpdateUserJson();
+        updateUserJson.setUserID(Variables.User.getUserID());
+        Constants.restController.getService().getUser(updateUserJson
+                , new Callback<UserJson>() {
+                    @Override
+                    public void success(UserJson userJson, Response response) {
+                        try{
+                            Variables.User.setMolopuntos(userJson.getMolopuntos());
+                            Variables.User.setName(userJson.getName());
+                            Variables.User.setState(userJson.getState());
+                            if (callback != null)
+                                callback.onSuccess("");
+
+                        }catch (Exception e){
+                            e.printStackTrace();
+                            if (callback != null)
+                                callback.onFailure("");
+                        }
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+
+                        if (callback != null)
+                            callback.onFailure("");
+                    }
+                });
+
+    }
+
 }

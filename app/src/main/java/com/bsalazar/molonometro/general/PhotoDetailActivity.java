@@ -46,6 +46,7 @@ public class PhotoDetailActivity extends Activity {
 
         final String imageBase64 = getIntent().getExtras().getString("image");
         final int noImage = getIntent().getExtras().getInt("noImage");
+        final String title = getIntent().getExtras().getString("title", getString(R.string.image));
 
         if (imageBase64 != null){
             byte[] imageByteArray = Base64.decode(imageBase64, Base64.DEFAULT);
@@ -64,7 +65,7 @@ public class PhotoDetailActivity extends Activity {
                 args.putInt("type", 1);
                 args.putString("image", imageBase64);
                 args.putInt("noImage", noImage);
-                args.putString("title", "Imagen de grupo");
+                args.putString("title", title);
 
                 Intent intent = new Intent(activity, ImageActivity.class);
                 intent.putExtras(args);

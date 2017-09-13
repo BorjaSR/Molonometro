@@ -41,6 +41,16 @@
 
             </RelativeLayout>
 
+            <com.bsalazar.molonometro.general.CustomTextViewEmmasophia
+                android:id="@+id/user_molopuntos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="10dp"
+                android:textColor="@color/colorPrimary"
+                android:textSize="45sp"
+                android:layout_marginBottom="25dp"/>
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -67,7 +77,6 @@
                     android:layout_marginRight="@dimen/general_padding_15"/>
 
             </RelativeLayout>
-
 
             <TextView
                 android:id="@+id/textView"

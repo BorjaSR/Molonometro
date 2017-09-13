@@ -1,75 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
-
-    <com.bsalazar.molonometro.general.CustomTextViewEmmasophia
-        android:id="@+id/contact_molopuntos"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:padding="20dp"
-        android:text="21 Molopuntos"
-        android:textColor="@color/colorPrimary"
-        android:background="@color/white"
-        android:elevation="2dp"
-        android:textSize="45sp"
-        android:layout_marginBottom="25dp"/>
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/general_padding_15"
-        android:text="@string/state_and_phone"
-        android:textColor="@color/colorPrimaryDark"
-        android:textSize="17sp" />
+    android:layout_height="match_parent">
 
     <LinearLayout
+        android:id="@+id/content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:background="@color/white"
-        android:elevation="2dp"
-        android:layout_marginBottom="25dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_below="@+id/loading_progress"
+        android:layout_toEndOf="@+id/loading_progress">
 
-
-        <TextView
-            android:id="@+id/contact_state"
+        <com.bsalazar.molonometro.general.CustomTextViewEmmasophia
+            android:id="@+id/contact_molopuntos"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?android:selectableItemBackground"
-            android:padding="@dimen/general_padding_15"
-            android:text="Mi estado"
-            android:textColor="@color/charcoal_gray"
-            android:textSize="15sp" />
+            android:gravity="center"
+            android:padding="20dp"
+            android:textColor="@color/colorPrimary"
+            android:background="@color/white"
+            android:elevation="2dp"
+            android:textSize="45sp"
+            android:layout_marginBottom="25dp"/>
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/general_padding_15"
+            android:text="@string/state_and_phone"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="17sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:background="@color/light_gray" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:background="@color/white"
+            android:elevation="2dp"
+            android:layout_marginBottom="25dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/contact_state"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?android:selectableItemBackground"
+                android:padding="@dimen/general_padding_15"
+                android:textColor="@color/charcoal_gray"
+                android:textSize="15sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@color/light_gray" />
+
+            <TextView
+                android:id="@+id/contact_phone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/general_padding_15"
+                android:textColor="@color/charcoal_gray"
+                android:textSize="15sp" />
+
+        </LinearLayout>
+
 
         <TextView
-            android:id="@+id/contact_phone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/general_padding_15"
-            android:text="622 333 569"
-            android:textColor="@color/charcoal_gray"
-            android:textSize="15sp" />
+            android:paddingLeft="@dimen/general_padding_15"
+            android:text="@string/common_groups"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="17sp" />
 
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/common_groups_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"/>
+
+        <TextView
+            android:id="@+id/no_common_groups"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/no_common_groups"
+            android:gravity="center"
+            android:layout_marginTop="20dp"
+            android:visibility="gone"/>
     </LinearLayout>
 
 
-    <TextView
+    <LinearLayout
+        android:id="@+id/loading_progress"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/general_padding_15"
-        android:text="@string/common_groups"
-        android:textColor="@color/colorPrimaryDark"
-        android:textSize="17sp" />
-</LinearLayout>
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:layout_width="@dimen/progress_size"
+            android:layout_height="@dimen/progress_size"
+            android:layout_marginTop="40dp"/>
+    </LinearLayout>
+</RelativeLayout>

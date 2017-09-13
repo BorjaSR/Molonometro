@@ -49,6 +49,11 @@ public interface RestService {
             @Body UpdateUserJson updateUserJson,
             Callback<Boolean> callback);
 
+    @POST("/user/getUser")
+    void getUser(
+            @Body UpdateUserJson updateUserJson,
+            Callback<UserJson> callback);
+
 
 
     // CONTACTS //

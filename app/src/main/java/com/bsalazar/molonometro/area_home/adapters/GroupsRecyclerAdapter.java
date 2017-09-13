@@ -79,16 +79,12 @@ public class GroupsRecyclerAdapter extends RecyclerView.Adapter<GroupsRecyclerAd
         else
             eventDate = group.getLastUpdate();
 
-        if (Tools.isToday(eventDate))
-
-        {
+        if (Tools.isToday(eventDate))        {
             holder.last_event_date.setText(formatTime.format(eventDate));
         } else
             holder.last_event_date.setText(formatDate.format(eventDate));
 
-        try
-
-        {
+        try {
             if (group.getImageBase64() != null)
                 try {
                     byte[] imageByteArray = Base64.decode(group.getImageBase64(), Base64.DEFAULT);
@@ -105,60 +101,59 @@ public class GroupsRecyclerAdapter extends RecyclerView.Adapter<GroupsRecyclerAd
             else
                 holder.group_image.setImageResource(R.drawable.group_icon);
 
-        } catch (
-                Exception e
-                )
-
-        {
+        } catch (Exception e) {
             holder.group_image.setImageResource(R.drawable.group_icon);
         }
 
-        holder.group_image.setOnClickListener(new View.OnClickListener()
+        holder.group_image.setOnClickListener(
+                new View.OnClickListener()
 
-                                              {
-                                                  @Override
-                                                  public void onClick(View view) {
+                {
+                    @Override
+                    public void onClick(View view) {
 //
-                                                      // Supply index input as an argument.
-                                                      Bundle args = new Bundle();
-                                                      args.putString("image", group.getImageBase64());
-                                                      args.putInt("noImage", R.drawable.group_icon);
+                        // Supply index input as an argument.
+                        Bundle args = new Bundle();
+                        args.putString("image", group.getImageBase64());
+                        args.putInt("noImage", R.drawable.group_icon);
+                        args.putString("title", group.getName());
 
-                                                      Intent intent = new Intent(mContext, PhotoDetailActivity.class);
-                                                      intent.putExtras(args);
+                        Intent intent = new Intent(mContext, PhotoDetailActivity.class);
+                        intent.putExtras(args);
 
 
-                                                      if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                                                          ActivityOptions options = ActivityOptions
-                                                                  .makeSceneTransitionAnimation((Activity) mContext, holder.group_image, mContext.getString(R.string.image_transition));
-                                                          mContext.startActivity(intent, options.toBundle());
-                                                      } else
-                                                          mContext.startActivity(intent);
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                            ActivityOptions options = ActivityOptions
+                                    .makeSceneTransitionAnimation((Activity) mContext, holder.group_image, mContext.getString(R.string.image_transition));
+                            mContext.startActivity(intent, options.toBundle());
+                        } else
+                            mContext.startActivity(intent);
 
-                                                  }
-                                              }
+                    }
+                }
 
         );
 
-        holder.group_layout.setOnClickListener(new View.OnClickListener()
+        holder.group_layout.setOnClickListener(
+                new View.OnClickListener()
 
-                                               {
-                                                   @Override
-                                                   public void onClick(View view) {
-                                                       Variables.Group = group;
-                                                       new GroupController().getGroupParticipantsByID(mContext, group.getId(), new ServiceCallbackInterface() {
-                                                           @Override
-                                                           public void onSuccess(String result) {
-                                                               mContext.startActivity(new Intent(mContext, DashboardGroupActivity.class));
-                                                           }
+                {
+                    @Override
+                    public void onClick(View view) {
+                        Variables.Group = group;
+                        new GroupController().getGroupParticipantsByID(mContext, group.getId(), new ServiceCallbackInterface() {
+                            @Override
+                            public void onSuccess(String result) {
+                                mContext.startActivity(new Intent(mContext, DashboardGroupActivity.class));
+                            }
 
-                                                           @Override
-                                                           public void onFailure(String result) {
+                            @Override
+                            public void onFailure(String result) {
 
-                                                           }
-                                                       });
-                                                   }
-                                               }
+                            }
+                        });
+                    }
+                }
 
         );
     }
@@ -180,11 +175,11 @@ public class GroupsRecyclerAdapter extends RecyclerView.Adapter<GroupsRecyclerAd
         GroupViewHolder(View itemView) {
             super(itemView);
 
-            group_layout = (LinearLayout) itemView.findViewById(R.id.contact_layout);
-            group_name = (TextView) itemView.findViewById(R.id.contact_name);
-            group_detail = (TextView) itemView.findViewById(R.id.contact_state);
+            group_layout = (LinearLayout) itemView.findViewById(R.id.group_layout);
+            group_name = (TextView) itemView.findViewById(R.id.group_name);
+            group_detail = (TextView) itemView.findViewById(R.id.group_state);
             last_event_date = (TextView) itemView.findViewById(R.id.last_event_date);
-            group_image = (ImageView) itemView.findViewById(R.id.contact_image);
+            group_image = (ImageView) itemView.findViewById(R.id.group_image);
         }
     }
 }

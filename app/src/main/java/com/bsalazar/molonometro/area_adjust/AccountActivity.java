@@ -62,6 +62,7 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
     private TextView profile_user_name;
     private TextView profile_state;
     private TextView profile_phone;
+    private TextView user_molopuntos;
 
     private Activity activity;
     String mCurrentPhotoPath;
@@ -77,6 +78,7 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
         profile_user_name = (TextView) findViewById(R.id.profile_user_name);
         profile_state = (TextView) findViewById(R.id.profile_state);
         profile_phone = (TextView) findViewById(R.id.profile_phone);
+        user_molopuntos = (TextView) findViewById(R.id.user_molopuntos);
 
         profile_image.setOnClickListener(this);
         profile_user_name.setOnClickListener(this);
@@ -95,6 +97,13 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
         } catch (Exception e) {
             profile_image.setImageDrawable(getResources().getDrawable(R.drawable.user_icon));
         }
+
+        new UserController().getUser(this, new ServiceCallbackInterface() {
+            @Override
+            public void onSuccess(String result) {
+                user_molopuntos.setText(Variables.User.getMolopuntos() + " Molopuntos");
+            }
+        });
     }
 
     @Override
