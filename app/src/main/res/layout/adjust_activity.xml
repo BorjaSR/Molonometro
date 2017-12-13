@@ -46,9 +46,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:padding="10dp"
+                android:paddingBottom="10dp"
                 android:textColor="@color/colorPrimary"
-                android:textSize="45sp"
+                android:textSize="35sp"
                 android:layout_marginBottom="25dp"/>
 
             <RelativeLayout

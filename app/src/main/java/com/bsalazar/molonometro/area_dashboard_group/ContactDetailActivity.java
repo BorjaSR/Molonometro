@@ -17,8 +17,6 @@ import android.transition.Explode;
 import android.util.Base64;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -50,6 +48,7 @@ public class ContactDetailActivity extends AppCompatActivity {
     private RecyclerView common_groups_recycler;
 
     private Contact contact;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,7 +61,7 @@ public class ContactDetailActivity extends AppCompatActivity {
 
         int contactID = getIntent().getExtras().getInt("contactID", -1);
         for (Contact contactAux : Variables.contactsWithApp)
-            if(contactAux.getUserID() == contactID) {
+            if (contactAux.getUserID() == contactID) {
                 contact = contactAux;
                 break;
             }
@@ -90,7 +89,11 @@ public class ContactDetailActivity extends AppCompatActivity {
             public void onSuccess(String result) {
                 ContactJson contactResponseJson = new Gson().fromJson(result, ContactJson.class);
                 contact.setMolopuntos(contactResponseJson.getMolopuntos());
-                contact.setCommonGroups(contactResponseJson.getCommonGroups());
+
+                if (contactResponseJson.getCommonGroups() == null)
+                    contact.setCommonGroups(new ArrayList<Integer>());
+                else
+                    contact.setCommonGroups(contactResponseJson.getCommonGroups());
 
                 setView();
             }
@@ -160,11 +163,11 @@ public class ContactDetailActivity extends AppCompatActivity {
         contact_state.setText(contact.getState());
         contact_phone.setText(Tools.formatPhone(contact.getPhone()));
 
-        if(contact.getCommonGroups().size() > 0){
+        if (contact.getCommonGroups().size() > 0) {
             ArrayList<Group> groups = new ArrayList<>();
             for (Integer groupID : contact.getCommonGroups())
                 for (Group group : Variables.groups)
-                    if(group.getId() == groupID) {
+                    if (group.getId() == groupID) {
                         groups.add(group);
                         break;
                     }

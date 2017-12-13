@@ -638,6 +638,7 @@ class GroupDAO {
 
         $stmt->bind_param("ii", $userID, $contactID);
 
+        $commonGroups = null;
         if ($stmt->execute()) {
             $stmt->bind_result($GroupID);
 

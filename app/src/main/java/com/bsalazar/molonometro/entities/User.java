@@ -14,7 +14,7 @@ public class User {
     private String ImageBase64;
     private Bitmap Image;
     private String FirebaseToken;
-    private String Molopuntos;
+    private int Molopuntos;
 
     public User() {
     }
@@ -75,11 +75,11 @@ public class User {
         FirebaseToken = firebaseToken;
     }
 
-    public String getMolopuntos() {
+    public int getMolopuntos() {
         return Molopuntos;
     }
 
-    public void setMolopuntos(String molopuntos) {
+    public void setMolopuntos(int molopuntos) {
         Molopuntos = molopuntos;
     }
 }

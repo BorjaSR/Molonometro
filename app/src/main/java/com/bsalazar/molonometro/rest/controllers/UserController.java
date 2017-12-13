@@ -181,14 +181,16 @@ public class UserController {
                 , new Callback<UserJson>() {
                     @Override
                     public void success(UserJson userJson, Response response) {
-                        try{
+                        try {
+
                             Variables.User.setMolopuntos(userJson.getMolopuntos());
                             Variables.User.setName(userJson.getName());
                             Variables.User.setState(userJson.getState());
+
                             if (callback != null)
                                 callback.onSuccess("");
 
-                        }catch (Exception e){
+                        } catch (Exception e) {
                             e.printStackTrace();
                             if (callback != null)
                                 callback.onFailure("");

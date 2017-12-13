@@ -10,7 +10,7 @@ public class UserJson {
     private String Phone;
     private String State;
     private String Image;
-    private String Molopuntos;
+    private int Molopuntos;
     private boolean isInApp;
 
     public UserJson() {
@@ -64,11 +64,11 @@ public class UserJson {
         isInApp = inApp;
     }
 
-    public String getMolopuntos() {
+    public int getMolopuntos() {
         return Molopuntos;
     }
 
-    public void setMolopuntos(String molopuntos) {
+    public void setMolopuntos(int molopuntos) {
         Molopuntos = molopuntos;
     }
 }
