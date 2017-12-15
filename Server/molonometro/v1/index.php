@@ -81,8 +81,21 @@ function echoResponse($status_code, $response) {
 // User login
 $app->post('/dummyService', function() use ($app) {
 
-    echo "It really works!";
+    //echo "It really works!";
+    $hashMD5 = crypt("password", SALT);
 
+    $mail = ACTIVATION_EMAIL;
+    //Titulo
+    $titulo = "Correo de activación";
+    //cabecera
+    $headers = "MIME-Version: 1.0\r\n"; 
+    $headers .= "Content-type: text/html; charset=utf-8\r\n"; 
+    //dirección del remitente 
+    $headers .= "From: Monolometro\r\n";
+    //Enviamos el mensaje a tu_dirección_email 
+    $bool = mail("borja.salazar.90@gmail.com", $titulo, $mail, $headers);
+
+	echo $hashMD5." ".$bool;
 });
 
 // User login
@@ -102,6 +115,12 @@ $app->post('/fcm/sendPushTo', function() use ($app) {
         echoResponse(200, true);
     }
 });
+
+$app->get('/activation', function() use ($app){
+    $paramValue = $app->request()->params('activationCode');
+    echo $paramValue;
+});
+
 
 $app->run();
 ?>

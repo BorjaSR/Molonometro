@@ -182,15 +182,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
-            startActivity(new Intent(this, AccountActivity.class));
-            return true;
-        } else if (id == R.id.action_refresh) {
-            if (main_view_pager.getCurrentItem() == 0)
-                refreshGroups(false);
-            else if (main_view_pager.getCurrentItem() == 1)
-                getContacts(false);
-            return true;
+        switch (id) {
+            case R.id.action_settings:
+                startActivity(new Intent(this, AccountActivity.class));
+                return true;
+            case R.id.action_refresh:
+                if (main_view_pager.getCurrentItem() == 0)
+                    refreshGroups(false);
+                else if (main_view_pager.getCurrentItem() == 1)
+                    getContacts(false);
+                return true;
+            case R.id.action_dummy:
+                Constants.restController.getService().dummyService(new PushTestJson()
+                        , new Callback<String>() {
+                            @Override
+                            public void success(String userJson, Response response) {
+                                Log.d("[PRUEBA MD5]", userJson);
+                            }
+
+                            @Override
+                            public void failure(RetrofitError error) {
+
+                            }
+                        });
+                return true;
         }
 
         return super.onOptionsItemSelected(item);

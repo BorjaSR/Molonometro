@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Molonometro</string>
+    <string name="app_name">Molonómetro</string>
     <string name="action_settings">Ajustes</string>
     <string name="element_shared_dashboard_group">element_shared_dashboard_group</string>
     <string name="new_group">Nuevo grupo</string>

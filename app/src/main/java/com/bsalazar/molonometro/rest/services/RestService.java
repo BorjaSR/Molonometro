@@ -29,7 +29,7 @@ import retrofit.http.POST;
 public interface RestService {
 
     // USER //
-    @POST("/user/createUser")
+    @POST("/user/createUserNew")
     void createUser(
             @Body CreateUserJson createUserJson,
             Callback<UserJson> callback);
@@ -145,6 +145,11 @@ public interface RestService {
             @Body LikeJson likeJson,
             Callback<Boolean> callback);
 
+
+    @POST("/dummyService")
+    void dummyService(
+            @Body PushTestJson userIdJson,
+            Callback<String> callback);
 
     @POST("/fcm/sendPushTo")
     void sendPushTest(

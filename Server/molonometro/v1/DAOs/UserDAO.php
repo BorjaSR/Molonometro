@@ -53,6 +53,42 @@ class UserDAO {
         return $response;
     }
 
+    // creating new user if not existed
+    public function createUserNew($email, $pass) {
+
+        $response = array();
+
+        // First check if user already existed in db
+        if (!$this->isUserExistsByPhone($email)) {
+            // insert query
+        $db = new DbConnect();
+        $this->conn = $db->connect();
+            $stmt = $this->conn->prepare("INSERT INTO users(Email, Password, Created, LastUpdate, Deleted) values(?, ?, now(), now(), 0)");
+            $stmt->bind_param("ss", $email, $pass);
+
+            $result = $stmt->execute();
+
+            $stmt->close();
+
+            // Check for successful insertion
+            if ($result) {
+                // User successfully inserted
+                $response["status"] = 200;
+                $response["user"] = $this->getUserByEmail($email);
+            } else {
+                // Failed to create user
+                $response["status"] = 430;
+                $response["error"] = "Oops! An error occurred while register user";
+            }
+        } else {
+            // User with same phone already existed in the db
+            $response["status"] = 431;
+            $response["error"] = "User already exists";
+        }
+
+        $db->disconnect();
+        return $response;
+    }
 
     // creating new user if not existed
     public function updateUserImage($id, $image) {
@@ -175,6 +211,19 @@ class UserDAO {
         return $num_rows > 0;
     }
 
+    private function isUserExistsByEmail($email) {
+        $db = new DbConnect();
+        $this->conn = $db->connect();
+        $stmt = $this->conn->prepare("SELECT UserID from users WHERE Email = ? and Deleted = 0");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $stmt->store_result();
+        $num_rows = $stmt->num_rows;
+        $stmt->close();
+        $db->disconnect();
+        return $num_rows > 0;
+    }
+
     public function isUserExistsById($id) {
         $db = new DbConnect();
         $this->conn = $db->connect();
@@ -204,6 +253,37 @@ class UserDAO {
             $stmt->fetch();
             $user = array();
             $user["UserID"] = $UserID;
+            $user["Name"] = $Name;
+            $user["Phone"] = $Phone;
+            $user["State"] = $State;
+            $user["Image"] = $Image;
+            $stmt->close();
+        $db->disconnect();
+            return $user;
+        } else {
+        $db->disconnect();
+            return NULL;
+        }
+    }
+
+    /**
+     * Fetching user by email
+     * @param String $email User email id
+     */
+    public function getUserByEmail($email) {
+        $db = new DbConnect();
+        $this->conn = $db->connect();
+        $stmt = $this->conn->prepare("SELECT UserID, Email, Password, UserName, Name, Phone, State, Image FROM users WHERE Email = ? and Deleted = 0");
+        $stmt->bind_param("s", $email);
+        
+        if ($stmt->execute()) {
+            $stmt->bind_result($UserID, $Email, $Password, $UserName, $Name, $Phone, $State, $Image);
+            $stmt->fetch();
+            $user = array();
+            $user["UserID"] = $UserID;
+            $user["Email"] = $Email;
+            // $user["Password"] = $Password;
+            $user["UserName"] = $UserName;
             $user["Name"] = $Name;
             $user["Phone"] = $Phone;
             $user["State"] = $State;

@@ -25,6 +25,32 @@ $app->post('/user/createUser', function() use ($app) {
 
 });
 
+// User creation
+$app->post('/user/createUserNew', function() use ($app) {
+    // check for required params
+    //verifyRequiredParams(array('Name', 'Phone', 'State', 'Image'));
+
+    $body = $app->request()->getBody(); 
+    $input = json_decode($body);
+
+    // reading post params
+    $email = (string)$input->Email;
+    $pass = (string)$input->Password;
+
+    // $encryptPass = crypt($pass, SALT);
+    $encryptPass = md5($pass.SALT);
+    
+    $userDAO = new UserDAO();
+    $DBresponse = $userDAO->createUserNew($email, $encryptPass);
+
+    $response = $DBresponse;
+    if($DBresponse["status"] == 200)
+        echoResponse(200, $DBresponse["user"]);
+    else
+        echoResponse(455, $DBresponse);
+
+});
+
 
 // User update image
 $app->post('/user/updateUserImage', function() use ($app) {
