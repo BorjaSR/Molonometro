@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost:8889
--- Tiempo de generación: 15-12-2017 a las 13:54:35
+-- Tiempo de generación: 18-12-2017 a las 15:52:40
 -- Versión del servidor: 5.6.35
 -- Versión de PHP: 7.1.8
 
@@ -89,6 +89,20 @@ CREATE TABLE `comments` (
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `friendships`
+--
+
+CREATE TABLE `friendships` (
+  `UserID` int(11) NOT NULL,
+  `FriendID` int(11) NOT NULL,
+  `Activated` tinyint(1) NOT NULL,
+  `Blocked` tinyint(1) NOT NULL,
+  `Rejected` tinyint(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `groups`
 --
 
@@ -142,16 +156,21 @@ CREATE TABLE `users` (
   `UserID` int(11) NOT NULL,
   `Email` varchar(100) COLLATE utf8_spanish_ci NOT NULL,
   `Password` varchar(250) COLLATE utf8_spanish_ci NOT NULL,
-  `UserName` varchar(50) COLLATE utf8_spanish_ci NOT NULL,
-  `Name` varchar(75) COLLATE utf8_spanish_ci NOT NULL,
-  `Phone` varchar(25) COLLATE utf8_spanish_ci NOT NULL,
+  `UserName` varchar(50) COLLATE utf8_spanish_ci DEFAULT NULL,
+  `Name` varchar(75) COLLATE utf8_spanish_ci DEFAULT NULL,
+  `Phone` varchar(25) COLLATE utf8_spanish_ci DEFAULT NULL,
   `State` varchar(200) COLLATE utf8_spanish_ci DEFAULT NULL,
   `Image` blob,
   `FirebaseToken` varchar(250) COLLATE utf8_spanish_ci DEFAULT NULL,
+  `Activated` tinyint(1) NOT NULL DEFAULT '0',
   `Created` datetime NOT NULL,
   `LastUpdate` datetime NOT NULL,
   `Deleted` tinyint(1) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+--
+-- Índices para tablas volcadas
+--
 
 --
 -- Indices de la tabla `comments`
@@ -192,17 +211,17 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT de la tabla `comments`
 --
 ALTER TABLE `comments`
-  MODIFY `CommentID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `CommentID` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT de la tabla `groups`
 --
 ALTER TABLE `groups`
-  MODIFY `GroupID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `GroupID` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT de la tabla `users`
 --
 ALTER TABLE `users`
-  MODIFY `UserID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `UserID` int(11) NOT NULL AUTO_INCREMENT;
 DELIMITER $$
 --
 -- Eventos

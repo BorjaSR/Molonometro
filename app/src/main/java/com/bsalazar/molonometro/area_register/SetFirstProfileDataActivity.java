@@ -32,14 +32,13 @@ import com.bsalazar.molonometro.BuildConfig;
 import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.MainActivity;
 import com.bsalazar.molonometro.general.Constants;
-import com.bsalazar.molonometro.general.Tools;
 import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.controllers.UserController;
+import com.bsalazar.molonometro.rest.json.UpdateUserJson;
 import com.bsalazar.molonometro.rest.services.RestController;
-import com.bsalazar.molonometro.rest.services.ServiceCallbackInterface;
+import com.bsalazar.molonometro.rest.services.ServiceCallback;
 
 import java.io.File;
-import java.io.IOException;
 
 public class SetFirstProfileDataActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -47,6 +46,7 @@ public class SetFirstProfileDataActivity extends AppCompatActivity implements Vi
     private final int CAMERA_INPUT = 2;
 
     ImageView profileImage;
+    EditText user_name, user_name_real, user_state;
     Bitmap profileBitmap = null;
     private String mCurrentPhotoPath;
     private Activity activity;
@@ -63,6 +63,9 @@ public class SetFirstProfileDataActivity extends AppCompatActivity implements Vi
 
         Constants.restController = new RestController();
 
+        user_name = (EditText) findViewById(R.id.user_name);
+        user_name_real = (EditText) findViewById(R.id.user_name_real);
+        user_state = (EditText) findViewById(R.id.user_state);
         profileImage = (ImageView) findViewById(R.id.profileImage);
         profileImage.setImageDrawable(getResources().getDrawable(R.drawable.user_icon));
         profileImage.setOnClickListener(this);
@@ -102,16 +105,20 @@ public class SetFirstProfileDataActivity extends AppCompatActivity implements Vi
         switch (id) {
 
             case R.id.next:
-                final EditText user_state = (EditText) findViewById(R.id.user_state);
+                final UpdateUserJson updateUserJson = new UpdateUserJson();
+                updateUserJson.setEmail(Variables.User.getEmail());
+                updateUserJson.setUserName(user_name.getText().toString());
+                updateUserJson.setName(user_name_real.getText().toString());
+                updateUserJson.setState(user_state.getText().toString());
 
                 if(profileBitmap == null){
-                    updateUserState(user_state.getText().toString());
+                    updateUser(updateUserJson);
 
                 } else {
-                    new UserController().updateUserImage(this, profileBitmap, new ServiceCallbackInterface() {
+                    new UserController().updateUserImage(this, profileBitmap, new ServiceCallback() {
                         @Override
                         public void onSuccess(String result) {
-                            updateUserState(user_state.getText().toString());
+                            updateUser(updateUserJson);
                         }
 
                         @Override
@@ -129,8 +136,8 @@ public class SetFirstProfileDataActivity extends AppCompatActivity implements Vi
         }
     }
 
-    private void updateUserState(String state){
-        new UserController().updateUserState(getApplicationContext(), state, new ServiceCallbackInterface() {
+    private void updateUser(UpdateUserJson updateUserJson){
+        new UserController().updateUser(getApplicationContext(), updateUserJson, new ServiceCallback() {
             @Override
             public void onSuccess(String result) {
                 startActivity(new Intent(getApplicationContext(), MainActivity.class));

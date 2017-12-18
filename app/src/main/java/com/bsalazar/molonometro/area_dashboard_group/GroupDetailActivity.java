@@ -47,7 +47,7 @@ import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.controllers.GroupController;
 import com.bsalazar.molonometro.rest.json.AddUserToGroupJson;
 import com.bsalazar.molonometro.rest.json.GroupJson;
-import com.bsalazar.molonometro.rest.services.ServiceCallbackInterface;
+import com.bsalazar.molonometro.rest.services.ServiceCallback;
 import com.bumptech.glide.Glide;
 import com.google.firebase.messaging.FirebaseMessaging;
 
@@ -288,7 +288,7 @@ public class GroupDetailActivity extends AppCompatActivity {
         addUserToGroupJson.setGroupID(Variables.Group.getId());
         addUserToGroupJson.setContactID(participant.getUserID());
 
-        new GroupController().removeUserFromGroup(addUserToGroupJson, new ServiceCallbackInterface() {
+        new GroupController().removeUserFromGroup(addUserToGroupJson, new ServiceCallback() {
             @Override
             public void onSuccess(String result) {
                 for (Participant participantGroup : Variables.Group.getParticipants())
@@ -313,7 +313,7 @@ public class GroupDetailActivity extends AppCompatActivity {
         AddUserToGroupJson makeAdmin = new AddUserToGroupJson();
         makeAdmin.setContactID(participant.getUserID());
         makeAdmin.setGroupID(Variables.Group.getId());
-        new GroupController().makeAdmin(makeAdmin, new ServiceCallbackInterface() {
+        new GroupController().makeAdmin(makeAdmin, new ServiceCallback() {
             @Override
             public void onSuccess(String result) {
                 progress.dismiss();
@@ -343,7 +343,7 @@ public class GroupDetailActivity extends AppCompatActivity {
                         addUserToGroupJson.setGroupID(Variables.Group.getId());
                         addUserToGroupJson.setContactID(Variables.User.getUserID());
 
-                        new GroupController().removeUserFromGroup(addUserToGroupJson, new ServiceCallbackInterface() {
+                        new GroupController().removeUserFromGroup(addUserToGroupJson, new ServiceCallback() {
                             @Override
                             public void onSuccess(String result) {
                                 FirebaseMessaging.getInstance().unsubscribeFromTopic(Variables.Group.getFirebaseTopic());
@@ -548,7 +548,7 @@ public class GroupDetailActivity extends AppCompatActivity {
         final String new_image_64 = Tools.encodeBitmapToBase64(bitmap);
         groupJson.setImage(new_image_64);
 
-        new GroupController().updateGroupImage(this, groupJson, new ServiceCallbackInterface() {
+        new GroupController().updateGroupImage(this, groupJson, new ServiceCallback() {
             @Override
             public void onSuccess(String result) {
 

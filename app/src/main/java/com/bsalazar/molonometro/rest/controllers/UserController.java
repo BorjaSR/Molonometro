@@ -16,7 +16,7 @@ import com.bsalazar.molonometro.rest.json.CreateUserJson;
 import com.bsalazar.molonometro.rest.json.UpdateUserJson;
 import com.bsalazar.molonometro.rest.json.UserJson;
 import com.bsalazar.molonometro.rest.services.Parser;
-import com.bsalazar.molonometro.rest.services.ServiceCallbackInterface;
+import com.bsalazar.molonometro.rest.services.ServiceCallback;
 import com.google.gson.Gson;
 
 import retrofit.Callback;
@@ -29,47 +29,72 @@ import retrofit.client.Response;
 
 public class UserController {
 
-    public void createUser(final Context mContext, CreateUserJson createUserJson) {
+    public void login(UserJson userJson, final ServiceCallback callback) {
+
+        Constants.restController.getService().login(userJson
+                , new Callback<Integer>() {
+                    @Override
+                    public void success(Integer userID, Response response) {
+                        if(userID != -1 && callback != null)
+                            callback.onSuccess(userID.toString());
+                        else if (callback != null)
+                            callback.onFailure("KO");
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        if (callback != null)
+                            callback.onFailure("KO");
+                    }
+                });
+    }
+
+    public void createUser(CreateUserJson createUserJson, final ServiceCallback callback) {
 
         Constants.restController.getService().createUser(createUserJson
                 , new Callback<UserJson>() {
                     @Override
                     public void success(UserJson userJson, Response response) {
-                        Variables.User = Parser.parseUser(userJson);
+                        if(userJson.getEmail() != null){
+                            Variables.User = Parser.parseUser(userJson);
 
-                        Gson gson = new Gson();
-                        String userStringJson = gson.toJson(Variables.User);
-                        Memo.rememberMe(mContext, userStringJson);
-
-                        new SetFirebaseTokenThread(mContext).start();
-
-                        mContext.startActivity(new Intent(mContext, SetFirstProfileDataActivity.class));
-                        ((RegisterActivity) mContext).finish();
+                            if (callback != null)
+                                callback.onSuccess("");
+                        } else if (callback != null)
+                            callback.onFailure("");
                     }
 
                     @Override
                     public void failure(RetrofitError error) {
-                        if (error.getResponse() != null)
-                            Toast.makeText(mContext, "KO creando al usuario\n" + error.getResponse().getStatus() + " " + error.getResponse().getReason(), Toast.LENGTH_SHORT).show();
+                        if (error.getResponse() != null && callback != null)
+                            callback.onFailure("KO");
                     }
                 });
     }
 
-    public void updateUserName(final Context mContext, String name, final ServiceCallbackInterface callback) {
+    public void updateUserName(final Context mContext, String userName, final ServiceCallback callback) {
+        UpdateUserJson updateUserJson = getUpdateUserJson();
+        updateUserJson.setImage(null);
+        updateUserJson.setUserName(userName);
+        updateUser(mContext, updateUserJson, callback);
+    }
+
+    public void updateName(final Context mContext, String name, final ServiceCallback callback) {
         UpdateUserJson updateUserJson = getUpdateUserJson();
         updateUserJson.setImage(null);
         updateUserJson.setName(name);
         updateUser(mContext, updateUserJson, callback);
     }
 
-    public void updateUserState(final Context mContext, String state, final ServiceCallbackInterface callback) {
+    public void updateUserState(final Context mContext, String state, final ServiceCallback callback) {
         UpdateUserJson updateUserJson = getUpdateUserJson();
         updateUserJson.setImage(null);
         updateUserJson.setState(state);
         updateUser(mContext, updateUserJson, callback);
     }
 
-    private void updateUser(final Context mContext, UpdateUserJson updateUserJson, final ServiceCallbackInterface callback) {
+    public void updateUser(final Context mContext, UpdateUserJson updateUserJson, final ServiceCallback callback) {
+        updateUserJson.setUserID(Variables.User.getUserID());
         updateUserJson.setImage(null);
 
         Constants.restController.getService().updateUser(updateUserJson
@@ -103,7 +128,7 @@ public class UserController {
     }
 
 
-    public void updateUserImage(final Context mContext, Bitmap image_profile, final ServiceCallbackInterface callback) {
+    public void updateUserImage(final Context mContext, Bitmap image_profile, final ServiceCallback callback) {
 
         UpdateUserJson updateUserJson = getUpdateUserJson();
         updateUserJson.setImage(Tools.encodeBitmapToBase64(image_profile));
@@ -138,7 +163,7 @@ public class UserController {
 
     }
 
-    public void updateFirebaseToken(final Context mContext, String firebaseToken, final ServiceCallbackInterface callback) {
+    public void updateFirebaseToken(final Context mContext, String firebaseToken, final ServiceCallback callback) {
 
         UpdateUserJson updateUserJson = new UpdateUserJson();
         updateUserJson.setUserID(Variables.User.getUserID());
@@ -167,13 +192,15 @@ public class UserController {
     private UpdateUserJson getUpdateUserJson() {
         UpdateUserJson userJson = new UpdateUserJson();
         userJson.setImage(Variables.User.getImageBase64());
+        userJson.setUserName(Variables.User.getUserName());
+        userJson.setEmail(Variables.User.getEmail());
         userJson.setName(Variables.User.getName());
         userJson.setState(Variables.User.getState());
         userJson.setUserID(Variables.User.getUserID());
         return userJson;
     }
 
-    public void getUser(final Context mContext, final ServiceCallbackInterface callback) {
+    public void getUser(final ServiceCallback callback) {
 
         UpdateUserJson updateUserJson = new UpdateUserJson();
         updateUserJson.setUserID(Variables.User.getUserID());
@@ -183,9 +210,12 @@ public class UserController {
                     public void success(UserJson userJson, Response response) {
                         try {
 
+                            Variables.User = Parser.parseUser(userJson);
+
+                            if (Variables.User.getImageBase64() != null)
+                                Variables.User.setImage(Tools.decodeBase64(Variables.User.getImageBase64()));
+
                             Variables.User.setMolopuntos(userJson.getMolopuntos());
-                            Variables.User.setName(userJson.getName());
-                            Variables.User.setState(userJson.getState());
 
                             if (callback != null)
                                 callback.onSuccess("");
@@ -206,5 +236,4 @@ public class UserController {
                 });
 
     }
-
 }

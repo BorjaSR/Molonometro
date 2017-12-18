@@ -30,7 +30,7 @@ import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.controllers.ContactController;
 import com.bsalazar.molonometro.rest.json.ContactJson;
 import com.bsalazar.molonometro.rest.json.GetContactDetailJson;
-import com.bsalazar.molonometro.rest.services.ServiceCallbackInterface;
+import com.bsalazar.molonometro.rest.services.ServiceCallback;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -41,10 +41,10 @@ import java.util.ArrayList;
 
 public class ContactDetailActivity extends AppCompatActivity {
 
-
+    private CollapsingToolbarLayout collapsing;
     private LinearLayout loading_progress, content;
     private ImageView contact_image;
-    private TextView contact_molopuntos, contact_state, contact_phone, no_common_groups;
+    private TextView contact_molopuntos, contact_state, contact_name, no_common_groups;
     private RecyclerView common_groups_recycler;
 
     private Contact contact;
@@ -70,7 +70,7 @@ public class ContactDetailActivity extends AppCompatActivity {
         loading_progress = (LinearLayout) findViewById(R.id.loading_progress);
         contact_molopuntos = (TextView) findViewById(R.id.contact_molopuntos);
         contact_state = (TextView) findViewById(R.id.contact_state);
-        contact_phone = (TextView) findViewById(R.id.contact_phone);
+        contact_name = (TextView) findViewById(R.id.contact_name);
         no_common_groups = (TextView) findViewById(R.id.no_common_groups);
         common_groups_recycler = (RecyclerView) findViewById(R.id.common_groups_recycler);
 
@@ -81,20 +81,23 @@ public class ContactDetailActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        GetContactDetailJson contactJson = new GetContactDetailJson();
+        final GetContactDetailJson contactJson = new GetContactDetailJson();
         contactJson.setContactID(contact.getUserID());
         contactJson.setUserID(Variables.User.getUserID());
-        new ContactController().getContactByID(getApplicationContext(), contactJson, new ServiceCallbackInterface() {
+        new ContactController().getContactByID(getApplicationContext(), contactJson, new ServiceCallback() {
             @Override
             public void onSuccess(String result) {
                 ContactJson contactResponseJson = new Gson().fromJson(result, ContactJson.class);
                 contact.setMolopuntos(contactResponseJson.getMolopuntos());
+                contact.setEmail(contactResponseJson.getEmail());
+                contact.setUserName(contactResponseJson.getUserName());
 
                 if (contactResponseJson.getCommonGroups() == null)
                     contact.setCommonGroups(new ArrayList<Integer>());
                 else
                     contact.setCommonGroups(contactResponseJson.getCommonGroups());
 
+                collapsing.setTitle(contact.getUserName());
                 setView();
             }
         });
@@ -115,7 +118,7 @@ public class ContactDetailActivity extends AppCompatActivity {
 
     private void setCollapsing() {
 
-        final CollapsingToolbarLayout collapsing = (CollapsingToolbarLayout) findViewById(R.id.collapsing);
+        collapsing = (CollapsingToolbarLayout) findViewById(R.id.collapsing);
         contact_image = (ImageView) findViewById(R.id.contact_image);
 
         final String imageBase64 = contact.getImageBase64();
@@ -141,7 +144,7 @@ public class ContactDetailActivity extends AppCompatActivity {
             }
         });
 
-        collapsing.setTitle(contact.getName());
+        collapsing.setTitle(contact.getUserName());
         collapsing.setExpandedTitleTextAppearance(R.style.CollapsingTextDetailStyle);
         collapsing.setExpandedTitleColor(getResources().getColor(R.color.white));
         collapsing.setCollapsedTitleTextColor(getResources().getColor(android.R.color.white));
@@ -161,7 +164,7 @@ public class ContactDetailActivity extends AppCompatActivity {
     private void setView() {
         contact_molopuntos.setText(contact.getMolopuntos() + " Molopuntos");
         contact_state.setText(contact.getState());
-        contact_phone.setText(Tools.formatPhone(contact.getPhone()));
+        contact_name.setText(Tools.formatPhone(contact.getName()));
 
         if (contact.getCommonGroups().size() > 0) {
             ArrayList<Group> groups = new ArrayList<>();

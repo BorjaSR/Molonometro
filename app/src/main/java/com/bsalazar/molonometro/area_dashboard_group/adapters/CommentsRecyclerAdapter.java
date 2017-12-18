@@ -24,7 +24,7 @@ import com.bsalazar.molonometro.general.MyRequestListener;
 import com.bsalazar.molonometro.general.Tools;
 import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.controllers.LikesController;
-import com.bsalazar.molonometro.rest.services.ServiceCallbackInterface;
+import com.bsalazar.molonometro.rest.services.ServiceCallback;
 import com.bumptech.glide.Glide;
 
 import java.text.SimpleDateFormat;
@@ -172,7 +172,7 @@ public class CommentsRecyclerAdapter extends RecyclerView.Adapter<CommentsRecycl
                 @Override
                 public void onClick(View view) {
                     if (!comment.getLikes().contains(Variables.User.getUserID()))
-                        new LikesController().addLikeToComment(mContext, comment.getCommentID(), new ServiceCallbackInterface() {
+                        new LikesController().addLikeToComment(mContext, comment.getCommentID(), new ServiceCallback() {
                             @Override
                             public void onSuccess(String result) {
                                 comment.getLikes().add(Variables.User.getUserID());

@@ -19,14 +19,16 @@ class ContactDAO {
     }
 
     public function checkUserByPhone($phone) {
-        $stmt = $this->conn->prepare("SELECT UserID, Name, Phone, State, Image FROM users WHERE Phone = ? and Deleted = 0");
+        $stmt = $this->conn->prepare("SELECT UserID, UserName, Email, Name, Phone, State, Image FROM users WHERE Phone = ? and Deleted = 0");
         $stmt->bind_param("s", $phone);
         
         if ($stmt->execute()) {
-            $stmt->bind_result($UserID, $Name, $Phone, $State, $Image);
+            $stmt->bind_result($UserID, $UserName, $Email, $Name, $Phone, $State, $Image);
             $stmt->fetch();
             $user = array();
             $user["UserID"] = $UserID;
+            $user["UserName"] = $UserName;
+            $user["Email"] = $Email;
             $user["Name"] = $Name;
             $user["Phone"] = $Phone;
             $user["State"] = $State;
@@ -39,18 +41,20 @@ class ContactDAO {
     }
 
     public function getContactByID($userID) {
-        $stmt = $this->conn->prepare("SELECT UserID, Name, Phone, State, Image FROM users WHERE UserID = ? and Deleted = 0");
+        $stmt = $this->conn->prepare("SELECT UserID, UserName, Email, Name, Phone, State, Image FROM users WHERE UserID = ? and Deleted = 0");
         $stmt->bind_param("i", $userID);
         
         if ($stmt->execute()) {
-            $stmt->bind_result($UserID, $Name, $Phone, $State, $Image);
+            $stmt->bind_result($UserID, $UserName, $Email, $Name, $Phone, $State, $Image);
             $stmt->fetch();
             $user = array();
             $user["UserID"] = $UserID;
+            $user["UserName"] = $UserName;
+            $user["Email"] = $Email;
             $user["Name"] = $Name;
             $user["Phone"] = $Phone;
             $user["State"] = $State;
-            //$user["Image"] = $Image;
+            $user["Image"] = $Image;
             $stmt->close();
             $user["Molopuntos"] =  $this->getTotalMolopuntosByUserID($userID);
         } else {

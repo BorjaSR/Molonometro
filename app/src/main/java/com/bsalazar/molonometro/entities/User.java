@@ -8,6 +8,8 @@ import android.graphics.Bitmap;
 public class User {
 
     private int UserID;
+    private String UserName;
+    private String Email;
     private String Name;
     private String Phone;
     private String State;
@@ -17,6 +19,22 @@ public class User {
     private int Molopuntos;
 
     public User() {
+    }
+
+    public String getUserName() {
+        return UserName;
+    }
+
+    public void setUserName(String userName) {
+        UserName = userName;
+    }
+
+    public String getEmail() {
+        return Email;
+    }
+
+    public void setEmail(String email) {
+        Email = email;
     }
 
     public int getUserID() {

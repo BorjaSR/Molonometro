@@ -8,7 +8,7 @@ import com.bsalazar.molonometro.general.Constants;
 import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.json.GroupJson;
 import com.bsalazar.molonometro.rest.services.Parser;
-import com.bsalazar.molonometro.rest.services.ServiceCallbackInterface;
+import com.bsalazar.molonometro.rest.services.ServiceCallback;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -24,7 +24,7 @@ import retrofit.client.Response;
 public class CommentsController {
 
 
-    public void getCommentsByGroup(final Context mContext, int groupId, final ServiceCallbackInterface callback) {
+    public void getCommentsByGroup(final Context mContext, int groupId, final ServiceCallback callback) {
 
         GroupJson groupJson = new GroupJson();
         groupJson.setGroupID(groupId);
@@ -51,7 +51,7 @@ public class CommentsController {
                 });
     }
 
-    public void getRepliesByComment(final Context mContext, int commentID, final ServiceCallbackInterface callback) {
+    public void getRepliesByComment(final Context mContext, int commentID, final ServiceCallback callback) {
 
         Comment commentJson = new Comment();
         commentJson.setCommentID(commentID);
@@ -79,7 +79,7 @@ public class CommentsController {
     }
 
 
-    public void addCommentToGroup(final Context mContext, Comment comment, final ServiceCallbackInterface callback) {
+    public void addCommentToGroup(final Context mContext, Comment comment, final ServiceCallback callback) {
 
         Constants.restController.getService().addCommentToGroup(comment
                 , new Callback<Comment>() {
@@ -100,7 +100,7 @@ public class CommentsController {
                 });
     }
 
-    public void addReplyToComment(final Context mContext, Comment comment, final ServiceCallbackInterface callback) {
+    public void addReplyToComment(final Context mContext, Comment comment, final ServiceCallback callback) {
 
         Constants.restController.getService().addReplyToComment(comment
                 , new Callback<Boolean>() {

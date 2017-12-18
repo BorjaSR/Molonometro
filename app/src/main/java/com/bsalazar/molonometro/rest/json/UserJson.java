@@ -6,6 +6,9 @@ package com.bsalazar.molonometro.rest.json;
 public class UserJson {
 
     private int UserID;
+    private String UserName;
+    private String Email;
+    private String Password;
     private String Name;
     private String Phone;
     private String State;
@@ -14,6 +17,30 @@ public class UserJson {
     private boolean isInApp;
 
     public UserJson() {
+    }
+
+    public String getPassword() {
+        return Password;
+    }
+
+    public void setPassword(String password) {
+        Password = password;
+    }
+
+    public String getUserName() {
+        return UserName;
+    }
+
+    public void setUserName(String userName) {
+        UserName = userName;
+    }
+
+    public String getEmail() {
+        return Email;
+    }
+
+    public void setEmail(String email) {
+        Email = email;
     }
 
     public int getUserID() {

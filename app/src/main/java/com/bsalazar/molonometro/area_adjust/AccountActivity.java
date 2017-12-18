@@ -20,34 +20,24 @@ import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bsalazar.molonometro.BuildConfig;
 import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.general.Constants;
+import com.bsalazar.molonometro.general.Memo;
 import com.bsalazar.molonometro.general.MyRequestListener;
 import com.bsalazar.molonometro.general.Tools;
 import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.controllers.UserController;
-import com.bsalazar.molonometro.rest.json.UpdateUserJson;
-import com.bsalazar.molonometro.rest.json.UserJson;
-import com.bsalazar.molonometro.rest.services.ServiceCallbackInterface;
+import com.bsalazar.molonometro.rest.services.ServiceCallback;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
-
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 /**
  * Created by bsalazar on 21/02/2017.
@@ -61,8 +51,9 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
     private ImageView profile_image;
     private TextView profile_user_name;
     private TextView profile_state;
-    private TextView profile_phone;
+    private TextView profile_name;
     private TextView user_molopuntos;
+    private TextView logout;
 
     private Activity activity;
     String mCurrentPhotoPath;
@@ -77,12 +68,15 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
         profile_image = (ImageView) findViewById(R.id.profile_image);
         profile_user_name = (TextView) findViewById(R.id.profile_user_name);
         profile_state = (TextView) findViewById(R.id.profile_state);
-        profile_phone = (TextView) findViewById(R.id.profile_phone);
+        profile_name = (TextView) findViewById(R.id.profile_name);
         user_molopuntos = (TextView) findViewById(R.id.user_molopuntos);
+        logout = (TextView) findViewById(R.id.logout);
 
         profile_image.setOnClickListener(this);
         profile_user_name.setOnClickListener(this);
+        profile_name.setOnClickListener(this);
         profile_state.setOnClickListener(this);
+        logout.setOnClickListener(this);
 
         try {
             byte[] imageByteArray = Base64.decode(Variables.User.getImageBase64(), Base64.DEFAULT);
@@ -98,10 +92,10 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
             profile_image.setImageDrawable(getResources().getDrawable(R.drawable.user_icon));
         }
 
-        new UserController().getUser(this, new ServiceCallbackInterface() {
+        new UserController().getUser(new ServiceCallback() {
             @Override
             public void onSuccess(String result) {
-                user_molopuntos.setText(Variables.User.getMolopuntos() + " Molopuntos");
+                fillFields();
             }
         });
     }
@@ -114,9 +108,17 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
 
     private void fillFields() {
 
-        profile_user_name.setText(Variables.User.getName());
+        profile_user_name.setText(String.format(getString(R.string.user_name), Variables.User.getUserName()));
         profile_state.setText(Variables.User.getState());
-        profile_phone.setText(Tools.formatPhone(Variables.User.getPhone()));
+        profile_name.setText(Tools.formatPhone(Variables.User.getName()));
+        user_molopuntos.setText(Variables.User.getMolopuntos() + " Molopuntos");
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_account, menu);
+        return true;
     }
 
     @Override
@@ -125,6 +127,9 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
+                return true;
+            case R.id.action_friend_request:
+                startActivity(new Intent(this, AddFriendsActivity.class));
                 return true;
         }
         return true;
@@ -141,10 +146,20 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
                 intent.putExtra(EditFieldActivity.MODE, EditFieldActivity.EDIT_USER_NAME);
                 startActivity(intent);
                 break;
+            case R.id.profile_name:
+                Intent intent3 = new Intent(this, EditFieldActivity.class);
+                intent3.putExtra(EditFieldActivity.MODE, EditFieldActivity.EDIT_NAME);
+                startActivity(intent3);
+                break;
             case R.id.profile_state:
                 Intent intent2 = new Intent(this, EditFieldActivity.class);
                 intent2.putExtra(EditFieldActivity.MODE, EditFieldActivity.EDIT_USER_STATE);
                 startActivity(intent2);
+                break;
+            case R.id.logout:
+                Memo.rememberMe(getApplicationContext(), Memo.NOT_SAVE);
+                setResult(RESULT_OK, null);
+                finish();
                 break;
         }
     }
@@ -293,7 +308,7 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
     private void setImage(Bitmap bitmap){
         profile_image.setImageBitmap(null);
 
-        new UserController().updateUserImage(this, bitmap, new ServiceCallbackInterface() {
+        new UserController().updateUserImage(this, bitmap, new ServiceCallback() {
             @Override
             public void onSuccess(String result) {
 

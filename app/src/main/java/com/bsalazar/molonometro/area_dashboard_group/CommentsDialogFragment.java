@@ -3,7 +3,6 @@ package com.bsalazar.molonometro.area_dashboard_group;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -22,7 +21,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,7 +29,7 @@ import com.bsalazar.molonometro.area_dashboard_group.adapters.RepliesRecyclerAda
 import com.bsalazar.molonometro.entities.Comment;
 import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.controllers.CommentsController;
-import com.bsalazar.molonometro.rest.services.ServiceCallbackInterface;
+import com.bsalazar.molonometro.rest.services.ServiceCallback;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -155,7 +153,7 @@ public class CommentsDialogFragment extends DialogFragment {
                     InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
 
-                    new CommentsController().addReplyToComment(mContext, reply, new ServiceCallbackInterface() {
+                    new CommentsController().addReplyToComment(mContext, reply, new ServiceCallback() {
                         @Override
                         public void onSuccess(String result) {
                             if (result.equals("true")) {
@@ -184,7 +182,7 @@ public class CommentsDialogFragment extends DialogFragment {
 
     private void loadReplies() {
         if (commentID != -1)
-            new CommentsController().getRepliesByComment(mContext, commentID, new ServiceCallbackInterface() {
+            new CommentsController().getRepliesByComment(mContext, commentID, new ServiceCallback() {
                 @Override
                 public void onSuccess(String result) {
                     try {

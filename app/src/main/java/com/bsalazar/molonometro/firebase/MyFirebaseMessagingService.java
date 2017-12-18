@@ -22,7 +22,7 @@ import com.bsalazar.molonometro.rest.controllers.GroupController;
 import com.bsalazar.molonometro.rest.json.GroupJson;
 import com.bsalazar.molonometro.rest.services.Parser;
 import com.bsalazar.molonometro.rest.services.RestController;
-import com.bsalazar.molonometro.rest.services.ServiceCallbackInterface;
+import com.bsalazar.molonometro.rest.services.ServiceCallback;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -65,7 +65,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         int groupID = (int) new JSONObject(remoteMessage.getData().toString()).get("GroupID");
                         GroupJson groupJson = new GroupJson();
                         groupJson.setGroupID(groupID);
-                        new GroupController().getGroupByID(getApplicationContext(), groupJson, new ServiceCallbackInterface() {
+                        new GroupController().getGroupByID(getApplicationContext(), groupJson, new ServiceCallback() {
                             @Override
                             public void onSuccess(String result) {
 
@@ -90,7 +90,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
                         GroupJson groupJson2 = new GroupJson();
                         groupJson2.setGroupID(comment.getGroupID());
-                        new GroupController().getGroupByID(getApplicationContext(), groupJson2, new ServiceCallbackInterface() {
+                        new GroupController().getGroupByID(getApplicationContext(), groupJson2, new ServiceCallback() {
                             @Override
                             public void onSuccess(String result) {
 

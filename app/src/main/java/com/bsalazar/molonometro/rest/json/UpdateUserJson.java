@@ -6,6 +6,8 @@ package com.bsalazar.molonometro.rest.json;
 public class UpdateUserJson {
 
     private int UserID;
+    private String UserName;
+    private String Email;
     private String Name;
     private String State;
     private String Image;
@@ -53,5 +55,21 @@ public class UpdateUserJson {
 
     public void setFirebaseToken(String firebaseToken) {
         FirebaseToken = firebaseToken;
+    }
+
+    public String getUserName() {
+        return UserName;
+    }
+
+    public void setUserName(String userName) {
+        UserName = userName;
+    }
+
+    public String getEmail() {
+        return Email;
+    }
+
+    public void setEmail(String email) {
+        Email = email;
     }
 }

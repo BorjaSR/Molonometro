@@ -5,7 +5,7 @@ import android.util.Log;
 
 import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.controllers.UserController;
-import com.bsalazar.molonometro.rest.services.ServiceCallbackInterface;
+import com.bsalazar.molonometro.rest.services.ServiceCallback;
 import com.google.firebase.iid.FirebaseInstanceId;
 
 /**
@@ -29,7 +29,7 @@ public class SetFirebaseTokenThread extends Thread {
                 Log.d("[FIREBASE TOKEN] ", firebaseToken);
                 if (firebaseToken != null) {
                     if (Variables.User != null) {
-                        new UserController().updateFirebaseToken(mContext, firebaseToken, new ServiceCallbackInterface() {
+                        new UserController().updateFirebaseToken(mContext, firebaseToken, new ServiceCallback() {
                             @Override
                             public void onSuccess(String result) {
                                 Variables.User.setFirebaseToken(firebaseToken);

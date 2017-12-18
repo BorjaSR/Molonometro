@@ -127,7 +127,7 @@ class UserDAO {
     }
 
     // creating new user if not existed
-    public function updateUser($id, $name, $state) {
+    public function updateUser($id, $userName, $name, $state) {
         $response = array();
 
         // First check if user already existed in db
@@ -135,8 +135,8 @@ class UserDAO {
             // update query
         $db = new DbConnect();
         $this->conn = $db->connect();
-            $stmt = $this->conn->prepare("UPDATE users SET Name = ?, State = ?, LastUpdate = now() WHERE UserID = ?");
-            $stmt->bind_param("ssi", $name, $state, $id);
+            $stmt = $this->conn->prepare("UPDATE users SET UserName = ?, Name = ?, State = ?, LastUpdate = now() WHERE UserID = ?");
+            $stmt->bind_param("sssi",$userName, $name, $state, $id);
 
             $result = $stmt->execute();
 
@@ -296,18 +296,42 @@ class UserDAO {
             return NULL;
         }
     }
+
+    public function getUserPassByEmail($email) {
+        $db = new DbConnect();
+        $this->conn = $db->connect();
+        $stmt = $this->conn->prepare("SELECT UserID, Password FROM users WHERE Email = ? and Deleted = 0");
+        $stmt->bind_param("s", $email);
+        
+        if ($stmt->execute()) {
+            $stmt->bind_result($UserID, $Password);
+            $stmt->fetch();
+            $user = array();
+            $user["UserID"] = $UserID;
+            $user["Password"] = $Password;
+            
+            $stmt->close();
+            $db->disconnect();
+            return $user;
+        } else {
+        $db->disconnect();
+            return NULL;
+        }
+    }
     
     public function getUserByIdWithoutImage($id) {
         $db = new DbConnect();
         $this->conn = $db->connect();
-        $stmt = $this->conn->prepare("SELECT UserID, Name, Phone, State FROM users WHERE UserID = ? and Deleted = 0");
+        $stmt = $this->conn->prepare("SELECT UserID, UserName, Email, Name, Phone, State FROM users WHERE UserID = ? and Deleted = 0");
         $stmt->bind_param("i", $id);
         
         if ($stmt->execute()) {
-            $stmt->bind_result($UserID, $Name, $Phone, $State);
+            $stmt->bind_result($UserID, $UserName, $Email, $Name, $Phone, $State);
             $stmt->fetch();
             $user = array();
             $user["UserID"] = $UserID;
+            $user["UserName"] = $UserName;
+            $user["Email"] = $Email;
             $user["Name"] = $Name;
             $user["Phone"] = $Phone;
             $user["State"] = $State;

@@ -1,35 +1,22 @@
 package com.bsalazar.molonometro.area_adjust;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bsalazar.molonometro.R;
-import com.bsalazar.molonometro.general.Tools;
 import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.controllers.GroupController;
 import com.bsalazar.molonometro.rest.controllers.UserController;
 import com.bsalazar.molonometro.rest.json.GroupJson;
-import com.bsalazar.molonometro.rest.services.ServiceCallbackInterface;
-import com.bumptech.glide.Glide;
-
-import java.io.ByteArrayOutputStream;
+import com.bsalazar.molonometro.rest.services.ServiceCallback;
 
 /**
  * Created by bsalazar on 21/02/2017.
@@ -42,6 +29,7 @@ public class EditFieldActivity extends AppCompatActivity {
     public final static int EDIT_USER_NAME = 0;
     public final static int EDIT_USER_STATE = 1;
     public final static int EDIT_GROUP_NAME = 2;
+    public final static int EDIT_NAME = 3;
 
     private String initial_String;
     private EditText edit_text;
@@ -61,6 +49,11 @@ public class EditFieldActivity extends AppCompatActivity {
         switch (SELECTED_MODE){
             case EDIT_USER_NAME:
                 setTitle(getString(R.string.edit_name));
+                edit_text.setText(Variables.User.getUserName());
+                initial_String = Variables.User.getUserName();
+                break;
+            case EDIT_NAME:
+                setTitle(getString(R.string.edit_user_name));
                 edit_text.setText(Variables.User.getName());
                 initial_String = Variables.User.getName();
                 break;
@@ -107,7 +100,21 @@ public class EditFieldActivity extends AppCompatActivity {
                     switch (SELECTED_MODE){
 
                         case EDIT_USER_NAME:
-                            new UserController().updateUserName(this, edit_text.getText().toString(), new ServiceCallbackInterface() {
+                            new UserController().updateUserName(this, edit_text.getText().toString(), new ServiceCallback() {
+                                @Override
+                                public void onSuccess(String result) {
+                                    finish();
+                                }
+
+                                @Override
+                                public void onFailure(String result) {
+                                    Snackbar.make(edit_text, "Error actualizando nombre", Snackbar.LENGTH_SHORT).show();
+                                }
+                            });
+                            break;
+
+                        case EDIT_NAME:
+                            new UserController().updateName(this, edit_text.getText().toString(), new ServiceCallback() {
                                 @Override
                                 public void onSuccess(String result) {
                                     finish();
@@ -121,7 +128,7 @@ public class EditFieldActivity extends AppCompatActivity {
                             break;
 
                         case EDIT_USER_STATE:
-                            new UserController().updateUserState(this, edit_text.getText().toString(), new ServiceCallbackInterface() {
+                            new UserController().updateUserState(this, edit_text.getText().toString(), new ServiceCallback() {
                                 @Override
                                 public void onSuccess(String result) {
                                     finish();
@@ -140,7 +147,7 @@ public class EditFieldActivity extends AppCompatActivity {
                             groupJson.setName(edit_text.getText().toString());
                             groupJson.setFirebaseTopic(Variables.Group.getFirebaseTopic());
 
-                            new GroupController().updateGroup(this, groupJson, new ServiceCallbackInterface() {
+                            new GroupController().updateGroup(this, groupJson, new ServiceCallback() {
                                 @Override
                                 public void onSuccess(String result) {
                                     finish();

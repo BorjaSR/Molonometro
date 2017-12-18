@@ -17,7 +17,7 @@ import retrofit.http.POST;
  * Created by bsalazar and bangulo and Stackoverflow on 22/02/2017.
  */
 
-public abstract class ServiceCallbackInterface {
+public abstract class ServiceCallback {
 
     public abstract void onSuccess(String result);
 

@@ -20,11 +20,6 @@ import com.bsalazar.molonometro.entities.Contact;
 import com.bsalazar.molonometro.general.MyRequestListener;
 import com.bsalazar.molonometro.general.PhotoDetailActivity;
 import com.bsalazar.molonometro.general.Tools;
-import com.bsalazar.molonometro.general.Variables;
-import com.bsalazar.molonometro.rest.controllers.ContactController;
-import com.bsalazar.molonometro.rest.json.ContactJson;
-import com.bsalazar.molonometro.rest.json.GetContactDetailJson;
-import com.bsalazar.molonometro.rest.services.ServiceCallbackInterface;
 import com.bumptech.glide.Glide;
 import com.futuremind.recyclerviewfastscroll.SectionTitleProvider;
 

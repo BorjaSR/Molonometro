@@ -14,58 +14,41 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.transition.TransitionManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bsalazar.molonometro.BuildConfig;
-import com.bsalazar.molonometro.MainActivity;
 import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.area_dashboard_group.adapters.AutoCompleteAdapter;
-import com.bsalazar.molonometro.area_dashboard_group.adapters.RepliesRecyclerAdapter;
 import com.bsalazar.molonometro.entities.Comment;
-import com.bsalazar.molonometro.entities.LastEvent;
 import com.bsalazar.molonometro.entities.Participant;
 import com.bsalazar.molonometro.general.Constants;
 import com.bsalazar.molonometro.general.Tools;
 import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.controllers.CommentsController;
-import com.bsalazar.molonometro.rest.services.ServiceCallbackInterface;
-import com.google.gson.Gson;
-
-import org.json.JSONArray;
+import com.bsalazar.molonometro.rest.services.ServiceCallback;
 
 import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Locale;
 
 /**
  * Created by bsalazar on 10/05/2017.
@@ -197,7 +180,7 @@ public class AddCommentDialogFragment extends DialogFragment  implements View.On
                         final ProgressDialog progress = ProgressDialog.show(getActivity(), "",
                                 "Enviando...", true);
 
-                        new CommentsController().addCommentToGroup(mContext, comment, new ServiceCallbackInterface() {
+                        new CommentsController().addCommentToGroup(mContext, comment, new ServiceCallback() {
                             @Override
                             public void onSuccess(String result) {
                                 progress.dismiss();

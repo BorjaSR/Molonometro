@@ -12,7 +12,7 @@ import com.bsalazar.molonometro.rest.json.CreateGroupJson;
 import com.bsalazar.molonometro.rest.json.GroupJson;
 import com.bsalazar.molonometro.rest.json.UserIdJson;
 import com.bsalazar.molonometro.rest.services.Parser;
-import com.bsalazar.molonometro.rest.services.ServiceCallbackInterface;
+import com.bsalazar.molonometro.rest.services.ServiceCallback;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ import retrofit.client.Response;
 public class GroupController {
 
 
-    public void createGroup(final Context mContext, CreateGroupJson createGroupJson, final ServiceCallbackInterface callback) {
+    public void createGroup(final Context mContext, CreateGroupJson createGroupJson, final ServiceCallback callback) {
 
         Constants.restController.getService().createGroup(createGroupJson
                 , new Callback<GroupJson>() {
@@ -50,7 +50,7 @@ public class GroupController {
                 });
     }
 
-    public void updateGroup(final Context mContext, GroupJson updateGroupJson, final ServiceCallbackInterface callback) {
+    public void updateGroup(final Context mContext, GroupJson updateGroupJson, final ServiceCallback callback) {
 
         Constants.restController.getService().updateGroup(updateGroupJson
                 , new Callback<GroupJson>() {
@@ -67,7 +67,7 @@ public class GroupController {
                 });
     }
 
-    public void updateGroupImage(final Context mContext, GroupJson updateGroupJson, final ServiceCallbackInterface callback) {
+    public void updateGroupImage(final Context mContext, GroupJson updateGroupJson, final ServiceCallback callback) {
 
 
         Constants.restController.getService().updateGroupImage(updateGroupJson
@@ -87,7 +87,7 @@ public class GroupController {
                 });
     }
 
-    public void getGroupsByUser(final Context mContext, UserIdJson userIdJson, final ServiceCallbackInterface callback) {
+    public void getGroupsByUser(final Context mContext, UserIdJson userIdJson, final ServiceCallback callback) {
 
         Constants.restController.getService().getGroupsByUser(userIdJson
                 , new Callback<List<GroupJson>>() {
@@ -110,7 +110,7 @@ public class GroupController {
                 });
     }
 
-    public void getGroupByID(final Context mContext, GroupJson groupId, final ServiceCallbackInterface callback) {
+    public void getGroupByID(final Context mContext, GroupJson groupId, final ServiceCallback callback) {
 
         Constants.restController.getService().getGroupByID(groupId
                 , new Callback<GroupJson>() {
@@ -129,7 +129,7 @@ public class GroupController {
                 });
     }
 
-    public void getGroupParticipantsByID(final Context mContext, int groupId, final ServiceCallbackInterface callback) {
+    public void getGroupParticipantsByID(final Context mContext, int groupId, final ServiceCallback callback) {
 
         GroupJson groupJson = new GroupJson();
         groupJson.setGroupID(groupId);
@@ -152,7 +152,7 @@ public class GroupController {
                 });
     }
 
-    public void addUserToGroup(final Context mContext, final AddUserToGroupJson addUserToGroupJson, final ServiceCallbackInterface callback) {
+    public void addUserToGroup(final Context mContext, final AddUserToGroupJson addUserToGroupJson, final ServiceCallback callback) {
 
         Constants.restController.getService().addUserToGroup(addUserToGroupJson
                 , new Callback<Boolean>() {
@@ -174,7 +174,7 @@ public class GroupController {
                 });
     }
 
-    public void removeUserFromGroup(final AddUserToGroupJson addUserToGroupJson, final ServiceCallbackInterface callback) {
+    public void removeUserFromGroup(final AddUserToGroupJson addUserToGroupJson, final ServiceCallback callback) {
 
         Constants.restController.getService().removeUserFromGroup(addUserToGroupJson
                 , new Callback<Boolean>() {
@@ -195,7 +195,7 @@ public class GroupController {
                     }
                 });
     }
-    public void makeAdmin(final AddUserToGroupJson addUserToGroupJson, final ServiceCallbackInterface callback) {
+    public void makeAdmin(final AddUserToGroupJson addUserToGroupJson, final ServiceCallback callback) {
 
         Constants.restController.getService().makeUserAdmin(addUserToGroupJson
                 , new Callback<Boolean>() {

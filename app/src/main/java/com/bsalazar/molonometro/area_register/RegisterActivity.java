@@ -5,27 +5,30 @@ import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bsalazar.molonometro.MainActivity;
 import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.entities.User;
+import com.bsalazar.molonometro.firebase.SetFirebaseTokenThread;
 import com.bsalazar.molonometro.general.Constants;
 import com.bsalazar.molonometro.general.Memo;
 import com.bsalazar.molonometro.general.Tools;
 import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.controllers.UserController;
 import com.bsalazar.molonometro.rest.json.CreateUserJson;
+import com.bsalazar.molonometro.rest.json.UserJson;
 import com.bsalazar.molonometro.rest.services.RestController;
+import com.bsalazar.molonometro.rest.services.ServiceCallback;
 import com.google.gson.Gson;
 
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
 
     private EditText phone_for_register, user_name_for_register;
+    private TextView register_here;
     private static final String TAG = "RegisterActivity";
 
     @Override
@@ -36,6 +39,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
         Constants.restController = new RestController();
 
+        register_here = (TextView) findViewById(R.id.register_here);
         phone_for_register = (EditText) findViewById(R.id.phone_for_register);
         user_name_for_register = (EditText) findViewById(R.id.user_name_for_register);
         TextView continue_button = (TextView) findViewById(R.id.continue_button);
@@ -44,6 +48,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
         next.setOnClickListener(this);
         continue_button.setOnClickListener(this);
+        register_here.setOnClickListener(this);
 
         // Load User ID:1
 //        User user = new User();
@@ -57,11 +62,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 //        Memo.rememberMe(this, userStringJson);
 
         String rememberedUser = Memo.doYouRemember(this);
-        if(rememberedUser != null){
+        if (rememberedUser != null && !rememberedUser.equals(Memo.NOT_SAVE)) {
             Gson gson = new Gson();
             Variables.User = gson.fromJson(rememberedUser, User.class);
 
-            if(Variables.User.getImageBase64() != null)
+            if (Variables.User.getImageBase64() != null)
                 Variables.User.setImage(Tools.decodeBase64(Variables.User.getImageBase64()));
 
             startActivity(new Intent(this, MainActivity.class));
@@ -81,11 +86,56 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 //
 //                new UserController().createUser(this, createUserJson);
                 break;
-            case R.id.continue_button:
+
+            case R.id.register_here:
                 createUserJson.setPassword(user_name_for_register.getText().toString());
                 createUserJson.setEmail(phone_for_register.getText().toString());
 
-                new UserController().createUser(this, createUserJson);
+                new UserController().createUser(createUserJson, new ServiceCallback() {
+                    @Override
+                    public void onSuccess(String result) {
+                        Gson gson = new Gson();
+                        String userStringJson = gson.toJson(Variables.User);
+                        Memo.rememberMe(getApplicationContext(), userStringJson);
+
+                        new SetFirebaseTokenThread(getApplicationContext()).start();
+
+                        startActivity(new Intent(getApplicationContext(), SetFirstProfileDataActivity.class));
+                        finish();
+                    }
+
+                    @Override
+                    public void onFailure(String result) {
+                        Toast.makeText(getApplicationContext(), "KO creando al usuario", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                break;
+
+            case R.id.continue_button:
+                UserJson userJson = new UserJson();
+                userJson.setEmail(phone_for_register.getText().toString());
+                userJson.setPassword(user_name_for_register.getText().toString());
+
+
+                new UserController().login(userJson, new ServiceCallback() {
+                    @Override
+                    public void onSuccess(String result) {
+                        Variables.User.setUserID(Integer.valueOf(result));
+                        new UserController().getUser(new ServiceCallback() {
+                            @Override
+                            public void onSuccess(String result) {
+                                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                                finish();
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onFailure(String result) {
+                        Toast.makeText(getApplicationContext(), "Usuario o contraseña incorrectos", Toast.LENGTH_SHORT).show();
+                    }
+                });
                 break;
         }
     }

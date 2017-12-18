@@ -9,6 +9,8 @@ import java.util.ArrayList;
 public class Contact {
 
     private int UserID;
+    private String UserName;
+    private String Email;
     private String Name;
     private String Phone;
     private String State;
@@ -18,6 +20,22 @@ public class Contact {
     private ArrayList<Integer> commonGroups;
 
     public Contact() {
+    }
+
+    public String getUserName() {
+        return UserName;
+    }
+
+    public void setUserName(String userName) {
+        UserName = userName;
+    }
+
+    public String getEmail() {
+        return Email;
+    }
+
+    public void setEmail(String email) {
+        Email = email;
     }
 
     public int getUserID() {

@@ -7,7 +7,7 @@
     <string name="register_activity">Inicio</string>
     <string name="invite">Invitar</string>
     <string name="adjust_activity">Ajustes</string>
-    <string name="state_and_phone">Estado y teléfono</string>
+    <string name="name_and_state">Nombre y estado</string>
     <string name="refresh">Actualizar</string>
     <string name="edit_field">Editar</string>
     <string name="no_groups">Todavia no estas en ningún grupo</string>
@@ -56,4 +56,10 @@
     <string name="common_groups">Grupos en común</string>
     <string name="image">Imagen</string>
     <string name="no_common_groups">No hay grupos en común.</string>
+    <string name="arroba">\@</string>
+    <string name="user_name">\@%1$s</string>
+    <string name="edit_user_name">Editar nombre de usuario</string>
+    <string name="friend_request">Solicitudes</string>
+    <string name="register"><u>Registrate aquí</u></string>
+    <string name="add_friends_activity">Solicitudes</string>
 </resources>

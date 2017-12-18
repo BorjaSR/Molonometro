@@ -28,7 +28,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingLeft="@dimen/general_padding_15"
-            android:text="@string/state_and_phone"
+            android:text="@string/name_and_state"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="17sp" />
 
@@ -42,7 +42,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/contact_state"
+                android:id="@+id/contact_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="?android:selectableItemBackground"
@@ -58,9 +58,10 @@
                 android:background="@color/light_gray" />
 
             <TextView
-                android:id="@+id/contact_phone"
+                android:id="@+id/contact_state"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="?android:selectableItemBackground"
                 android:padding="@dimen/general_padding_15"
                 android:textColor="@color/charcoal_gray"
                 android:textSize="15sp" />

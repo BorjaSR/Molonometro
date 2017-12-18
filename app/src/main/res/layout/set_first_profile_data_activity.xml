@@ -34,8 +34,8 @@
         android:layout_height="match_parent"
         android:layout_marginTop="?attr/actionBarSize"
         android:orientation="vertical"
-        android:weightSum="1"
-        android:padding="10dp">
+        android:padding="10dp"
+        android:weightSum="1">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -47,61 +47,89 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <ImageView
-                android:layout_width="@dimen/imageSize_profile"
-                android:layout_height="@dimen/imageSize_profile"
-                android:layout_centerInParent="true"
-                android:src="@drawable/charcoal_gray_circle" />
-
             <!--<ImageView-->
-                <!--android:id="@+id/profileImage"-->
                 <!--android:layout_width="@dimen/imageSize_profile"-->
                 <!--android:layout_height="@dimen/imageSize_profile"-->
-                <!--android:src="@drawable/user_icon"-->
-                <!--android:layout_centerInParent="true"/>-->
+                <!--android:layout_centerInParent="true"-->
+                <!--android:src="@drawable/charcoal_gray_circle" />-->
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/profileImage"
                 android:layout_width="@dimen/imageSize_profile"
                 android:layout_height="@dimen/imageSize_profile"
+                android:layout_centerInParent="true"
                 android:layout_margin="@dimen/margin_image_profile"
                 app:civ_border_color="@color/charcoal_gray"
-                app:civ_border_width="2dp"
-                android:layout_centerInParent="true"/>
+                app:civ_border_width="2dp" />
 
         </RelativeLayout>
 
-
-        <TextView
-            android:id="@+id/user_name"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="User Name"
-            android:textSize="25sp"
-            android:textColor="@color/charcoal_gray"
-            android:padding="10dp"/>
+            android:orientation="horizontal"
+            android:gravity="center">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="@string/arroba"
+                android:textColor="@color/dark_gray"
+                android:textSize="25sp" />
+
+
+            <EditText
+                android:id="@+id/user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:hint="Nombre de usuario"
+                android:textSize="20sp"
+                android:singleLine="true"
+                android:textColor="@color/charcoal_gray" />
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="0.1"
+            android:layout_weight="0.2"
             android:orientation="vertical" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="¿Quieres escribir tu estado?"
-            android:textColor="@color/dark_gray"
-            android:padding="10dp"/>
 
-        <EditText
-            android:id="@+id/user_state"
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/charcoal_gray"
-            android:singleLine="true"
-            android:padding="10dp"/>
+            android:layout_marginBottom="15dp">
+
+            <EditText
+                android:id="@+id/user_name_real"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Nombre"
+                android:textColorHint="@color/dark_gray"
+                android:inputType="textPersonName"
+                android:typeface="sans" />
+        </android.support.design.widget.TextInputLayout>
+
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="25dp">
+
+            <EditText
+                android:id="@+id/user_state"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Estado"
+                android:inputType="text"
+                android:textColorHint="@color/dark_gray"
+                android:typeface="sans"/>
+        </android.support.design.widget.TextInputLayout>
+
     </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>

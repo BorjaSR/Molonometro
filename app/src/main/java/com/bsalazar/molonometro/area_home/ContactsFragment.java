@@ -65,10 +65,11 @@ public class ContactsFragment extends Fragment {
             adapterRecycler.notifyDataSetChanged();
 
 
-        if (Variables.contacts.size() > 0)
-            empty_list.setVisibility(View.GONE);
-        else
-            empty_list.setVisibility(View.VISIBLE);
+        if (empty_list != null)
+            if (Variables.contacts.size() > 0)
+                empty_list.setVisibility(View.GONE);
+            else
+                empty_list.setVisibility(View.VISIBLE);
     }
 
 

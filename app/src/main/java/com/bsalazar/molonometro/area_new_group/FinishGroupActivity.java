@@ -40,7 +40,7 @@ import com.bsalazar.molonometro.general.Tools;
 import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.controllers.GroupController;
 import com.bsalazar.molonometro.rest.json.GroupJson;
-import com.bsalazar.molonometro.rest.services.ServiceCallbackInterface;
+import com.bsalazar.molonometro.rest.services.ServiceCallback;
 import com.bumptech.glide.Glide;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.gson.Gson;
@@ -155,7 +155,7 @@ public class FinishGroupActivity extends AppCompatActivity implements View.OnCli
                     Variables.createGroupJson.setGroupName(group_name.getText().toString());
                     Variables.createGroupJson.setGroupImage(null);
 
-                    new GroupController().createGroup(this, Variables.createGroupJson, new ServiceCallbackInterface() {
+                    new GroupController().createGroup(this, Variables.createGroupJson, new ServiceCallback() {
                         @Override
                         public void onSuccess(String result) {
 
@@ -165,7 +165,7 @@ public class FinishGroupActivity extends AppCompatActivity implements View.OnCli
 
                             if (group_image_bitmap != null) {
                                 groupJson.setImage(Tools.encodeBitmapToBase64(group_image_bitmap));
-                                new GroupController().updateGroupImage(getApplicationContext(), groupJson, new ServiceCallbackInterface() {
+                                new GroupController().updateGroupImage(getApplicationContext(), groupJson, new ServiceCallback() {
                                     @Override
                                     public void onSuccess(String result) {
                                         Intent main = new Intent(getApplicationContext(), MainActivity.class);

@@ -38,7 +38,7 @@ $app->post('/user/createUserNew', function() use ($app) {
     $pass = (string)$input->Password;
 
     // $encryptPass = crypt($pass, SALT);
-    $encryptPass = md5($pass.SALT);
+    $encryptPass = crypt($pass, SALT);
     
     $userDAO = new UserDAO();
     $DBresponse = $userDAO->createUserNew($email, $encryptPass);
@@ -51,6 +51,29 @@ $app->post('/user/createUserNew', function() use ($app) {
 
 });
 
+// User creation
+$app->post('/user/login', function() use ($app) {
+    // check for required params
+    //verifyRequiredParams(array('Name', 'Phone', 'State', 'Image'));
+
+    $body = $app->request()->getBody(); 
+    $input = json_decode($body);
+
+    // reading post params
+    $email = (string)$input->Email;
+    $pass = (string)$input->Password;
+
+    // $encryptPass = crypt($pass, SALT);
+    $encryptPass = crypt($pass, SALT);
+    
+    $userDAO = new UserDAO();
+    $DBresponse = $userDAO->getUserPassByEmail($email);
+
+    if($DBresponse["Password"] == $encryptPass)
+        echoResponse(200, $DBresponse["UserID"]);
+    else
+        echoResponse(455, -1);
+});
 
 // User update image
 $app->post('/user/updateUserImage', function() use ($app) {
@@ -86,10 +109,11 @@ $app->post('/user/updateUser', function() use ($app) {
     // reading post params
     $UserID = (string)$input->UserID;
     $Name = (string)$input->Name;
+    $UserName = (string)$input->UserName;
     $State = (string)$input->State;
 	
     $userDAO = new UserDAO();
-    $DBresponse = $userDAO->updateUser($UserID, $Name, $State);
+    $DBresponse = $userDAO->updateUser($UserID, $UserName, $Name, $State);
 
     $response = $DBresponse;
     if($DBresponse["status"] == 200)

@@ -15,7 +15,7 @@ public class Variables {
 
     public static String search_for_contacts_for_group = "";
     public static String search_for_add_participant_to_group = "";
-    public static User User;
+    public static User User = new User();
     public static String FirebaseToken = null;
 
     public static ArrayList<Contact> contacts = new ArrayList<>();

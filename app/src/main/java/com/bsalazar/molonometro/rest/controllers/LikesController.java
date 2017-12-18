@@ -3,16 +3,11 @@ package com.bsalazar.molonometro.rest.controllers;
 import android.content.Context;
 import android.widget.Toast;
 
-import com.bsalazar.molonometro.entities.Comment;
 import com.bsalazar.molonometro.general.Constants;
 import com.bsalazar.molonometro.general.Variables;
-import com.bsalazar.molonometro.rest.json.GroupJson;
 import com.bsalazar.molonometro.rest.json.LikeJson;
-import com.bsalazar.molonometro.rest.services.Parser;
-import com.bsalazar.molonometro.rest.services.ServiceCallbackInterface;
+import com.bsalazar.molonometro.rest.services.ServiceCallback;
 import com.google.gson.Gson;
-
-import java.util.ArrayList;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -24,7 +19,7 @@ import retrofit.client.Response;
 
 public class LikesController {
 
-    public void addLikeToComment(final Context mContext, int commentID, final ServiceCallbackInterface callback) {
+    public void addLikeToComment(final Context mContext, int commentID, final ServiceCallback callback) {
 
         LikeJson likeJson = new LikeJson();
         likeJson.setCommentID(commentID);

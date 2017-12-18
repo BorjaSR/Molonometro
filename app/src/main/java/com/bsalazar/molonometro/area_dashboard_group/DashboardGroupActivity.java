@@ -37,7 +37,7 @@ import com.bsalazar.molonometro.general.Constants;
 import com.bsalazar.molonometro.general.Tools;
 import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.controllers.CommentsController;
-import com.bsalazar.molonometro.rest.services.ServiceCallbackInterface;
+import com.bsalazar.molonometro.rest.services.ServiceCallback;
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 
@@ -115,7 +115,7 @@ public class DashboardGroupActivity extends AppCompatActivity {
         });
 
         loading_comments.setVisibility(View.VISIBLE);
-        new CommentsController().getCommentsByGroup(this, Variables.Group.getId(), new ServiceCallbackInterface() {
+        new CommentsController().getCommentsByGroup(this, Variables.Group.getId(), new ServiceCallback() {
             @Override
             public void onSuccess(String result) {
                 loading_comments.setVisibility(View.GONE);

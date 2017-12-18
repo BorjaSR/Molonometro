@@ -96,6 +96,12 @@
         </activity>
 
         <activity
+            android:name=".area_adjust.AddFriendsActivity"
+            android:label="@string/add_friends_activity"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".MainActivity" />
+
+        <activity
             android:name=".area_adjust.EditFieldActivity"
             android:label="@string/edit_field"
             android:screenOrientation="portrait"

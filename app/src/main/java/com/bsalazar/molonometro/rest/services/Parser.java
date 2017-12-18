@@ -28,6 +28,8 @@ public class Parser {
         User user = new User();
 
         user.setUserID(userJson.getUserID());
+        user.setUserName(userJson.getUserName());
+        user.setEmail(userJson.getEmail());
         user.setName(userJson.getName());
         user.setPhone(userJson.getPhone());
         user.setState(userJson.getState());

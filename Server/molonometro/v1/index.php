@@ -93,9 +93,9 @@ $app->post('/dummyService', function() use ($app) {
     //dirección del remitente 
     $headers .= "From: Monolometro\r\n";
     //Enviamos el mensaje a tu_dirección_email 
-    $bool = mail("borja.salazar.90@gmail.com", $titulo, $mail, $headers);
+    // $bool = mail("borja.salazar.90@gmail.com", $titulo, $mail, $headers);
 
-	echo $hashMD5." ".$bool;
+	echo $hashMD5." ".uniqid();
 });
 
 // User login

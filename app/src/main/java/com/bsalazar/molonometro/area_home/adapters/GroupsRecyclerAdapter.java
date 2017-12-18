@@ -22,7 +22,7 @@ import com.bsalazar.molonometro.general.MyRequestListener;
 import com.bsalazar.molonometro.general.Tools;
 import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.controllers.GroupController;
-import com.bsalazar.molonometro.rest.services.ServiceCallbackInterface;
+import com.bsalazar.molonometro.rest.services.ServiceCallback;
 import com.bumptech.glide.Glide;
 
 import java.text.SimpleDateFormat;
@@ -141,7 +141,7 @@ public class GroupsRecyclerAdapter extends RecyclerView.Adapter<GroupsRecyclerAd
                     @Override
                     public void onClick(View view) {
                         Variables.Group = group;
-                        new GroupController().getGroupParticipantsByID(mContext, group.getId(), new ServiceCallbackInterface() {
+                        new GroupController().getGroupParticipantsByID(mContext, group.getId(), new ServiceCallback() {
                             @Override
                             public void onSuccess(String result) {
                                 mContext.startActivity(new Intent(mContext, DashboardGroupActivity.class));

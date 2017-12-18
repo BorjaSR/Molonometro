@@ -29,6 +29,11 @@ import retrofit.http.POST;
 public interface RestService {
 
     // USER //
+    @POST("/user/login")
+    void login(
+            @Body UserJson userJson,
+            Callback<Integer> callback);
+
     @POST("/user/createUserNew")
     void createUser(
             @Body CreateUserJson createUserJson,

@@ -13,6 +13,7 @@ import java.io.FileOutputStream;
 public class Memo {
 
     private static final String FILENAME_DEFAULT = "memo";
+    public static final String NOT_SAVE = "NOT_SAVE";
 
     private static String getKey(Context context) {
         String a = "";

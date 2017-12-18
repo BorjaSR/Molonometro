@@ -9,7 +9,7 @@ import com.bsalazar.molonometro.rest.json.ContactJson;
 import com.bsalazar.molonometro.rest.json.ContactsListJson;
 import com.bsalazar.molonometro.rest.json.GetContactDetailJson;
 import com.bsalazar.molonometro.rest.services.Parser;
-import com.bsalazar.molonometro.rest.services.ServiceCallbackInterface;
+import com.bsalazar.molonometro.rest.services.ServiceCallback;
 import com.google.gson.Gson;
 
 import java.util.List;
@@ -24,7 +24,7 @@ import retrofit.client.Response;
 
 public class ContactController {
 
-    public void checkContacts(final Context mContext, ContactsListJson contactsListJson, final ServiceCallbackInterface callback) {
+    public void checkContacts(final Context mContext, ContactsListJson contactsListJson, final ServiceCallback callback) {
 
         Constants.restController.getService().checkContacts(contactsListJson
                 , new Callback<List<ContactJson>>() {
@@ -53,7 +53,7 @@ public class ContactController {
                 });
     }
 
-    public void getContactByID(final Context mContext, GetContactDetailJson contactsJson, final ServiceCallbackInterface callback) {
+    public void getContactByID(final Context mContext, GetContactDetailJson contactsJson, final ServiceCallback callback) {
 
         Constants.restController.getService().getContactByID(contactsJson
                 , new Callback<ContactJson>() {

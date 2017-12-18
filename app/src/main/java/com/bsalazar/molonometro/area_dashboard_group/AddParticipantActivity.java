@@ -2,7 +2,6 @@ package com.bsalazar.molonometro.area_dashboard_group;
 
 import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
@@ -21,7 +20,7 @@ import com.bsalazar.molonometro.entities.Participant;
 import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.controllers.GroupController;
 import com.bsalazar.molonometro.rest.json.AddUserToGroupJson;
-import com.bsalazar.molonometro.rest.services.ServiceCallbackInterface;
+import com.bsalazar.molonometro.rest.services.ServiceCallback;
 
 import java.util.ArrayList;
 
@@ -118,7 +117,7 @@ public class AddParticipantActivity extends AppCompatActivity implements View.On
                         addUserToGroupJson.setGroupID(Variables.Group.getId());
                         addUserToGroupJson.setContactID(contact.getUserID());
 
-                        new GroupController().addUserToGroup(getApplicationContext(), addUserToGroupJson, new ServiceCallbackInterface() {
+                        new GroupController().addUserToGroup(getApplicationContext(), addUserToGroupJson, new ServiceCallback() {
                             @Override
                             public void onSuccess(String result) {
                                 Participant participant = new Participant();

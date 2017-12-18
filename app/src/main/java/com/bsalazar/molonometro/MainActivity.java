@@ -10,7 +10,6 @@ import android.graphics.Point;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.transition.TransitionManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -34,7 +33,7 @@ import com.bsalazar.molonometro.area_adjust.AccountActivity;
 import com.bsalazar.molonometro.area_home.ContactsFragment;
 import com.bsalazar.molonometro.area_home.GroupsFragment;
 import com.bsalazar.molonometro.area_new_group.NewGroupActivity;
-import com.bsalazar.molonometro.R;
+import com.bsalazar.molonometro.area_register.RegisterActivity;
 import com.bsalazar.molonometro.entities.PhoneContact;
 import com.bsalazar.molonometro.entities.User;
 import com.bsalazar.molonometro.general.Constants;
@@ -46,10 +45,8 @@ import com.bsalazar.molonometro.rest.controllers.GroupController;
 import com.bsalazar.molonometro.rest.controllers.UserController;
 import com.bsalazar.molonometro.rest.json.ContactsListJson;
 import com.bsalazar.molonometro.rest.json.PushTestJson;
-import com.bsalazar.molonometro.rest.json.UpdateUserJson;
 import com.bsalazar.molonometro.rest.json.UserIdJson;
-import com.bsalazar.molonometro.rest.json.UserJson;
-import com.bsalazar.molonometro.rest.services.ServiceCallbackInterface;
+import com.bsalazar.molonometro.rest.services.ServiceCallback;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 
@@ -184,7 +181,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         switch (id) {
             case R.id.action_settings:
-                startActivity(new Intent(this, AccountActivity.class));
+                startActivityForResult(new Intent(this, AccountActivity.class), REQUEST_EXIT);
                 return true;
             case R.id.action_refresh:
                 if (main_view_pager.getCurrentItem() == 0)
@@ -211,8 +208,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return super.onOptionsItemSelected(item);
     }
 
+    private int REQUEST_EXIT = 0;
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_EXIT) {
+            if (resultCode == RESULT_OK) {
+                startActivity(new Intent(this, RegisterActivity.class));
+                this.finish();
+            }
+        }
+    }
+
     public void refreshGroups(final boolean firstTime) {
-        new GroupController().getGroupsByUser(this, new UserIdJson(Variables.User.getUserID()), new ServiceCallbackInterface() {
+        new GroupController().getGroupsByUser(this, new UserIdJson(Variables.User.getUserID()), new ServiceCallback() {
             @Override
             public void onSuccess(String result) {
                 adapter.updateGroups();
@@ -234,26 +242,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int id = v.getId();
         switch (id) {
             case R.id.fab:
-
-//                PushTestJson pushTestJson = new PushTestJson();
-//                pushTestJson.setToken(Variables.User.getFirebaseToken());
-//                pushTestJson.setType(0);
-//
-//                Constants.restController.getService().sendPushTest(pushTestJson
-//                        , new Callback<Boolean>() {
-//                            @Override
-//                            public void success(Boolean result, Response response) {
-//                                    Snackbar.make(v, result.toString(), Snackbar.LENGTH_SHORT).show();
-//                            }
-//
-//                            @Override
-//                            public void failure(RetrofitError error) {
-//                                Snackbar.make(v, error.toString(), Snackbar.LENGTH_SHORT).show();
-//
-//                            }
-//                        });
-
-
                 Variables.createGroupJson = null;
                 startActivity(new Intent(this, NewGroupActivity.class));
                 break;
@@ -311,7 +299,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         ContactsListJson contactsListJson = new ContactsListJson();
         contactsListJson.setPhoneContacts(phoneContacts);
-        new ContactController().checkContacts(this, contactsListJson, new ServiceCallbackInterface() {
+        new ContactController().checkContacts(this, contactsListJson, new ServiceCallback() {
             @Override
             public void onSuccess(String result) {
                 adapter.updateContacts();
