@@ -3,17 +3,22 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost:8889
--- Tiempo de generación: 18-12-2017 a las 15:52:40
+-- Tiempo de generación: 19-12-2017 a las 18:15:23
 -- Versión del servidor: 5.6.35
 -- Versión de PHP: 7.1.8
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
 --
 -- Base de datos: `db_molonometro`
 --
-
 DELIMITER $$
 --
 -- Procedimientos
@@ -66,6 +71,7 @@ END$$
 
 DELIMITER ;
 
+
 -- --------------------------------------------------------
 
 --
@@ -95,9 +101,12 @@ CREATE TABLE `comments` (
 CREATE TABLE `friendships` (
   `UserID` int(11) NOT NULL,
   `FriendID` int(11) NOT NULL,
-  `Activated` tinyint(1) NOT NULL,
-  `Blocked` tinyint(1) NOT NULL,
-  `Rejected` tinyint(1) NOT NULL
+  `Activated` tinyint(1) NOT NULL DEFAULT '0',
+  `Blocked` tinyint(1) NOT NULL DEFAULT '0',
+  `Rejected` tinyint(1) NOT NULL DEFAULT '0',
+  `Created` datetime NOT NULL,
+  `LastUpdate` datetime NOT NULL,
+  `Deleted` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 -- --------------------------------------------------------
@@ -156,10 +165,10 @@ CREATE TABLE `users` (
   `UserID` int(11) NOT NULL,
   `Email` varchar(100) COLLATE utf8_spanish_ci NOT NULL,
   `Password` varchar(250) COLLATE utf8_spanish_ci NOT NULL,
-  `UserName` varchar(50) COLLATE utf8_spanish_ci DEFAULT NULL,
-  `Name` varchar(75) COLLATE utf8_spanish_ci DEFAULT NULL,
+  `UserName` varchar(50) COLLATE utf8_spanish_ci DEFAULT '',
+  `Name` varchar(75) COLLATE utf8_spanish_ci DEFAULT '',
   `Phone` varchar(25) COLLATE utf8_spanish_ci DEFAULT NULL,
-  `State` varchar(200) COLLATE utf8_spanish_ci DEFAULT NULL,
+  `State` varchar(200) COLLATE utf8_spanish_ci DEFAULT '',
   `Image` blob,
   `FirebaseToken` varchar(250) COLLATE utf8_spanish_ci DEFAULT NULL,
   `Activated` tinyint(1) NOT NULL DEFAULT '0',
@@ -177,6 +186,12 @@ CREATE TABLE `users` (
 --
 ALTER TABLE `comments`
   ADD PRIMARY KEY (`CommentID`);
+
+--
+-- Indices de la tabla `friendships`
+--
+ALTER TABLE `friendships`
+  ADD UNIQUE KEY `Clave` (`UserID`,`FriendID`);
 
 --
 -- Indices de la tabla `groups`
@@ -222,10 +237,14 @@ ALTER TABLE `groups`
 --
 ALTER TABLE `users`
   MODIFY `UserID` int(11) NOT NULL AUTO_INCREMENT;
-DELIMITER $$
+  DELIMITER $$
 --
 -- Eventos
 --
 CREATE DEFINER=`root`@`localhost` EVENT `daily_coolpoints_recalculation` ON SCHEDULE EVERY 1 DAY STARTS '2017-03-22 13:00:00' ON COMPLETION PRESERVE ENABLE DO CALL `coolpoints_recalculation`()$$
 
 DELIMITER ;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

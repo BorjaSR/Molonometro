@@ -14,9 +14,22 @@ public class UserJson {
     private String State;
     private String Image;
     private int Molopuntos;
+    private int requests;
     private boolean isInApp;
 
     public UserJson() {
+    }
+
+    public UserJson(int userID) {
+        UserID = userID;
+    }
+
+    public int getRequests() {
+        return requests;
+    }
+
+    public void setRequests(int requests) {
+        this.requests = requests;
     }
 
     public String getPassword() {

@@ -3,6 +3,7 @@ package com.bsalazar.molonometro.area_adjust;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Service;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -17,6 +18,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.util.Log;
@@ -25,6 +27,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bsalazar.molonometro.BuildConfig;
 import com.bsalazar.molonometro.R;
@@ -34,6 +37,7 @@ import com.bsalazar.molonometro.general.MyRequestListener;
 import com.bsalazar.molonometro.general.Tools;
 import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.controllers.UserController;
+import com.bsalazar.molonometro.rest.json.UserJson;
 import com.bsalazar.molonometro.rest.services.ServiceCallback;
 import com.bumptech.glide.Glide;
 
@@ -49,6 +53,7 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
     private final int CAMERA_INPUT = 2;
 
     private ImageView profile_image;
+    private TextView notifText;
     private TextView profile_user_name;
     private TextView profile_state;
     private TextView profile_name;
@@ -78,6 +83,29 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
         profile_state.setOnClickListener(this);
         logout.setOnClickListener(this);
 
+        new UserController().getUser(new ServiceCallback() {
+            @Override
+            public void onSuccess(String result) {
+                fillFields();
+                loadImage();
+            }
+        });
+    }
+
+    private void fillFields() {
+
+        profile_user_name.setText(String.format(getString(R.string.user_name), Variables.User.getUserName()));
+        profile_state.setText(Variables.User.getState());
+        profile_name.setText(Tools.formatPhone(Variables.User.getName()));
+        user_molopuntos.setText(Variables.User.getMolopuntos() + " Molopuntos");
+
+        if(Variables.User.getNumRequest() > 0){
+            notifText.setVisibility(View.VISIBLE);
+            notifText.setText(String.valueOf(Variables.User.getNumRequest()));
+        }
+    }
+
+    private void loadImage(){
         try {
             byte[] imageByteArray = Base64.decode(Variables.User.getImageBase64(), Base64.DEFAULT);
 
@@ -91,33 +119,34 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
         } catch (Exception e) {
             profile_image.setImageDrawable(getResources().getDrawable(R.drawable.user_icon));
         }
-
-        new UserController().getUser(new ServiceCallback() {
-            @Override
-            public void onSuccess(String result) {
-                fillFields();
-            }
-        });
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        fillFields();
-    }
-
-    private void fillFields() {
-
-        profile_user_name.setText(String.format(getString(R.string.user_name), Variables.User.getUserName()));
-        profile_state.setText(Variables.User.getState());
-        profile_name.setText(Tools.formatPhone(Variables.User.getName()));
-        user_molopuntos.setText(Variables.User.getMolopuntos() + " Molopuntos");
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_account, menu);
+
+        MenuItem item = menu.findItem(R.id.action_friend_request);
+        MenuItemCompat.setActionView(item, R.layout.notification_bubble);
+
+        View notif = item.getActionView();
+        if(notif != null){
+            notifText = (TextView) notif.findViewById(R.id.number_notification);
+            notifText.setVisibility(View.GONE);
+
+            notif.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    new UserController().getRequest(new UserJson(Variables.User.getUserID()), new ServiceCallback() {
+                        @Override
+                        public void onSuccess(String result) {
+                            startActivity(new Intent(getApplication(), AddFriendsActivity.class));
+                        }
+                    });
+                }
+            });
+        }
+
         return true;
     }
 

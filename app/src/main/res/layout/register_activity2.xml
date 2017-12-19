@@ -64,7 +64,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Email"
+                android:text="@string/email"
                 android:textColor="@color/white_"
                 android:textSize="18sp"
                 android:id="@+id/textView2" />
@@ -85,7 +85,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Contraseña"
+                android:text="@string/password"
                 android:maxLength="75"
                 android:textColor="@color/white_"
                 android:textSize="18sp" />

@@ -162,7 +162,84 @@ $app->post('/user/getUser', function() use ($app) {
     $contactDAO = new ContactDAO();
     $contact = $contactDAO->getContactByID($userID);
 
+    $userDAO = new UserDAO();
+    $contact["requests"] = $userDAO->getNumberRequestByFriend($userID);
+
     echoResponse(200, $contact);
 });
+
+
+// FirebaseToken User update
+$app->post('/user/searchUsers', function() use ($app) {
+    // check for required params
+    //verifyRequiredParams(array('Name', 'Phone', 'State', 'Image'));
+
+    $body = $app->request()->getBody(); 
+    $input = json_decode($body);
+
+    // reading post params
+    $text = (string)$input->Text;
+    
+    $userDAO = new UserDAO();
+    $users = $userDAO->findUsersByName("%".$text."%"); 
+
+    if ($users != NULL) {
+        echoResponse(200, $users);
+    } else {
+        echoResponse(465, "Oops! An error occurred");
+    }
+});
+
+
+// FirebaseToken User update
+$app->post('/user/requestFriendship', function() use ($app) {
+    $body = $app->request()->getBody(); 
+    $input = json_decode($body);
+
+    // reading post params
+    $userID = (string) $input->UserID;
+    $friendID = (string) $input->FriendID;
+    
+    $userDAO = new UserDAO();
+    $result = $userDAO->requestFriendship($userID, $friendID); 
+
+    if ($result != NULL) {
+        echoResponse(200, true);
+    } else {
+        echoResponse(465, "Oops! An error occurred");
+    }
+});
+
+
+// FirebaseToken User update
+$app->post('/user/getRequest', function() use ($app) {
+    $body = $app->request()->getBody(); 
+    $input = json_decode($body);
+
+    // reading post params
+    $userID = (string) $input->UserID;
+    
+    $userDAO = new UserDAO();
+    $result = $userDAO->getRequestByFriend($userID); 
+
+    $finalResult = array();
+    $i = 0;
+    foreach ($result as $request) {
+        $finalRequest = array();
+        $finalRequest["LastUpdate"] = $request["LastUpdate"];
+        $finalRequest["User"] = $userDAO->getUserById($request["UserID"]); 
+
+        $finalResult[$i] = $finalRequest;
+        $i++;
+    }
+
+    if ($finalResult != NULL) {
+        echoResponse(200, $finalResult);
+    } else {
+        echoResponse(465, "Oops! An error occurred");
+    }
+});
+
+
 
 ?>

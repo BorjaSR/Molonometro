@@ -62,4 +62,9 @@
     <string name="friend_request">Solicitudes</string>
     <string name="register"><u>Registrate aquí</u></string>
     <string name="add_friends_activity">Solicitudes</string>
+    <string name="email">Email</string>
+    <string name="password">Contraseña</string>
+    <string name="add">Añadir</string>
+    <string name="block">Bloquear</string>
+    <string name="request_send">Solicitud enviada</string>
 </resources>

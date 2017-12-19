@@ -7,10 +7,13 @@ import com.bsalazar.molonometro.rest.json.ContactJson;
 import com.bsalazar.molonometro.rest.json.ContactsListJson;
 import com.bsalazar.molonometro.rest.json.CreateGroupJson;
 import com.bsalazar.molonometro.rest.json.CreateUserJson;
+import com.bsalazar.molonometro.rest.json.FriendRequestJson;
 import com.bsalazar.molonometro.rest.json.GetContactDetailJson;
 import com.bsalazar.molonometro.rest.json.GroupJson;
 import com.bsalazar.molonometro.rest.json.LikeJson;
 import com.bsalazar.molonometro.rest.json.PushTestJson;
+import com.bsalazar.molonometro.rest.json.RequestFriendJson;
+import com.bsalazar.molonometro.rest.json.SearchJson;
 import com.bsalazar.molonometro.rest.json.UpdateUserJson;
 import com.bsalazar.molonometro.rest.json.UserIdJson;
 import com.bsalazar.molonometro.rest.json.UserJson;
@@ -58,6 +61,21 @@ public interface RestService {
     void getUser(
             @Body UpdateUserJson updateUserJson,
             Callback<UserJson> callback);
+
+    @POST("/user/searchUsers")
+    void searchUsers(
+            @Body SearchJson updateUserJson,
+            Callback<List<ContactJson>> callback);
+
+    @POST("/user/requestFriendship")
+    void requestFriendship(
+            @Body RequestFriendJson updateUserJson,
+            Callback<Boolean> callback);
+
+    @POST("/user/getRequest")
+    void getRequest(
+            @Body UserJson userJson,
+            Callback<List<FriendRequestJson>> callback);
 
 
 

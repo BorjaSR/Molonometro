@@ -189,20 +189,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 else if (main_view_pager.getCurrentItem() == 1)
                     getContacts(false);
                 return true;
-            case R.id.action_dummy:
-                Constants.restController.getService().dummyService(new PushTestJson()
-                        , new Callback<String>() {
-                            @Override
-                            public void success(String userJson, Response response) {
-                                Log.d("[PRUEBA MD5]", userJson);
-                            }
-
-                            @Override
-                            public void failure(RetrofitError error) {
-
-                            }
-                        });
-                return true;
+//            case R.id.action_dummy:
+//                Constants.restController.getService().dummyService(new PushTestJson()
+//                        , new Callback<String>() {
+//                            @Override
+//                            public void success(String userJson, Response response) {
+//                                Log.d("[PRUEBA MD5]", userJson);
+//                            }
+//
+//                            @Override
+//                            public void failure(RetrofitError error) {
+//
+//                            }
+//                        });
+//                return true;
         }
 
         return super.onOptionsItemSelected(item);

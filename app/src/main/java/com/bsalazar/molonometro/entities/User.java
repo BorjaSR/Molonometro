@@ -17,8 +17,17 @@ public class User {
     private Bitmap Image;
     private String FirebaseToken;
     private int Molopuntos;
+    private int numRequest;
 
     public User() {
+    }
+
+    public int getNumRequest() {
+        return numRequest;
+    }
+
+    public void setNumRequest(int numRequest) {
+        this.numRequest = numRequest;
     }
 
     public String getUserName() {

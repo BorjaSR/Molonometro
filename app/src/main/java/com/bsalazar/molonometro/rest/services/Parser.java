@@ -34,6 +34,7 @@ public class Parser {
         user.setPhone(userJson.getPhone());
         user.setState(userJson.getState());
         user.setImageBase64(userJson.getImage());
+        user.setNumRequest(userJson.getRequests());
 
         return user;
     }
@@ -42,6 +43,8 @@ public class Parser {
         Contact contact = new Contact();
 
         contact.setUserID(contactJson.getUserID());
+        contact.setUserName(contactJson.getUserName());
+        contact.setEmail(contactJson.getEmail());
         contact.setName(contactJson.getName());
         contact.setPhone(contactJson.getPhone());
         contact.setState(contactJson.getState());

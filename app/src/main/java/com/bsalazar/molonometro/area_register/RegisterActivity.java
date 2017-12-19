@@ -94,9 +94,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 new UserController().createUser(createUserJson, new ServiceCallback() {
                     @Override
                     public void onSuccess(String result) {
-                        Gson gson = new Gson();
-                        String userStringJson = gson.toJson(Variables.User);
-                        Memo.rememberMe(getApplicationContext(), userStringJson);
+
+                        Memo.rememberMe(getApplicationContext(), new Gson().toJson(Variables.User));
 
                         new SetFirebaseTokenThread(getApplicationContext()).start();
 
@@ -125,6 +124,12 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                         new UserController().getUser(new ServiceCallback() {
                             @Override
                             public void onSuccess(String result) {
+
+                                User aux = Variables.User;
+                                aux. setImageBase64(null);
+                                aux.setImage(null);
+                                Memo.rememberMe(getApplicationContext(), new Gson().toJson(aux));
+
                                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
                                 finish();
                             }

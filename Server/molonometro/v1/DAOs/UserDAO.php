@@ -336,10 +336,10 @@ class UserDAO {
             $user["Phone"] = $Phone;
             $user["State"] = $State;
             $stmt->close();
-        $db->disconnect();
+            $db->disconnect();
             return $user;
         } else {
-        $db->disconnect();
+            $db->disconnect();
             return NULL;
         }
     }
@@ -347,23 +347,25 @@ class UserDAO {
     public function getUserById($id) {
         $db = new DbConnect();
         $this->conn = $db->connect();
-        $stmt = $this->conn->prepare("SELECT UserID, Name, Phone, State, Image FROM users WHERE UserID = ? and Deleted = 0");
+        $stmt = $this->conn->prepare("SELECT UserID, UserName, Email, Name, Phone, State, Image FROM users WHERE UserID = ? and Deleted = 0");
         $stmt->bind_param("i", $id);
         
         if ($stmt->execute()) {
-            $stmt->bind_result($UserID, $Name, $Phone, $State, $Image);
+            $stmt->bind_result($UserID, $UserName, $Email, $Name, $Phone, $State, $Image);
             $stmt->fetch();
-            $user = array();
+            $user = array(); 
             $user["UserID"] = $UserID;
+            $user["UserName"] = $UserName;
+            $user["Email"] = $Email;
             $user["Name"] = $Name;
             $user["Phone"] = $Phone;
             $user["State"] = $State;
             $user["Image"] = $Image;
             $stmt->close();
-        $db->disconnect();
+            $db->disconnect();
             return $user;
         } else {
-        $db->disconnect();
+            $db->disconnect();
             return NULL;
         }
     }
@@ -380,11 +382,112 @@ class UserDAO {
             $stmt->fetch();
             $firebaseToken = $FirebaseToken;
             $stmt->close();
-        $db->disconnect();
+            $db->disconnect();
             return $firebaseToken;
         } else {
-        $db->disconnect();
+            $db->disconnect();
             return NULL;
+        }
+    }
+
+    public function findUsersByName($pattern) {
+        $db = new DbConnect();
+        $this->conn = $db->connect();
+        $stmt = $this->conn->prepare("SELECT UserID, UserName, Email, Name, Phone, State, Image FROM users WHERE UserName LIKE ?");
+        $stmt->bind_param("s", $pattern);
+        
+        $users = array();
+
+        if ($stmt->execute()) {
+            $stmt->bind_result($UserID, $UserName, $Email, $Name, $Phone, $State, $Image);
+
+            $i = 0;
+            while ($stmt->fetch()) {
+                $user = array();
+                $user["UserID"] = $UserID;
+                $user["UserName"] = $UserName;
+                $user["Email"] = $Email;
+                $user["Name"] = $Name;
+                $user["Phone"] = $Phone;
+                $user["State"] = $State;
+                $user["Image"] = $Image;
+
+                $users[$i] = $user;
+                $i++;
+            }
+
+            $stmt->close();
+            $db->disconnect();
+
+            return $users;
+
+        } else {
+            $db->disconnect();
+            return $users;
+        }
+    }
+
+    public function requestFriendship($userID, $friendID) {
+        $db = new DbConnect();
+        $this->conn = $db->connect();
+        $stmt = $this->conn->prepare("INSERT INTO friendships(UserID, FriendID, Created, LastUpdate) values(?, ?, now(), now())");
+        $stmt->bind_param("ii", $userID, $friendID);
+
+        $result = $stmt->execute();
+
+        $stmt->close();
+        $db->disconnect();
+
+        if($result){
+            return 200;
+        } else {
+            return NULL;
+        }
+    }
+
+    public function getNumberRequestByFriend($friendID) {
+        $db = new DbConnect();
+        $this->conn = $db->connect();
+
+        $stmt = $this->conn->prepare("SELECT UserID from friendships WHERE FriendID = ? and Activated = 0 and Blocked = 0 and Rejected = 0 and Deleted = 0");
+        $stmt->bind_param("i", $friendID);
+        $stmt->execute();
+        $stmt->store_result();
+        $num_rows = $stmt->num_rows;
+        $stmt->close();
+        $db->disconnect();
+        return $num_rows;
+    }
+
+    public function getRequestByFriend($friendID) {
+        $db = new DbConnect();
+        $this->conn = $db->connect();
+
+        $stmt = $this->conn->prepare("SELECT UserID, LastUpdate from friendships WHERE FriendID = ? and Activated = 0 and Blocked = 0 and Rejected = 0 and Deleted = 0");
+        $stmt->bind_param("i", $friendID);
+
+        $requests = array();
+
+        if ($stmt->execute()) {
+            $stmt->bind_result($UserID, $LastUpdate);
+
+            $i = 0;
+            while ($stmt->fetch()) {
+                $request = array();
+                $request["UserID"] = $UserID;
+                $request["LastUpdate"] = $LastUpdate;
+                $requests[$i] = $request;
+                $i++;
+            }
+
+            $stmt->close();
+            $db->disconnect();
+
+            return $requests;
+
+        } else {
+            $db->disconnect();
+            return $requests;
         }
     }
 }
