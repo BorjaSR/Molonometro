@@ -99,6 +99,7 @@
             android:name=".area_adjust.AddFriendsActivity"
             android:label="@string/add_friends_activity"
             android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden"
             android:parentActivityName=".MainActivity" />
 
         <activity

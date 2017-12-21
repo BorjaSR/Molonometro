@@ -11,12 +11,12 @@ $app->post('/contact/checkContacts', function() use ($app) {
     $input = json_decode($body);
 
     // reading post params
-    $contacts = (array)$input->contacts;
+    $friendRquests = (array)$input->friendRquests;
     $users = array();
 
     $ContactDAO = new ContactDAO();
     $i = 0;
-    foreach ($contacts as $contact) {
+    foreach ($friendRquests as $contact) {
         $user = $ContactDAO->checkUserByPhone($contact -> phoneNumber);
 
         if($user["UserID"] != NULL){

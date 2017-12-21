@@ -19,7 +19,7 @@ public class Variables {
     public static String FirebaseToken = null;
 
     public static ArrayList<Contact> contacts = new ArrayList<>();
-    public static ArrayList<Contact> contactsWithApp = new ArrayList<>();
+//    public static ArrayList<Contact> contactsWithApp = new ArrayList<>();
     public static ArrayList<Group> groups = new ArrayList<>();
 
     public static CreateGroupJson createGroupJson;

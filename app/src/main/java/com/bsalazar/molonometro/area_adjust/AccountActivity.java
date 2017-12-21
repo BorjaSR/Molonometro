@@ -111,6 +111,7 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
 
             Glide.with(this)
                     .load(imageByteArray)
+//                    .load("http://hostingtestbsalazar.esy.es/molonometro/images/profile.jpg")
                     .asBitmap()
                     .dontAnimate()
                     .listener(new MyRequestListener(activity, profile_image))

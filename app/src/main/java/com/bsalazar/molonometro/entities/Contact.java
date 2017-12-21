@@ -15,7 +15,6 @@ public class Contact {
     private String Phone;
     private String State;
     private String ImageBase64;
-    private boolean isInApp;
     private int Molopuntos;
     private ArrayList<Integer> commonGroups;
 
@@ -76,14 +75,6 @@ public class Contact {
 
     public void setImageBase64(String imageBase64) {
         ImageBase64 = imageBase64;
-    }
-
-    public boolean isInApp() {
-        return isInApp;
-    }
-
-    public void setInApp(boolean inApp) {
-        isInApp = inApp;
     }
 
     public int getMolopuntos() {

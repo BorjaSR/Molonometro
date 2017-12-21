@@ -64,18 +64,28 @@ public interface RestService {
 
     @POST("/user/searchUsers")
     void searchUsers(
-            @Body SearchJson updateUserJson,
+            @Body SearchJson searchJson,
             Callback<List<ContactJson>> callback);
 
     @POST("/user/requestFriendship")
     void requestFriendship(
-            @Body RequestFriendJson updateUserJson,
+            @Body RequestFriendJson requestFriendJson,
             Callback<Boolean> callback);
 
     @POST("/user/getRequest")
     void getRequest(
             @Body UserJson userJson,
             Callback<List<FriendRequestJson>> callback);
+
+    @POST("/user/acceptFriendship")
+    void acceptFriendship(
+            @Body RequestFriendJson requestFriendJson,
+            Callback<Integer> callback);
+
+    @POST("/user/getFriends")
+    void getFriends(
+            @Body UserJson requestFriendJson,
+            Callback<List<ContactJson>> callback);
 
 
 

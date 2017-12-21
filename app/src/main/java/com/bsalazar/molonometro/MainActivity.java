@@ -46,6 +46,7 @@ import com.bsalazar.molonometro.rest.controllers.UserController;
 import com.bsalazar.molonometro.rest.json.ContactsListJson;
 import com.bsalazar.molonometro.rest.json.PushTestJson;
 import com.bsalazar.molonometro.rest.json.UserIdJson;
+import com.bsalazar.molonometro.rest.json.UserJson;
 import com.bsalazar.molonometro.rest.services.ServiceCallback;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
@@ -142,16 +143,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         initialFabPosition = fab.getTranslationX();
         fab.setOnClickListener(this);
 
-        int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS);
-        if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
-            getContacts(true);
-        } else {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.READ_CONTACTS},
-                    PERMISSION_RESULT_READ_CONTACTS);
-        }
+//        int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS);
+//        if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
+//            getContacts(true);
+//        } else {
+//            ActivityCompat.requestPermissions(this,
+//                    new String[]{Manifest.permission.READ_CONTACTS},
+//                    PERMISSION_RESULT_READ_CONTACTS);
+//        }
 
-
+        getContacts(true);
 
         // Save the screen size
         Display display = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
@@ -248,58 +249,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case PERMISSION_RESULT_READ_CONTACTS:
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    getContacts(true);
-                } else {
-                    this.finish();
-                }
-                break;
-            default:
-                break;
-        }
-    }
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+//        switch (requestCode) {
+//            case PERMISSION_RESULT_READ_CONTACTS:
+//                if (grantResults.length > 0
+//                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                    getContacts(true);
+//                } else {
+//                    this.finish();
+//                }
+//                break;
+//            default:
+//                break;
+//        }
+//    }
 
     private void getContacts(final boolean firstTime) {
 
-        String[] projection = new String[]{ContactsContract.Data._ID, ContactsContract.Data.DISPLAY_NAME, ContactsContract.CommonDataKinds.Phone.NUMBER, ContactsContract.Data.MIMETYPE}; //, ContactsContract.CommonDataKinds.Phone.NUMBER, ContactsContract.CommonDataKinds.Phone.TYPE
-
-        String selectionClause = ContactsContract.Data.MIMETYPE + " = '" +
-                ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE + "' AND " +
-                ContactsContract.CommonDataKinds.Phone.NUMBER + " IS NOT NULL";
-        String sortOrder = ContactsContract.Data.DISPLAY_NAME + " ASC";
-
-
-        Cursor contactsCursor = getContentResolver().query(
-                ContactsContract.Data.CONTENT_URI,
-                projection,
-                selectionClause,
-                null,
-                sortOrder);
-
-        ArrayList<PhoneContact> phoneContacts = new ArrayList<>();
-        phoneContacts.clear();
-        while (contactsCursor.moveToNext()) {
-            boolean isInList = false;
-            for (PhoneContact phoneContact : phoneContacts)
-                if (phoneContact.getPhoneDisplayName().equals(contactsCursor.getString(1)))
-                    isInList = true;
-
-            String phone = contactsCursor.getString(2);
-            phone = phone.replace(" ", "");
-            if (phone.length() > 9) phone = phone.substring(phone.length() - 9);
-
-            if (!isInList && !phone.equals(Variables.User.getPhone()))
-                phoneContacts.add(new PhoneContact(contactsCursor.getString(1), phone));
-        }
-
-        ContactsListJson contactsListJson = new ContactsListJson();
-        contactsListJson.setPhoneContacts(phoneContacts);
-        new ContactController().checkContacts(this, contactsListJson, new ServiceCallback() {
+        new UserController().getFriends(new UserJson(Variables.User.getUserID()), new ServiceCallback() {
             @Override
             public void onSuccess(String result) {
                 adapter.updateContacts();
@@ -309,12 +277,58 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     refreshGroups(true);
                 }
             }
-
-            @Override
-            public void onFailure(String result) {
-
-            }
         });
+
+
+//        String[] projection = new String[]{ContactsContract.Data._ID, ContactsContract.Data.DISPLAY_NAME, ContactsContract.CommonDataKinds.Phone.NUMBER, ContactsContract.Data.MIMETYPE}; //, ContactsContract.CommonDataKinds.Phone.NUMBER, ContactsContract.CommonDataKinds.Phone.TYPE
+//
+//        String selectionClause = ContactsContract.Data.MIMETYPE + " = '" +
+//                ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE + "' AND " +
+//                ContactsContract.CommonDataKinds.Phone.NUMBER + " IS NOT NULL";
+//        String sortOrder = ContactsContract.Data.DISPLAY_NAME + " ASC";
+//
+//
+//        Cursor contactsCursor = getContentResolver().query(
+//                ContactsContract.Data.CONTENT_URI,
+//                projection,
+//                selectionClause,
+//                null,
+//                sortOrder);
+//
+//        ArrayList<PhoneContact> phoneContacts = new ArrayList<>();
+//        phoneContacts.clear();
+//        while (contactsCursor.moveToNext()) {
+//            boolean isInList = false;
+//            for (PhoneContact phoneContact : phoneContacts)
+//                if (phoneContact.getPhoneDisplayName().equals(contactsCursor.getString(1)))
+//                    isInList = true;
+//
+//            String phone = contactsCursor.getString(2);
+//            phone = phone.replace(" ", "");
+//            if (phone.length() > 9) phone = phone.substring(phone.length() - 9);
+//
+//            if (!isInList && !phone.equals(Variables.User.getPhone()))
+//                phoneContacts.add(new PhoneContact(contactsCursor.getString(1), phone));
+//        }
+//
+//        ContactsListJson contactsListJson = new ContactsListJson();
+//        contactsListJson.setPhoneContacts(phoneContacts);
+//        new ContactController().checkContacts(this, contactsListJson, new ServiceCallback() {
+//            @Override
+//            public void onSuccess(String result) {
+//                adapter.updateContacts();
+//                if(firstTime){
+//                    contactsReady = true;
+//                    showContent();
+//                    refreshGroups(true);
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(String result) {
+//
+//            }
+//        });
     }
 
     public void shareMolonometro() {

@@ -97,7 +97,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                                 GroupJson group = new Gson().fromJson(result, GroupJson.class);
                                 String userName = null, destinationUserName = null;
 
-                                for (Contact contact : Variables.contactsWithApp) {
+                                for (Contact contact : Variables.contacts) {
                                     if (contact.getUserID() == comment.getUserID())
                                         userName = contact.getName();
                                     if (contact.getUserID() == comment.getDestinationUserID())

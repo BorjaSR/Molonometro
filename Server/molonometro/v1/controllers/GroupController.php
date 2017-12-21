@@ -13,7 +13,7 @@ $app->post('/group/createGroup', function() use ($app) {
     $userID = (int)$input->userID;
     $groupName = (string)$input->groupName;
 
-    $contacts = (array)$input->contacts;
+    $friendRquests = (array)$input->friendRquests;
 
     $groupDAO = new GroupDAO();
     $DBresponse = $groupDAO->createGroup($userID, $groupName);
@@ -27,7 +27,7 @@ $app->post('/group/createGroup', function() use ($app) {
         if($DBresponseFT["status"] == 200){
             $group["FirebaseTopic"] = $firebaseT; 
 
-            foreach ($contacts as $contact) {
+            foreach ($friendRquests as $contact) {
                 addUserToGroup($contact, $group["GroupID"], $userID);
             }
             

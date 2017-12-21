@@ -60,7 +60,7 @@ public class ContactDetailActivity extends AppCompatActivity {
         }
 
         int contactID = getIntent().getExtras().getInt("contactID", -1);
-        for (Contact contactAux : Variables.contactsWithApp)
+        for (Contact contactAux : Variables.contacts)
             if (contactAux.getUserID() == contactID) {
                 contact = contactAux;
                 break;

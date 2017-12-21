@@ -32,13 +32,13 @@ public class ContactController {
                     public void success(List<ContactJson> contactListJson, Response response) {
 
                         Variables.contacts.clear();
-                        Variables.contactsWithApp.clear();
+//                        Variables.contacts.clear();
 
                         for (int i = 0; i < contactListJson.size(); i++) {
                             Variables.contacts.add(Parser.parseContact(contactListJson.get(i)));
 
-                            if (contactListJson.get(i).isInApp())
-                                Variables.contactsWithApp.add(Parser.parseContact(contactListJson.get(i)));
+//                            if (contactListJson.get(i).isInApp())
+//                                Variables.contacts.add(Parser.parseContact(contactListJson.get(i)));
                         }
 
                         callback.onSuccess("");

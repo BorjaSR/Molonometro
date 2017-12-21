@@ -7,7 +7,7 @@ package com.bsalazar.molonometro.rest.json;
 public class FriendRequestJson {
 
     private String LastUpdate;
-    private UserJson User;
+    private ContactJson User;
 
     public FriendRequestJson() {
     }
@@ -20,11 +20,11 @@ public class FriendRequestJson {
         LastUpdate = lastUpdate;
     }
 
-    public UserJson getUser() {
+    public ContactJson getUser() {
         return User;
     }
 
-    public void setUser(UserJson user) {
+    public void setUser(ContactJson user) {
         User = user;
     }
 }

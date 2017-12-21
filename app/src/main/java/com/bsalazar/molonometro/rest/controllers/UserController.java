@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.widget.Toast;
 
 import com.bsalazar.molonometro.entities.Contact;
+import com.bsalazar.molonometro.entities.FriendRquest;
 import com.bsalazar.molonometro.general.Constants;
 import com.bsalazar.molonometro.general.Memo;
 import com.bsalazar.molonometro.general.Tools;
@@ -261,7 +262,6 @@ public class UserController {
                             callback.onFailure("");
                     }
                 });
-
     }
 
     public void requestFriendship(RequestFriendJson requestFriendJson, final ServiceCallback callback) {
@@ -282,7 +282,6 @@ public class UserController {
                             callback.onFailure("false");
                     }
                 });
-
     }
 
     public void getRequest(UserJson userJson, final ServiceCallback callback) {
@@ -291,6 +290,13 @@ public class UserController {
                 , new Callback<List<FriendRequestJson>>() {
                     @Override
                     public void success(List<FriendRequestJson> result, Response response) {
+
+                        ArrayList<FriendRquest> friendRquests = new ArrayList<>();
+                        for (FriendRequestJson friendRequestJson : result)
+                            friendRquests.add(Parser.parseRequest(friendRequestJson));
+
+                        Variables.User.setFriendRquests(friendRquests);
+
                         if (callback != null)
                             callback.onSuccess("true");
                     }
@@ -301,6 +307,48 @@ public class UserController {
                             callback.onFailure("false");
                     }
                 });
+    }
 
+    public void acceptFriendship(RequestFriendJson requestFriendJson, final ServiceCallback callback) {
+
+        Constants.restController.getService().acceptFriendship(requestFriendJson
+                , new Callback<Integer>() {
+                    @Override
+                    public void success(Integer result, Response response) {
+
+                        if (callback != null)
+                            callback.onSuccess("OK");
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        if (callback != null)
+                            callback.onFailure("false");
+                    }
+                });
+    }
+
+    public void getFriends(UserJson userJson, final ServiceCallback callback) {
+
+        Constants.restController.getService().getFriends(userJson
+                , new Callback<List<ContactJson>>() {
+                    @Override
+                    public void success(List<ContactJson> result, Response response) {
+
+                        Variables.contacts.clear();
+                        for (ContactJson contactJson : result)
+                            Variables.contacts.add(Parser.parseContact(contactJson));
+
+
+                        if (callback != null)
+                            callback.onSuccess("true");
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        if (callback != null)
+                            callback.onFailure("false");
+                    }
+                });
     }
 }

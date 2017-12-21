@@ -125,7 +125,7 @@ public class FinishGroupActivity extends AppCompatActivity implements View.OnCli
 
 
     private Contact getContactByID(int id) {
-        for (Contact contact : Variables.contactsWithApp)
+        for (Contact contact : Variables.contacts)
             if (contact.getUserID() == id)
                 return contact;
         return null;

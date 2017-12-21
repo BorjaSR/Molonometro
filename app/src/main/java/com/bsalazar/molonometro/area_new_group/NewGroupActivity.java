@@ -60,7 +60,7 @@ public class NewGroupActivity extends AppCompatActivity implements View.OnClickL
         container_next = (LinearLayout) findViewById(R.id.container_next);
         next = (TextView) findViewById(R.id.next);
 
-        for (Contact contact : Variables.contactsWithApp)
+        for (Contact contact : Variables.contacts)
             filteredContacts.add(contact);
 
         contacts_recycler = (RecyclerView) findViewById(R.id.groups_recycler);
@@ -221,7 +221,7 @@ public class NewGroupActivity extends AppCompatActivity implements View.OnClickL
 
     private void filterResults(String query) {
         filteredContacts.clear();
-        for (Contact contact : Variables.contactsWithApp)
+        for (Contact contact : Variables.contacts)
             if (contact.getName().contains(query))
                 filteredContacts.add(contact);
 

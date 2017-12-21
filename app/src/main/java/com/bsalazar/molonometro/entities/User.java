@@ -2,6 +2,8 @@ package com.bsalazar.molonometro.entities;
 
 import android.graphics.Bitmap;
 
+import java.util.ArrayList;
+
 /**
  * Created by bsalazar on 14/10/2016.
  */
@@ -18,6 +20,7 @@ public class User {
     private String FirebaseToken;
     private int Molopuntos;
     private int numRequest;
+    private ArrayList<FriendRquest> friendRquests;
 
     public User() {
     }
@@ -108,5 +111,13 @@ public class User {
 
     public void setMolopuntos(int molopuntos) {
         Molopuntos = molopuntos;
+    }
+
+    public ArrayList<FriendRquest> getFriendRquests() {
+        return friendRquests;
+    }
+
+    public void setFriendRquests(ArrayList<FriendRquest> friendRquests) {
+        this.friendRquests = friendRquests;
     }
 }

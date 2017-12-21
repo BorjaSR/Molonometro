@@ -2,14 +2,17 @@ package com.bsalazar.molonometro.rest.services;
 
 import com.bsalazar.molonometro.entities.Comment;
 import com.bsalazar.molonometro.entities.Contact;
+import com.bsalazar.molonometro.entities.FriendRquest;
 import com.bsalazar.molonometro.entities.Group;
 import com.bsalazar.molonometro.entities.LastEvent;
 import com.bsalazar.molonometro.entities.Participant;
 import com.bsalazar.molonometro.entities.User;
 import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.json.ContactJson;
+import com.bsalazar.molonometro.rest.json.FriendRequestJson;
 import com.bsalazar.molonometro.rest.json.GroupJson;
 import com.bsalazar.molonometro.rest.json.LastEventJson;
+import com.bsalazar.molonometro.rest.json.RequestFriendJson;
 import com.bsalazar.molonometro.rest.json.UserJson;
 
 import java.text.ParseException;
@@ -49,7 +52,6 @@ public class Parser {
         contact.setPhone(contactJson.getPhone());
         contact.setState(contactJson.getState());
         contact.setImageBase64(contactJson.getImage());
-        contact.setInApp(contactJson.isInApp());
 
         return contact;
     }
@@ -63,7 +65,7 @@ public class Parser {
         group.setFirebaseTopic(groupJson.getFirebaseTopic());
 
         try {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
             group.setLastUpdate(dateFormat.parse(groupJson.getLastUpdate()));
         } catch (ParseException e) {
             e.printStackTrace();
@@ -87,7 +89,7 @@ public class Parser {
         lastEvent.setUserID(lastEventJson.getUserID());
         lastEvent.setDestinationUserID(lastEventJson.getDestinationUserID());
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
         try {
             lastEvent.setLastUpdate(dateFormat.parse(lastEventJson.getLastUpdate()));
         } catch (ParseException e) {
@@ -97,7 +99,7 @@ public class Parser {
         if (lastEventJson.getUserID() == Variables.User.getUserID())
             lastEvent.setUserName(Variables.User.getName());
         else {
-            for (Contact contact : Variables.contactsWithApp)
+            for (Contact contact : Variables.contacts)
                 if (contact.getUserID() == lastEventJson.getUserID())
                     lastEvent.setUserName(contact.getName());
         }
@@ -105,7 +107,7 @@ public class Parser {
         if (lastEventJson.getDestinationUserID() == Variables.User.getUserID())
             lastEvent.setDestinationUserName(Variables.User.getName());
         else {
-            for (Contact contact : Variables.contactsWithApp)
+            for (Contact contact : Variables.contacts)
                 if (contact.getUserID() == lastEventJson.getDestinationUserID())
                     lastEvent.setDestinationUserName(contact.getName());
         }
@@ -128,7 +130,7 @@ public class Parser {
                 participant.setState(Variables.User.getState());
 
             } else
-                for (Contact contact : Variables.contactsWithApp)
+                for (Contact contact : Variables.contacts)
                     if (contact.getUserID() == participantJson.getUserID()) {
                         participant.setImageBase64(contact.getImageBase64());
                         participant.setName(contact.getName());
@@ -159,7 +161,7 @@ public class Parser {
             comment.setImage(commentJson.getImage());
 
             try {
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
                 comment.setDate(dateFormat.parse(commentJson.getLastUpdate()));
             } catch (ParseException e) {
                 e.printStackTrace();
@@ -235,10 +237,24 @@ public class Parser {
     }
 
     private static Contact getContactByID(int id) {
-        for (Contact contact : Variables.contactsWithApp)
+        for (Contact contact : Variables.contacts)
             if (contact.getUserID() == id)
                 return contact;
         return null;
     }
 
+    public static FriendRquest parseRequest(FriendRequestJson friendRequestJson){
+        FriendRquest friendRequest = new FriendRquest();
+
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+            friendRequest.setDate(dateFormat.parse(friendRequestJson.getLastUpdate()));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        friendRequest.setContact(parseContact(friendRequestJson.getUser()));
+
+        return friendRequest;
+    }
 }

@@ -42,7 +42,7 @@ public class AddParticipantActivity extends AppCompatActivity implements View.On
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
 
-        for (Contact contact : Variables.contactsWithApp)
+        for (Contact contact : Variables.contacts)
             filteredContacts.add(contact);
 
         contacts_recycler = (RecyclerView) findViewById(R.id.contacts_recycler);
@@ -98,7 +98,7 @@ public class AddParticipantActivity extends AppCompatActivity implements View.On
 
     private void filterResults(String query) {
         filteredContacts.clear();
-        for (Contact contact : Variables.contactsWithApp)
+        for (Contact contact : Variables.contacts)
             if (contact.getName().contains(query))
                 filteredContacts.add(contact);
 

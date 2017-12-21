@@ -67,4 +67,6 @@
     <string name="add">Añadir</string>
     <string name="block">Bloquear</string>
     <string name="request_send">Solicitud enviada</string>
+    <string name="pending_request">Solicitudes pendientes</string>
+    <string name="request_accepted">Solicitud aceptada</string>
 </resources>

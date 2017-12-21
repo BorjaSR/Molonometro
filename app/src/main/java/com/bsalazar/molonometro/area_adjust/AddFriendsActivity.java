@@ -18,7 +18,9 @@ import android.widget.TextView;
 
 import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.area_adjust.adapters.ContactsFindedAdapter;
+import com.bsalazar.molonometro.area_adjust.adapters.PendingRequestAdapter;
 import com.bsalazar.molonometro.entities.Contact;
+import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.controllers.UserController;
 import com.bsalazar.molonometro.rest.services.ServiceCallback;
 import com.google.gson.Gson;
@@ -34,9 +36,10 @@ import java.util.ArrayList;
 public class AddFriendsActivity extends AppCompatActivity implements View.OnClickListener {
 
     private EditText search_edit;
-    private LinearLayout loading;
-    private RecyclerView contacts_finded_recycler;
+    private LinearLayout loading, layout_pending_request;
+    private RecyclerView contacts_finded_recycler, pending_request_recycler;
     private ContactsFindedAdapter adapter;
+    private PendingRequestAdapter pendingRequestAdapter;
     private ArrayList<Contact> contactsFinded = new ArrayList<>();
 
     @Override
@@ -46,8 +49,15 @@ public class AddFriendsActivity extends AppCompatActivity implements View.OnClic
 
         search_edit = (EditText) findViewById(R.id.search_edit);
         loading = (LinearLayout) findViewById(R.id.loading);
-
+        layout_pending_request = (LinearLayout) findViewById(R.id.layout_pending_request);
         contacts_finded_recycler = (RecyclerView) findViewById(R.id.contacts_finded_recycler);
+        pending_request_recycler = (RecyclerView) findViewById(R.id.pending_request_recycler);
+
+
+        pendingRequestAdapter = new PendingRequestAdapter(getApplicationContext(), Variables.User.getFriendRquests());
+        pending_request_recycler.setLayoutManager(new LinearLayoutManager(this));
+        pending_request_recycler.setAdapter(pendingRequestAdapter);
+
         adapter = new ContactsFindedAdapter(getApplicationContext(), contactsFinded);
         contacts_finded_recycler.setLayoutManager(new LinearLayoutManager(this));
         contacts_finded_recycler.setAdapter(adapter);
@@ -71,6 +81,8 @@ public class AddFriendsActivity extends AppCompatActivity implements View.OnClic
                     contactsFinded.clear();
                     adapter = new ContactsFindedAdapter(getApplicationContext(), contactsFinded);
                     contacts_finded_recycler.setAdapter(adapter);
+
+                    showPendingRequest();
 
                 } else if (text.length() % 3 == 0) {
                     requestSearch(text);
@@ -103,7 +115,7 @@ public class AddFriendsActivity extends AppCompatActivity implements View.OnClic
         new UserController().searchUsers(text, new ServiceCallback() {
             @Override
             public void onSuccess(String result) {
-                hideLoading();
+                showSearchResults();
                 Type contactTypeList = new TypeToken<ArrayList<Contact>>() {}.getType();
                 contactsFinded = new Gson().fromJson(result, contactTypeList);
                 adapter = new ContactsFindedAdapter(getApplicationContext(), contactsFinded);
@@ -112,7 +124,7 @@ public class AddFriendsActivity extends AppCompatActivity implements View.OnClic
 
             @Override
             public void onFailure(String result) {
-                hideLoading();
+                showSearchResults();
                 contactsFinded.clear();
                 adapter = new ContactsFindedAdapter(getApplicationContext(), contactsFinded);
                 contacts_finded_recycler.setAdapter(adapter);
@@ -139,10 +151,18 @@ public class AddFriendsActivity extends AppCompatActivity implements View.OnClic
     private void showLoading(){
         loading.setVisibility(View.VISIBLE);
         contacts_finded_recycler.setVisibility(View.GONE);
+        layout_pending_request.setVisibility(View.GONE);
     }
 
-    private void hideLoading(){
+    private void showSearchResults(){
         loading.setVisibility(View.GONE);
         contacts_finded_recycler.setVisibility(View.VISIBLE);
+        layout_pending_request.setVisibility(View.GONE);
+    }
+
+    private void showPendingRequest(){
+        loading.setVisibility(View.GONE);
+        contacts_finded_recycler.setVisibility(View.GONE);
+        layout_pending_request.setVisibility(View.VISIBLE);
     }
 }

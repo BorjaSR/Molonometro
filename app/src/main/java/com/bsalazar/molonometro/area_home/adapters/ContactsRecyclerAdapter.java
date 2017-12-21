@@ -13,13 +13,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.MainActivity;
+import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.area_dashboard_group.ContactDetailActivity;
 import com.bsalazar.molonometro.entities.Contact;
 import com.bsalazar.molonometro.general.MyRequestListener;
 import com.bsalazar.molonometro.general.PhotoDetailActivity;
-import com.bsalazar.molonometro.general.Tools;
 import com.bumptech.glide.Glide;
 import com.futuremind.recyclerviewfastscroll.SectionTitleProvider;
 
@@ -51,42 +50,34 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
 
         final Contact contact = contacts.get(position);
 
-        holder.contact_name.setText(contact.getName());
+        holder.contact_name.setText(String.format(mContext.getString(R.string.user_name), contact.getUserName()));
+        holder.item_detail.setText(contact.getName());
 
-        if (contact.isInApp()) {
+        try {
+            byte[] imageByteArray = Base64.decode(contact.getImageBase64(), Base64.DEFAULT);
 
-            holder.item_detail.setText(contact.getState());
-            try {
-                byte[] imageByteArray = Base64.decode(contact.getImageBase64(), Base64.DEFAULT);
+            Glide.with(mContext)
+                    .load(imageByteArray)
+                    .asBitmap()
+                    .listener(new MyRequestListener(mContext, holder.contact_image))
+                    .into(holder.contact_image);
 
-                Glide.with(mContext)
-                        .load(imageByteArray)
-                        .asBitmap()
-                        .listener(new MyRequestListener(mContext, holder.contact_image))
-                        .into(holder.contact_image);
-
-            } catch (Exception e) {
-                holder.contact_image.setImageResource(R.drawable.user_icon);
-            }
-
-            holder.invite_contact_button.setVisibility(View.GONE);
-
-
-            holder.contact_layout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(mContext, ContactDetailActivity.class);
-                    intent.putExtra("contactID", contact.getUserID());
-
-                    mContext.startActivity(intent);
-                }
-            });
-
-        } else {
-            holder.item_detail.setText(Tools.formatPhone(contact.getPhone()));
+        } catch (Exception e) {
             holder.contact_image.setImageResource(R.drawable.user_icon);
-            holder.invite_contact_button.setVisibility(View.VISIBLE);
         }
+
+        holder.invite_contact_button.setVisibility(View.GONE);
+
+
+        holder.contact_layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, ContactDetailActivity.class);
+                intent.putExtra("contactID", contact.getUserID());
+
+                mContext.startActivity(intent);
+            }
+        });
 
         holder.contact_image.setOnClickListener(new View.OnClickListener() {
             @Override

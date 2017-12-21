@@ -31,11 +31,36 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/layout_pending_request"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/pending_request"
+            android:textStyle="bold"
+            android:textColor="@color/gray"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="5dp"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/pending_request_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </LinearLayout>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/contacts_finded_recycler"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        android:visibility="gone"/>
 
     <LinearLayout
         android:id="@+id/loading"
