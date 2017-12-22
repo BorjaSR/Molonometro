@@ -490,5 +490,54 @@ class UserDAO {
             return $requests;
         }
     }
+
+    public function acceptFriendship($userID, $friendID) {
+        $db = new DbConnect();
+        $this->conn = $db->connect();
+
+        $stmt = $this->conn->prepare("UPDATE friendships SET Activated = 1, LastUpdate = now() WHERE UserID = ? AND FriendID = ?");
+        $stmt->bind_param("ii", $userID, $friendID);
+
+        $result = $stmt->execute();
+        $stmt->close();
+
+        if ($result) {
+            return 200;
+        } else {
+            return 471;
+        }
+    }
+
+    public function getFriendsByUser($userID) {
+        $db = new DbConnect();
+        $this->conn = $db->connect();
+
+        $stmt = $this->conn->prepare("SELECT UserID, FriendID from friendships WHERE (FriendID = ? or UserID = ?) and Activated = 1 and Deleted = 0");
+        $stmt->bind_param("ii", $userID, $userID);
+
+        $requests = array();
+
+        if ($stmt->execute()) {
+            $stmt->bind_result($UserID, $FriendID);
+
+            $i = 0;
+            while ($stmt->fetch()) {
+                $request = array();
+                $request["UserID"] = $UserID;
+                $request["FriendID"] = $FriendID;
+                $requests[$i] = $request;
+                $i++;
+            }
+
+            $stmt->close();
+            $db->disconnect();
+
+            return $requests;
+
+        } else {
+            $db->disconnect();
+            return $requests;
+        }
+    }
 }
 ?>

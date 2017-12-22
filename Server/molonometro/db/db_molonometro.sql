@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost:8889
--- Tiempo de generación: 19-12-2017 a las 18:15:23
+-- Tiempo de generación: 22-12-2017 a las 12:15:37
 -- Versión del servidor: 5.6.35
 -- Versión de PHP: 7.1.8
 
@@ -19,6 +19,7 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `db_molonometro`
 --
+
 DELIMITER $$
 --
 -- Procedimientos
@@ -26,51 +27,50 @@ DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `coolpoints_recalculation` ()  NO SQL
 BEGIN
 
-  DECLARE m_GroupID BIGINT;
-  DECLARE m_UserID BIGINT;
+	DECLARE m_GroupID BIGINT;
+	DECLARE m_UserID BIGINT;
     DECLARE m_Molopuntos BIGINT;
     
     DECLARE pointsToDecrease BIGINT;
     
-  -- Variable para controlar el fin del bucle
-    DECLARE fin INTEGER DEFAULT 0;
+	-- Variable para controlar el fin del bucle
+  	DECLARE fin INTEGER DEFAULT 0;
     
     -- El SELECT que vamos a ejecutar
-    DECLARE groupuser_cursor CURSOR FOR 
-      SELECT GroupID, UserID, Molopuntos FROM groupuser;
+  	DECLARE groupuser_cursor CURSOR FOR 
+    	SELECT GroupID, UserID, Molopuntos FROM groupuser;
         
     -- Condición de salida
-    DECLARE CONTINUE HANDLER FOR NOT FOUND SET fin=1;
+  	DECLARE CONTINUE HANDLER FOR NOT FOUND SET fin=1;
         
     OPEN groupuser_cursor;
-    get_groupuser: LOOP
+  	get_groupuser: LOOP
     
-      
-      FETCH groupuser_cursor INTO m_GroupID, m_UserID, m_Molopuntos;
+    	
+    	FETCH groupuser_cursor INTO m_GroupID, m_UserID, m_Molopuntos;
         
         IF fin = 1 THEN
-          LEAVE get_groupuser;
-      END IF;
+       		LEAVE get_groupuser;
+    	END IF;
         
         IF m_Molopuntos <> 0 THEN
         
-          SET pointsToDecrease = ((m_Molopuntos * 3)/100);
+        	SET pointsToDecrease = ((m_Molopuntos * 3)/100);
             
             IF pointsToDecrease < 1 THEN
-              SET pointsToDecrease = 1;
+            	SET pointsToDecrease = 1;
             END IF;
         
-          UPDATE groupuser SET Molopuntos = Molopuntos - pointsToDecrease WHERE GroupID = m_GroupID AND UserID = m_UserID;
+        	UPDATE groupuser SET Molopuntos = Molopuntos - pointsToDecrease WHERE GroupID = m_GroupID AND UserID = m_UserID;
         
         END IF;
     
-    END LOOP get_groupuser;
-    CLOSE groupuser_cursor;
+  	END LOOP get_groupuser;
+  	CLOSE groupuser_cursor;
 
 END$$
 
 DELIMITER ;
-
 
 -- --------------------------------------------------------
 
@@ -237,7 +237,7 @@ ALTER TABLE `groups`
 --
 ALTER TABLE `users`
   MODIFY `UserID` int(11) NOT NULL AUTO_INCREMENT;
-  DELIMITER $$
+DELIMITER $$
 --
 -- Eventos
 --

@@ -1,4 +1,4 @@
-<?php
+ <?php
 
 require_once './DAOs/UserDAO.php';
 
@@ -220,11 +220,11 @@ $app->post('/user/getRequest', function() use ($app) {
     $userID = (string) $input->UserID;
     
     $userDAO = new UserDAO();
-    $result = $userDAO->getRequestByFriend($userID); 
+    $requests = $userDAO->getRequestByFriend($userID); 
 
     $finalResult = array();
     $i = 0;
-    foreach ($result as $request) {
+    foreach ($requests as $request) {
         $finalRequest = array();
         $finalRequest["LastUpdate"] = $request["LastUpdate"];
         $finalRequest["User"] = $userDAO->getUserById($request["UserID"]); 
@@ -233,13 +233,58 @@ $app->post('/user/getRequest', function() use ($app) {
         $i++;
     }
 
-    if ($finalResult != NULL) {
-        echoResponse(200, $finalResult);
-    } else {
-        echoResponse(465, "Oops! An error occurred");
-    }
+    echoResponse(200, $finalResult);
 });
 
 
+// FirebaseToken User update
+$app->post('/user/acceptFriendship', function() use ($app) {
+    $body = $app->request()->getBody(); 
+    $input = json_decode($body);
+
+    // reading post params
+    $userID = (string) $input->UserID;
+    $friendID = (string) $input->FriendID;
+    
+    $userDAO = new UserDAO();
+    $result = $userDAO->acceptFriendship($userID, $friendID); 
+
+    if($result == 200)
+        echoResponse(200, $result);
+    else
+        echoResponse(471, "OOPS! An error occurred...");
+
+});
+
+
+
+// FirebaseToken User update
+$app->post('/user/getFriends', function() use ($app) {
+    $body = $app->request()->getBody(); 
+    $input = json_decode($body);
+
+    // reading post params
+    $userID = (string) $input->UserID;
+    
+    $userDAO = new UserDAO();
+    $requests = $userDAO->getFriendsByUser($userID); 
+
+    $friends = array();
+    $i = 0;
+    foreach ($requests as $request) {
+
+        if($request["UserID"] == $userID){
+            $friend = $userDAO->getUserById($request["FriendID"]); 
+            
+        } else {
+            $friend = $userDAO->getUserById($request["UserID"]);
+        }
+
+        $friends[$i] = $friend;
+        $i++;
+    }
+
+    echoResponse(200, $friends);
+});
 
 ?>
