@@ -129,7 +129,7 @@ public class GroupController {
                 });
     }
 
-    public void getGroupParticipantsByID(final Context mContext, int groupId, final ServiceCallback callback) {
+    public void getGroupParticipantsByID(int groupId, final ServiceCallback callback) {
 
         GroupJson groupJson = new GroupJson();
         groupJson.setGroupID(groupId);
@@ -138,7 +138,8 @@ public class GroupController {
                 , new Callback<ArrayList<Participant>>() {
                     @Override
                     public void success(ArrayList<Participant> participants, Response response) {
-                        Variables.Group.setParticipants(Parser.parseParticipants(participants));
+                        Variables.Group.setParticipants(participants);
+//                        Variables.Group.setParticipants(Parser.parseParticipants(participants));
                         if (callback != null)
                             callback.onSuccess(new Gson().toJson(participants));
 

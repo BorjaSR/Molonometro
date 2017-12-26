@@ -185,11 +185,11 @@ public class DashboardGroupActivity extends AppCompatActivity {
             if (user.getUserID() == Variables.User.getUserID())
                 user_name.setText(getString(R.string.you) + " (" + user.getMolopuntos() + " Mp)");
             else {
-                user_name.setText(Tools.cropNameSurname(user.getName()) + " (" + user.getMolopuntos() + " Mp)");
+                user_name.setText(Tools.cropNameSurname(user.getUserName()) + " (" + user.getMolopuntos() + " Mp)");
             }
 
             try {
-                byte[] imageByteArray = Base64.decode(user.getImageBase64(), Base64.DEFAULT);
+                byte[] imageByteArray = Base64.decode(user.getImage(), Base64.DEFAULT);
 
                 Glide.with(this)
                         .load(imageByteArray)

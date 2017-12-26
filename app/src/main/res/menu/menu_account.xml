@@ -3,11 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.bsalazar.molonometro.MainActivity">
 
-    <item
-        android:id="@+id/action_friend_request"
-        android:actionLayout="@layout/notification_bubble"
-        android:icon="@drawable/friend_req"
-        android:title="@string/friend_request"
-        app:showAsAction="always" />
+    <!--<item-->
+        <!--android:id="@+id/action_friend_request"-->
+        <!--android:actionLayout="@layout/notification_bubble"-->
+        <!--android:icon="@drawable/friend_req"-->
+        <!--android:title="@string/friend_request"-->
+        <!--app:showAsAction="always" />-->
 
 </menu>

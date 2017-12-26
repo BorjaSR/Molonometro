@@ -29,4 +29,5 @@ public class FriendRquest {
     public void setContact(Contact contact) {
         this.contact = contact;
     }
+
 }

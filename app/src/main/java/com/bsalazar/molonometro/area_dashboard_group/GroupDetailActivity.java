@@ -183,13 +183,13 @@ public class GroupDetailActivity extends AppCompatActivity {
             String State = "";
 
             if (participant.getUserID() == Variables.User.getUserID()) {
-                image64 = Variables.User.getImageBase64();
+                image64 = "";
                 Name = getString(R.string.you);
                 State = Variables.User.getState();
 
             } else {
-                image64 = participant.getImageBase64();
-                Name = participant.getName();
+                image64 = participant.getImage();
+                Name = participant.getUserName();
                 State = participant.getState();
 
                 participant_view.setOnClickListener(new View.OnClickListener() {

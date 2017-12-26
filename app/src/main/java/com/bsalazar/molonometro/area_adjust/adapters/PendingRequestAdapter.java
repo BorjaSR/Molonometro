@@ -2,6 +2,7 @@ package com.bsalazar.molonometro.area_adjust.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.transition.TransitionManager;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,7 +44,7 @@ public class PendingRequestAdapter extends RecyclerView.Adapter<PendingRequestAd
     }
 
     @Override
-    public void onBindViewHolder(final ContactsForGroupViewHolder holder, int position) {
+    public void onBindViewHolder(final ContactsForGroupViewHolder holder, final int position) {
         final Contact contact = friendRquests.get(position).getContact();
 
         holder.participant_user_name.setText(String.format(mContext.getString(R.string.user_name), contact.getUserName()));
@@ -69,7 +70,7 @@ public class PendingRequestAdapter extends RecyclerView.Adapter<PendingRequestAd
                 new UserController().acceptFriendship(requestFriendJson, new ServiceCallback() {
                     @Override
                     public void onSuccess(String result) {
-                        showRequestSend(holder);
+                        showRequestAccepted(holder);
                     }
                 });
             }
@@ -83,10 +84,12 @@ public class PendingRequestAdapter extends RecyclerView.Adapter<PendingRequestAd
         });
     }
 
-    private void showRequestSend(ContactsForGroupViewHolder holder){
+    private void showRequestAccepted(ContactsForGroupViewHolder holder){
+        TransitionManager.beginDelayedTransition(holder.view);
+
         holder.buttons_container.setVisibility(View.GONE);
         holder.request_send.setText(mContext.getString(R.string.request_accepted));
-        holder.request_send.setTextColor(mContext.getResources().getColor(R.color.gray));
+        holder.request_send.setTextColor(mContext.getResources().getColor(R.color.colorPrimary));
         holder.request_send.setVisibility(View.VISIBLE);
     }
 
@@ -97,6 +100,8 @@ public class PendingRequestAdapter extends RecyclerView.Adapter<PendingRequestAd
 
     class ContactsForGroupViewHolder extends RecyclerView.ViewHolder {
 
+        ViewGroup view;
+
         LinearLayout contact_for_new_group_layout;
         TextView participant_user_name, participant_name;
         ImageView contact_image;
@@ -106,6 +111,8 @@ public class PendingRequestAdapter extends RecyclerView.Adapter<PendingRequestAd
 
         ContactsForGroupViewHolder(View itemView) {
             super(itemView);
+
+            view = (ViewGroup) itemView;
 
             contact_for_new_group_layout = (LinearLayout) itemView.findViewById(R.id.contact_for_new_group_layout);
             participant_user_name = (TextView) itemView.findViewById(R.id.participant_user_name);

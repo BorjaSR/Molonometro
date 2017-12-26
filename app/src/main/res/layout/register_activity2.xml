@@ -74,7 +74,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textEmailAddress"
-                android:maxLength="25"
+                android:maxLength="100"
                 android:textColor="@color/chg2"/>
 
             <LinearLayout
@@ -86,7 +86,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/password"
-                android:maxLength="75"
                 android:textColor="@color/white_"
                 android:textSize="18sp" />
 
@@ -97,6 +96,7 @@
                 android:singleLine="true"
                 android:inputType="textPassword"
                 android:textColor="@color/chg2"
+                android:maxLength="75"
                 android:imeOptions="actionDone"/>
 
             <TextView

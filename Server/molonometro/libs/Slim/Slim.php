@@ -522,12 +522,12 @@ class Slim
     /**
      * Route Groups
      *
-     * This method accepts a route pattern and a callback all Route
-     * declarations in the callback will be prepended by the group(s)
+     * This method accepts a route pattern and a onFinishListener all Route
+     * declarations in the onFinishListener will be prepended by the group(s)
      * that it is in
      *
      * Accepts the same parameters as a standard route so:
-     * (pattern, middleware1, middleware2, ..., $callback)
+     * (pattern, middleware1, middleware2, ..., $onFinishListener)
      */
     public function group()
     {

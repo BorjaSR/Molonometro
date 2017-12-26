@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.area_new_group.NewGroupActivity;
 import com.bsalazar.molonometro.entities.Contact;
+import com.bsalazar.molonometro.entities.FriendRquest;
 import com.bsalazar.molonometro.general.MyRequestListener;
 import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.controllers.UserController;
@@ -61,30 +62,59 @@ public class ContactsFindedAdapter extends RecyclerView.Adapter<ContactsFindedAd
             holder.contact_image.setImageResource(R.drawable.user_icon);
         }
 
-        holder.accept.setText(mContext.getString(R.string.add));
-        holder.accept.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                RequestFriendJson requestFriendJson = new RequestFriendJson(Variables.User.getUserID(), contact.getUserID());
-                new UserController().requestFriendship(requestFriendJson, new ServiceCallback() {
-                    @Override
-                    public void onSuccess(String result) {
-                        showRequestSend(holder);
-                    }
-                });
-            }
-        });
+        if(!haveRequestFrom(contact.getUserID())){
+            holder.accept.setText(mContext.getString(R.string.add));
+            holder.accept.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    RequestFriendJson requestFriendJson = new RequestFriendJson(Variables.User.getUserID(), contact.getUserID());
+                    new UserController().requestFriendship(requestFriendJson, new ServiceCallback() {
+                        @Override
+                        public void onSuccess(String result) {
+                            showRequestSend(holder);
+                        }
+                    });
+                }
+            });
 
-        holder.reject.setText(mContext.getString(R.string.block));
-        holder.reject.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+            holder.reject.setText(mContext.getString(R.string.block));
+            holder.reject.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
 
-            }
-        });
+                }
+            });
+
+        } else {
+            holder.accept.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    RequestFriendJson requestFriendJson = new RequestFriendJson();
+                    requestFriendJson.setFriendID(Variables.User.getUserID());
+                    requestFriendJson.setUserID(contact.getUserID());
+                    new UserController().acceptFriendship(requestFriendJson, new ServiceCallback() {
+                        @Override
+                        public void onSuccess(String result) {
+                            showRequestAccepted(holder);
+                        }
+                    });
+                }
+            });
+        }
+    }
+
+    private void showRequestAccepted(ContactsForGroupViewHolder holder){
+        TransitionManager.beginDelayedTransition(holder.view);
+
+        holder.buttons_container.setVisibility(View.GONE);
+        holder.request_send.setText(mContext.getString(R.string.request_accepted));
+        holder.request_send.setTextColor(mContext.getResources().getColor(R.color.colorPrimary));
+        holder.request_send.setVisibility(View.VISIBLE);
     }
 
     private void showRequestSend(ContactsForGroupViewHolder holder){
+        TransitionManager.beginDelayedTransition(holder.view);
+
         holder.buttons_container.setVisibility(View.GONE);
         holder.request_send.setVisibility(View.VISIBLE);
     }
@@ -96,6 +126,9 @@ public class ContactsFindedAdapter extends RecyclerView.Adapter<ContactsFindedAd
 
     class ContactsForGroupViewHolder extends RecyclerView.ViewHolder {
 
+
+        ViewGroup view;
+
         LinearLayout contact_for_new_group_layout;
         TextView participant_user_name, participant_name;
         ImageView contact_image;
@@ -106,6 +139,8 @@ public class ContactsFindedAdapter extends RecyclerView.Adapter<ContactsFindedAd
         ContactsForGroupViewHolder(View itemView) {
             super(itemView);
 
+            view = (ViewGroup) itemView;
+
             contact_for_new_group_layout = (LinearLayout) itemView.findViewById(R.id.contact_for_new_group_layout);
             participant_user_name = (TextView) itemView.findViewById(R.id.participant_user_name);
             participant_name = (TextView) itemView.findViewById(R.id.participant_name);
@@ -115,5 +150,12 @@ public class ContactsFindedAdapter extends RecyclerView.Adapter<ContactsFindedAd
             reject = (TextView) itemView.findViewById(R.id.reject);
             request_send = (TextView) itemView.findViewById(R.id.request_send);
         }
+    }
+
+    private boolean haveRequestFrom(int contactId){
+        for (FriendRquest friendRquest : Variables.User.getFriendRquests())
+            if(friendRquest.getContact().getUserID() == contactId)
+                return true;
+        return false;
     }
 }

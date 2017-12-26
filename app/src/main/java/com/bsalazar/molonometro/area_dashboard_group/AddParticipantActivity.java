@@ -123,7 +123,7 @@ public class AddParticipantActivity extends AppCompatActivity implements View.On
                                 Participant participant = new Participant();
                                 participant.setUserID(contact.getUserID());
                                 participant.setName(contact.getName());
-                                participant.setImageBase64(contact.getImageBase64());
+                                participant.setImage(contact.getImageBase64());
                                 participant.setPhone(contact.getPhone());
                                 participant.setMolopuntos(0);
                                 participant.setState(contact.getState());

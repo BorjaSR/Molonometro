@@ -3,7 +3,6 @@ package com.bsalazar.molonometro.area_adjust;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Service;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -18,7 +17,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.util.Log;
@@ -34,10 +32,10 @@ import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.general.Constants;
 import com.bsalazar.molonometro.general.Memo;
 import com.bsalazar.molonometro.general.MyRequestListener;
+import com.bsalazar.molonometro.general.SendFileFTP;
 import com.bsalazar.molonometro.general.Tools;
 import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.controllers.UserController;
-import com.bsalazar.molonometro.rest.json.UserJson;
 import com.bsalazar.molonometro.rest.services.ServiceCallback;
 import com.bumptech.glide.Glide;
 
@@ -99,18 +97,18 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
         profile_name.setText(Tools.formatPhone(Variables.User.getName()));
         user_molopuntos.setText(Variables.User.getMolopuntos() + " Molopuntos");
 
-        if(Variables.User.getNumRequest() > 0){
-            notifText.setVisibility(View.VISIBLE);
-            notifText.setText(String.valueOf(Variables.User.getNumRequest()));
-        }
+//        if(Variables.User.getNumRequest() > 0){
+//            notifText.setVisibility(View.VISIBLE);
+//            notifText.setText(String.valueOf(Variables.User.getNumRequest()));
+//        }
     }
 
     private void loadImage(){
         try {
-            byte[] imageByteArray = Base64.decode(Variables.User.getImageBase64(), Base64.DEFAULT);
+//            byte[] imageByteArray = Base64.decode(Variables.User.getImageBase64(), Base64.DEFAULT);
 
             Glide.with(this)
-                    .load(imageByteArray)
+                    .load(Tools.getUserImagePath(String.valueOf(Variables.User.getUserID())))
 //                    .load("http://hostingtestbsalazar.esy.es/molonometro/images/profile.jpg")
                     .asBitmap()
                     .dontAnimate()
@@ -127,27 +125,6 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_account, menu);
 
-        MenuItem item = menu.findItem(R.id.action_friend_request);
-        MenuItemCompat.setActionView(item, R.layout.notification_bubble);
-
-        View notif = item.getActionView();
-        if(notif != null){
-            notifText = (TextView) notif.findViewById(R.id.number_notification);
-            notifText.setVisibility(View.GONE);
-
-            notif.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    new UserController().getRequest(new UserJson(Variables.User.getUserID()), new ServiceCallback() {
-                        @Override
-                        public void onSuccess(String result) {
-                            startActivity(new Intent(getApplication(), AddFriendsActivity.class));
-                        }
-                    });
-                }
-            });
-        }
-
         return true;
     }
 
@@ -157,9 +134,6 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
-                return true;
-            case R.id.action_friend_request:
-                startActivity(new Intent(this, AddFriendsActivity.class));
                 return true;
         }
         return true;
@@ -338,37 +312,39 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
     private void setImage(Bitmap bitmap){
         profile_image.setImageBitmap(null);
 
-        new UserController().updateUserImage(this, bitmap, new ServiceCallback() {
-            @Override
-            public void onSuccess(String result) {
+        new SendFileFTP(String.valueOf(Variables.User.getUserID()), SendFileFTP.MODE_USER, bitmap, null).execute();
 
-                byte[] bitmapdata = Base64.decode(Variables.User.getImageBase64(), Base64.DEFAULT);
-
-                Glide.with(getApplicationContext())
-                        .load(bitmapdata)
-                        .asBitmap()
-                        .dontAnimate()
-                        .listener(new MyRequestListener(activity, profile_image))
-                        .into(profile_image);
-            }
-
-            @Override
-            public void onFailure(String result) {
-
-                try {
-                    byte[] imageByteArray = Base64.decode(Variables.User.getImageBase64(), Base64.DEFAULT);
-
-                    Glide.with(getApplicationContext())
-                            .load(imageByteArray)
-                            .asBitmap()
-                            .dontAnimate()
-                            .listener(new MyRequestListener(activity, profile_image))
-                            .into(profile_image);
-
-                } catch (Exception e) {
-                    profile_image.setImageDrawable(getResources().getDrawable(R.drawable.user_icon));
-                }
-            }
-        });
+//        new UserController().updateUserImage(this, bitmap, new ServiceCallback() {
+//            @Override
+//            public void onSuccess(String result) {
+//
+//                byte[] bitmapdata = Base64.decode(Variables.User.getImageBase64(), Base64.DEFAULT);
+//
+//                Glide.with(getApplicationContext())
+//                        .load(bitmapdata)
+//                        .asBitmap()
+//                        .dontAnimate()
+//                        .listener(new MyRequestListener(activity, profile_image))
+//                        .into(profile_image);
+//            }
+//
+//            @Override
+//            public void onFailure(String result) {
+//
+//                try {
+//                    byte[] imageByteArray = Base64.decode(Variables.User.getImageBase64(), Base64.DEFAULT);
+//
+//                    Glide.with(getApplicationContext())
+//                            .load(imageByteArray)
+//                            .asBitmap()
+//                            .dontAnimate()
+//                            .listener(new MyRequestListener(activity, profile_image))
+//                            .into(profile_image);
+//
+//                } catch (Exception e) {
+//                    profile_image.setImageDrawable(getResources().getDrawable(R.drawable.user_icon));
+//                }
+//            }
+//        });
     }
 }

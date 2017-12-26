@@ -7,10 +7,11 @@ public class Participant {
 
 
     private int UserID;
+    private String UserName;
     private String Name;
     private String Phone;
     private String State;
-    private String ImageBase64;
+    private String Image;
     private boolean IsAdmin;
     private int Molopuntos;
 
@@ -23,6 +24,14 @@ public class Participant {
 
     public void setUserID(int userID) {
         UserID = userID;
+    }
+
+    public String getUserName() {
+        return UserName;
+    }
+
+    public void setUserName(String userName) {
+        UserName = userName;
     }
 
     public String getName() {
@@ -49,12 +58,12 @@ public class Participant {
         State = state;
     }
 
-    public String getImageBase64() {
-        return ImageBase64;
+    public String getImage() {
+        return Image;
     }
 
-    public void setImageBase64(String imageBase64) {
-        ImageBase64 = imageBase64;
+    public void setImage(String imageBase64) {
+        Image = imageBase64;
     }
 
     public boolean isAdmin() {

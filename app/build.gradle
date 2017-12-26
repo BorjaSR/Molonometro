@@ -37,6 +37,9 @@ dependencies {
     compile 'com.google.firebase:firebase-messaging:9.8.0'
     //FastScroll RecyclerView
     compile 'com.futuremind.recyclerfastscroll:fastscroll:0.2.5'
+    //Apache NET
+    compile 'commons-net:commons-net:3.6'
+
 }
 
 // ADD THIS AT THE BOTTOM

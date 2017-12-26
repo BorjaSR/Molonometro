@@ -36,7 +36,7 @@ public class Parser {
         user.setName(userJson.getName());
         user.setPhone(userJson.getPhone());
         user.setState(userJson.getState());
-        user.setImageBase64(userJson.getImage());
+//        user.setImageBase64(userJson.getImage());
         user.setNumRequest(userJson.getRequests());
 
         return user;
@@ -122,21 +122,21 @@ public class Parser {
 
             Participant participant = new Participant();
             participant.setUserID(participantJson.getUserID());
+            participant.setUserName(participantJson.getUserName());
+            participant.setImage(participantJson.getImage());
+            participant.setName(participantJson.getName());
+            participant.setState(participantJson.getState());
 
-            if (participantJson.getUserID() == Variables.User.getUserID()) {
-                participant.setImageBase64(Variables.User.getImageBase64());
-                participant.setName(Variables.User.getName());
-                participant.setPhone(Variables.User.getPhone());
-                participant.setState(Variables.User.getState());
+//            if (participantJson.getUserID() == Variables.User.getUserID()) {
 
-            } else
-                for (Contact contact : Variables.contacts)
-                    if (contact.getUserID() == participantJson.getUserID()) {
-                        participant.setImageBase64(contact.getImageBase64());
-                        participant.setName(contact.getName());
-                        participant.setPhone(contact.getPhone());
-                        participant.setState(contact.getState());
-                    }
+//            } else
+//                for (Contact contact : Variables.contacts)
+//                    if (contact.getUserID() == participantJson.getUserID()) {
+//                        participant.setImageBase64(contact.getImageBase64());
+//                        participant.setName(contact.getName());
+//                        participant.setPhone(contact.getPhone());
+//                        participant.setState(contact.getState());
+//                    }
 
             participant.setMolopuntos(participantJson.getMolopuntos());
             participant.setAdmin(participantJson.isAdmin());
@@ -179,7 +179,7 @@ public class Parser {
 
             if (commentJson.getUserID() == Variables.User.getUserID()) {
                 comment.setUserName(Variables.User.getName());
-                comment.setUserImage(Variables.User.getImageBase64());
+                comment.setUserImage("");
                 comment.setDestinationUserName(getContactByID(commentJson.getDestinationUserID()).getName());
             } else {
                 Contact contact = getContactByID(commentJson.getUserID());
@@ -221,7 +221,7 @@ public class Parser {
 
             if (commentJson.getUserID() == Variables.User.getUserID()) {
                 comment.setUserName(Variables.User.getName());
-                comment.setUserImage(Variables.User.getImageBase64());
+                comment.setUserImage("");
             } else {
                 Contact contact = getContactByID(commentJson.getUserID());
                 if (contact != null) {

@@ -186,7 +186,7 @@ public class AddCommentDialogFragment extends DialogFragment  implements View.On
                                 progress.dismiss();
 
                                 comment.setUserName(Variables.User.getName());
-                                comment.setUserImage(Variables.User.getImageBase64());
+                                comment.setUserImage("");
                                 comment.setDestinationUserName(participantToSend.getName());
                                 comment.setDate(new Date());
 
@@ -218,7 +218,7 @@ public class AddCommentDialogFragment extends DialogFragment  implements View.On
 
     private Boolean userIsInGroup(String name) {
         for (Participant participant : participants_without_you)
-            if (participant.getName().equals(name))
+            if (participant.getUserName().equals(name))
                 return true;
         return false;
     }

@@ -33,7 +33,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:background="?android:selectableItemBackground"
-                android:text="Contactos"
+                android:text="Amigos"
                 android:textAllCaps="true"
                 android:textColor="@color/white"
                 android:textStyle="bold" />

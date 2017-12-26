@@ -92,7 +92,7 @@ public class FinishGroupActivity extends AppCompatActivity implements View.OnCli
             String State = "";
 
             if (id == Variables.User.getUserID()) {
-                image64 = Variables.User.getImageBase64();
+                image64 = "";
                 Name = getString(R.string.you);
                 State = Variables.User.getState();
 

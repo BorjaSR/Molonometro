@@ -7,6 +7,7 @@
     android:background="@color/white">
 
     <LinearLayout
+        android:id="@+id/search_friend_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="16dp"
@@ -28,6 +29,14 @@
             android:imeOptions="actionSearch"
             android:layout_marginLeft="15dp"
             android:hint="Busca un amigo..."/>
+
+
+        <ImageView
+            android:id="@+id/clear_search"
+            android:layout_width="25dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/close_black"
+            android:background="?selectableItemBackground"/>
 
     </LinearLayout>
 

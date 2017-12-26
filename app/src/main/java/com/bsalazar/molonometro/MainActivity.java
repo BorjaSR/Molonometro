@@ -16,8 +16,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
@@ -30,6 +32,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bsalazar.molonometro.area_adjust.AccountActivity;
+import com.bsalazar.molonometro.area_adjust.AddFriendsActivity;
 import com.bsalazar.molonometro.area_home.ContactsFragment;
 import com.bsalazar.molonometro.area_home.GroupsFragment;
 import com.bsalazar.molonometro.area_new_group.NewGroupActivity;
@@ -51,6 +54,13 @@ import com.bsalazar.molonometro.rest.services.ServiceCallback;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 
+import org.apache.commons.net.ftp.FTP;
+import org.apache.commons.net.ftp.FTPClient;
+
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.net.InetAddress;
 import java.util.ArrayList;
 
 import retrofit.Callback;
@@ -65,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public float initialFabPosition;
     public Point size;
 
+    private TextView notifText;
     private ViewPager main_view_pager;
     private MainScreenAdapter adapter;
 
@@ -88,8 +99,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Gson gson = new Gson();
                 Variables.User = gson.fromJson(rememberedUser, User.class);
 
-                if(Variables.User.getImageBase64() != null)
-                    Variables.User.setImage(Tools.decodeBase64(Variables.User.getImageBase64()));
+//                if(Variables.User.getImageBase64() != null)
+//                    Variables.User.setImage(Tools.decodeBase64(Variables.User.getImageBase64()));
             }
         }
 
@@ -143,15 +154,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         initialFabPosition = fab.getTranslationX();
         fab.setOnClickListener(this);
 
-//        int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS);
-//        if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
-//            getContacts(true);
-//        } else {
-//            ActivityCompat.requestPermissions(this,
-//                    new String[]{Manifest.permission.READ_CONTACTS},
-//                    PERMISSION_RESULT_READ_CONTACTS);
-//        }
-
         getContacts(true);
 
         // Save the screen size
@@ -160,6 +162,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         display.getMetrics(metrics);
         size = new Point();
         display.getSize(size);
+
+        if (getIntent().getExtras() != null && getIntent().getExtras().getBoolean("REM", false)){
+            new UserController().getUser(new ServiceCallback() {
+                @Override
+                public void onSuccess(String result) {
+                    if(Variables.User.getNumRequest() > 0){
+                        notifText.setVisibility(View.VISIBLE);
+                        notifText.setText(String.valueOf(Variables.User.getNumRequest()));
+                    }
+                }
+            });
+        }
+
 
         new UserController().updateFirebaseToken(this, getFirebaseToken(), null);
     }
@@ -173,6 +188,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        MenuItem item = menu.findItem(R.id.action_friend_request);
+        MenuItemCompat.setActionView(item, R.layout.notification_bubble);
+
+        View notif = item.getActionView();
+        if(notif != null){
+            notifText = (TextView) notif.findViewById(R.id.number_notification);
+            notifText.setVisibility(View.GONE);
+
+            notif.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    new UserController().getRequest(new UserJson(Variables.User.getUserID()), new ServiceCallback() {
+                        @Override
+                        public void onSuccess(String result) {
+                            startActivity(new Intent(getApplication(), AddFriendsActivity.class));
+                        }
+                    });
+                }
+            });
+        }
+
         return true;
     }
 
@@ -184,12 +221,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.action_settings:
                 startActivityForResult(new Intent(this, AccountActivity.class), REQUEST_EXIT);
                 return true;
+
             case R.id.action_refresh:
                 if (main_view_pager.getCurrentItem() == 0)
                     refreshGroups(false);
                 else if (main_view_pager.getCurrentItem() == 1)
                     getContacts(false);
                 return true;
+
 //            case R.id.action_dummy:
 //                Constants.restController.getService().dummyService(new PushTestJson()
 //                        , new Callback<String>() {
@@ -249,22 +288,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-//        switch (requestCode) {
-//            case PERMISSION_RESULT_READ_CONTACTS:
-//                if (grantResults.length > 0
-//                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                    getContacts(true);
-//                } else {
-//                    this.finish();
-//                }
-//                break;
-//            default:
-//                break;
-//        }
-//    }
-
     private void getContacts(final boolean firstTime) {
 
         new UserController().getFriends(new UserJson(Variables.User.getUserID()), new ServiceCallback() {
@@ -278,57 +301,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
         });
-
-
-//        String[] projection = new String[]{ContactsContract.Data._ID, ContactsContract.Data.DISPLAY_NAME, ContactsContract.CommonDataKinds.Phone.NUMBER, ContactsContract.Data.MIMETYPE}; //, ContactsContract.CommonDataKinds.Phone.NUMBER, ContactsContract.CommonDataKinds.Phone.TYPE
-//
-//        String selectionClause = ContactsContract.Data.MIMETYPE + " = '" +
-//                ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE + "' AND " +
-//                ContactsContract.CommonDataKinds.Phone.NUMBER + " IS NOT NULL";
-//        String sortOrder = ContactsContract.Data.DISPLAY_NAME + " ASC";
-//
-//
-//        Cursor contactsCursor = getContentResolver().query(
-//                ContactsContract.Data.CONTENT_URI,
-//                projection,
-//                selectionClause,
-//                null,
-//                sortOrder);
-//
-//        ArrayList<PhoneContact> phoneContacts = new ArrayList<>();
-//        phoneContacts.clear();
-//        while (contactsCursor.moveToNext()) {
-//            boolean isInList = false;
-//            for (PhoneContact phoneContact : phoneContacts)
-//                if (phoneContact.getPhoneDisplayName().equals(contactsCursor.getString(1)))
-//                    isInList = true;
-//
-//            String phone = contactsCursor.getString(2);
-//            phone = phone.replace(" ", "");
-//            if (phone.length() > 9) phone = phone.substring(phone.length() - 9);
-//
-//            if (!isInList && !phone.equals(Variables.User.getPhone()))
-//                phoneContacts.add(new PhoneContact(contactsCursor.getString(1), phone));
-//        }
-//
-//        ContactsListJson contactsListJson = new ContactsListJson();
-//        contactsListJson.setPhoneContacts(phoneContacts);
-//        new ContactController().checkContacts(this, contactsListJson, new ServiceCallback() {
-//            @Override
-//            public void onSuccess(String result) {
-//                adapter.updateContacts();
-//                if(firstTime){
-//                    contactsReady = true;
-//                    showContent();
-//                    refreshGroups(true);
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(String result) {
-//
-//            }
-//        });
     }
 
     public void shareMolonometro() {

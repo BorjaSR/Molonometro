@@ -9,7 +9,6 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
-import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,12 +46,12 @@ public class Tools {
         Bitmap finalBitmap;
         if (bitmap.getWidth() >= bitmap.getHeight())
             finalBitmap = Bitmap.createBitmap(bitmap,
-                    bitmap.getWidth()/2 - bitmap.getHeight()/2, 0,
+                    bitmap.getWidth() / 2 - bitmap.getHeight() / 2, 0,
                     bitmap.getHeight(), bitmap.getHeight());
 
         else
             finalBitmap = Bitmap.createBitmap(bitmap,
-                    0, bitmap.getHeight()/2 - bitmap.getWidth()/2,
+                    0, bitmap.getHeight() / 2 - bitmap.getWidth() / 2,
                     bitmap.getWidth(), bitmap.getWidth());
 
         Bitmap output = Bitmap.createBitmap(finalBitmap.getWidth(),
@@ -77,12 +76,12 @@ public class Tools {
         return output;
     }
 
-    public static String formatPhone(String old_phone){
+    public static String formatPhone(String old_phone) {
         String new_phone = "NOT_FORMAT";
-        if(old_phone != null){
+        if (old_phone != null) {
             new_phone = old_phone;
-            if(new_phone.length() == 9){
-                new_phone = new_phone.substring(0,3) + " " + new_phone.substring(3, 6) + " " + new_phone.substring(6,9);
+            if (new_phone.length() == 9) {
+                new_phone = new_phone.substring(0, 3) + " " + new_phone.substring(3, 6) + " " + new_phone.substring(6, 9);
             }
         }
 
@@ -90,25 +89,27 @@ public class Tools {
     }
 
     public static final double RESICED_CONSTAMT = 0.54;
+
     public static String encodeBitmapToBase64(Bitmap image) {
 
         ByteArrayOutputStream baos2 = new ByteArrayOutputStream();
 
         image.compress(Bitmap.CompressFormat.JPEG, 25, baos2);
-        int sinCompr = Base64.encodeToString(baos2.toByteArray(),Base64.DEFAULT).getBytes().length;
-        if(sinCompr > 60000){
+
+        int sinCompr = Base64.encodeToString(baos2.toByteArray(), Base64.DEFAULT).getBytes().length;
+        if (sinCompr > 60000) {
 
             double div = RESICED_CONSTAMT / (60000f / sinCompr);
             int division = (int) Math.ceil(div);
-            if(division == 1) division = 2;
+            if (division == 1) division = 2;
 
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            Bitmap resicedBitmap = getResizedBitmap(image, image.getWidth()/division, image.getHeight()/division);
+            Bitmap resicedBitmap = getResizedBitmap(image, image.getWidth() / division, image.getHeight() / division);
             resicedBitmap.compress(Bitmap.CompressFormat.JPEG, 25, baos);
 
-            return Base64.encodeToString(baos.toByteArray(),Base64.DEFAULT);
+            return Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
         } else {
-            return Base64.encodeToString(baos2.toByteArray(),Base64.DEFAULT);
+            return Base64.encodeToString(baos2.toByteArray(), Base64.DEFAULT);
         }
 
     }
@@ -118,18 +119,19 @@ public class Tools {
         return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
     }
 
-    public static String cropNameSurname(String Name){
-        if(Name == null)
+    public static String cropNameSurname(String Name) {
+        if (Name == null)
             return "";
 
         String[] split = Name.split(" ");
-        if(split.length > 2){
+        if (split.length > 2) {
             return split[0] + " " + split[1];
         } else
             return Name;
     }
-    public static String cropName(String Name){
-        if(Name == null)
+
+    public static String cropName(String Name) {
+        if (Name == null)
             return "";
 
         return Name.split(" ")[0];
@@ -152,37 +154,38 @@ public class Tools {
         return resizedBitmap;
     }
 
-    public static boolean isToday(Date date){
+    public static boolean isToday(Date date) {
         Date today = new Date();
         return today.getYear() == date.getYear() && today.getMonth() == date.getMonth() && today.getDay() == date.getDay();
     }
 
-    public static int brightnessDown (int color) {
-        int r = Color.red( color );
-        int g = Color.green( color );
-        int b = Color.blue( color );
+    public static int brightnessDown(int color) {
+        int r = Color.red(color);
+        int g = Color.green(color);
+        int b = Color.blue(color);
 
         // Get saturation and brightness.
         float[] hsbVals = new float[3];
         Color.RGBToHSV(r, g, b, hsbVals);
 
-        if(hsbVals[2]-0.15f>0)
-            hsbVals[2]=hsbVals[2]-0.15f;
+        if (hsbVals[2] - 0.15f > 0)
+            hsbVals[2] = hsbVals[2] - 0.15f;
         else
-            hsbVals[2]=0.1f;
+            hsbVals[2] = 0.1f;
 
         return Color.HSVToColor(hsbVals);
     }
-    public static int brightnessUp (int color) {
-        int r = Color.red( color );
-        int g = Color.green( color );
-        int b = Color.blue( color );
+
+    public static int brightnessUp(int color) {
+        int r = Color.red(color);
+        int g = Color.green(color);
+        int b = Color.blue(color);
 
         // Get saturation and brightness.
         float[] hsbVals = new float[3];
         Color.RGBToHSV(r, g, b, hsbVals);
 
-        if(hsbVals[2] + 0.15f < 1f)
+        if (hsbVals[2] + 0.15f < 1f)
             hsbVals[2] = hsbVals[2] + 0.15f;
         else
             hsbVals[2] = 0.9f;
@@ -209,5 +212,41 @@ public class Tools {
         params.height = totalHeight
                 + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
         listView.setLayoutParams(params);
+    }
+
+    private static String pathDev = "http://hostingtestbsalazar.esy.es/molonometro/imagesDEV/";
+    private static String path = "http://hostingtestbsalazar.esy.es/molonometro/images/";
+
+    public static String getUserImagePath(String fileName) {
+        StringBuilder path = new StringBuilder();
+
+        if (Constants.IS_DEVELOP)
+            path.append(pathDev);
+        else
+            path.append(path);
+
+        return path.append("Users/").append(fileName).append(".png").toString();
+    }
+
+    public static String getGroupImagePath(String fileName) {
+        StringBuilder path = new StringBuilder();
+
+        if (Constants.IS_DEVELOP)
+            path.append(pathDev);
+        else
+            path.append(path);
+
+        return path.append("Groups/").append(fileName).append(".png").toString();
+    }
+
+    public static String getCommentImagePath(String fileName) {
+        StringBuilder path = new StringBuilder();
+
+        if (Constants.IS_DEVELOP)
+            path.append(pathDev);
+        else
+            path.append(path);
+
+        return path.append("Comments/").append(fileName).append(".png").toString();
     }
 }

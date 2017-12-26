@@ -32,6 +32,7 @@ import com.bsalazar.molonometro.BuildConfig;
 import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.MainActivity;
 import com.bsalazar.molonometro.general.Constants;
+import com.bsalazar.molonometro.general.SendFileFTP;
 import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.controllers.UserController;
 import com.bsalazar.molonometro.rest.json.UpdateUserJson;
@@ -115,17 +116,19 @@ public class SetFirstProfileDataActivity extends AppCompatActivity implements Vi
                     updateUser(updateUserJson);
 
                 } else {
-                    new UserController().updateUserImage(this, profileBitmap, new ServiceCallback() {
-                        @Override
-                        public void onSuccess(String result) {
-                            updateUser(updateUserJson);
-                        }
+                    new SendFileFTP(String.valueOf(Variables.User.getUserID()), SendFileFTP.MODE_USER, profileBitmap, null).execute();
 
-                        @Override
-                        public void onFailure(String result) {
-
-                        }
-                    });
+//                    new UserController().updateUserImage(this, profileBitmap, new ServiceCallback() {
+//                        @Override
+//                        public void onSuccess(String result) {
+//                            updateUser(updateUserJson);
+//                        }
+//
+//                        @Override
+//                        public void onFailure(String result) {
+//
+//                        }
+//                    });
                 }
 
                 break;

@@ -66,10 +66,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             Gson gson = new Gson();
             Variables.User = gson.fromJson(rememberedUser, User.class);
 
-            if (Variables.User.getImageBase64() != null)
-                Variables.User.setImage(Tools.decodeBase64(Variables.User.getImageBase64()));
-
-            startActivity(new Intent(this, MainActivity.class));
+            Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+            intent.putExtra("REM", true);
+            startActivity(intent);
             finish();
         }
     }
@@ -126,8 +125,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                             public void onSuccess(String result) {
 
                                 User aux = Variables.User;
-                                aux. setImageBase64(null);
-                                aux.setImage(null);
+//                                aux. setImageBase64(null);
+//                                aux.setImage(null);
                                 Memo.rememberMe(getApplicationContext(), new Gson().toJson(aux));
 
                                 startActivity(new Intent(getApplicationContext(), MainActivity.class));

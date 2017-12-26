@@ -61,10 +61,10 @@ public class AutoCompleteAdapter extends ArrayAdapter<Participant> {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        holder.participant_name.setText(participant.getName());
+        holder.participant_name.setText(participant.getUserName());
 
         try{
-            byte[] imageByteArray = Base64.decode(participant.getImageBase64(), Base64.DEFAULT);
+            byte[] imageByteArray = Base64.decode(participant.getImage(), Base64.DEFAULT);
 
             Glide.with(mContext)
                     .load(imageByteArray)
@@ -98,14 +98,14 @@ public class AutoCompleteAdapter extends ArrayAdapter<Participant> {
     private Filter nameFilter = new Filter() {
         @Override
         public String convertResultToString(Object resultValue) {
-            return ((Participant)(resultValue)).getName();
+            return ((Participant)(resultValue)).getUserName();
         }
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
             if(constraint != null) {
                 suggestions.clear();
                 for (Participant customer : itemsAll) {
-                    if(customer.getName().toLowerCase().startsWith(constraint.toString().toLowerCase())){
+                    if(customer.getUserName().toLowerCase().startsWith(constraint.toString().toLowerCase())){
                         suggestions.add(customer);
                     }
                 }

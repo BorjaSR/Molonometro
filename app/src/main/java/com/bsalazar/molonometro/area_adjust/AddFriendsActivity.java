@@ -7,12 +7,14 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.transition.TransitionManager;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -36,7 +38,8 @@ import java.util.ArrayList;
 public class AddFriendsActivity extends AppCompatActivity implements View.OnClickListener {
 
     private EditText search_edit;
-    private LinearLayout loading, layout_pending_request;
+    private ImageView clear_search;
+    private LinearLayout search_friend_container, loading, layout_pending_request;
     private RecyclerView contacts_finded_recycler, pending_request_recycler;
     private ContactsFindedAdapter adapter;
     private PendingRequestAdapter pendingRequestAdapter;
@@ -47,12 +50,15 @@ public class AddFriendsActivity extends AppCompatActivity implements View.OnClic
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_friends_activity);
 
+        search_friend_container = (LinearLayout) findViewById(R.id.search_friend_container);
         search_edit = (EditText) findViewById(R.id.search_edit);
+        clear_search = (ImageView) findViewById(R.id.clear_search);
         loading = (LinearLayout) findViewById(R.id.loading);
         layout_pending_request = (LinearLayout) findViewById(R.id.layout_pending_request);
         contacts_finded_recycler = (RecyclerView) findViewById(R.id.contacts_finded_recycler);
         pending_request_recycler = (RecyclerView) findViewById(R.id.pending_request_recycler);
 
+        clear_search.setOnClickListener(this);
 
         pendingRequestAdapter = new PendingRequestAdapter(getApplicationContext(), Variables.User.getFriendRquests());
         pending_request_recycler.setLayoutManager(new LinearLayoutManager(this));
@@ -70,7 +76,22 @@ public class AddFriendsActivity extends AppCompatActivity implements View.OnClic
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() > 0) {
+                    TransitionManager.beginDelayedTransition(search_friend_container);
 
+                    LinearLayout.LayoutParams loparams = (LinearLayout.LayoutParams) search_edit.getLayoutParams();
+                    loparams.weight = 1;
+
+                    search_edit.setLayoutParams(loparams);
+
+                } else {
+                    TransitionManager.beginDelayedTransition(search_friend_container);
+
+                    LinearLayout.LayoutParams loparams = (LinearLayout.LayoutParams) search_edit.getLayoutParams();
+                    loparams.weight = 0;
+
+                    search_edit.setLayoutParams(loparams);
+                }
             }
 
             @Override
@@ -145,7 +166,12 @@ public class AddFriendsActivity extends AppCompatActivity implements View.OnClic
 
     @Override
     public void onClick(View v) {
-
+        switch (v.getId()){
+            case R.id.clear_search:
+                search_edit.setText("");
+                showPendingRequest();
+                break;
+        }
     }
 
     private void showLoading(){

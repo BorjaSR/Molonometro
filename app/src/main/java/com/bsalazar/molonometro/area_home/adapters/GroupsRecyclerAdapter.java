@@ -141,7 +141,7 @@ public class GroupsRecyclerAdapter extends RecyclerView.Adapter<GroupsRecyclerAd
                     @Override
                     public void onClick(View view) {
                         Variables.Group = group;
-                        new GroupController().getGroupParticipantsByID(mContext, group.getId(), new ServiceCallback() {
+                        new GroupController().getGroupParticipantsByID(group.getId(), new ServiceCallback() {
                             @Override
                             public void onSuccess(String result) {
                                 mContext.startActivity(new Intent(mContext, DashboardGroupActivity.class));
