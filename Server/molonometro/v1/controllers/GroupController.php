@@ -134,15 +134,22 @@ $app->post('/group/getGroupParticipantsByID', function() use ($app) {
     $groupID = (int)$input->GroupID;
 
     $groupDAO = new GroupDAO();
-    $DBresponse = $groupDAO->getGroupParticipantsByID($groupID);
+    $participants = $groupDAO->getGroupParticipantsByID($groupID);
 
-    if($DBresponse["status"] == 200){
-        echoResponse(200, $DBresponse["participants"]);
+	$response = array();
+	$i = 0;
+    foreach ($participants as $participant) {
+    	$userDAO = new UserDAO();
+    	$contact = $userDAO->getUserById($participant["UserID"]);
 
-    }else{
-        echoResponse(455, $DBresponse["participants"]);
+    	$contact["Molopuntos"] = $participant["Molopuntos"];
+    	$contact["IsAdmin"] = $participant["IsAdmin"];
+
+		$response[$i] = $contact;
+    	$i++;
     }
 
+    echoResponse(200, $response);
 });
 
 

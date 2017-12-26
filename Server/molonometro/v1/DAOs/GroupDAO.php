@@ -473,7 +473,7 @@ class GroupDAO {
         $db = new DbConnect();
         $this->conn = $db->connect();
 
-        $response = array();
+        $participantsList = array();
 
         $stmt = $this->conn->prepare("SELECT UserID, Molopuntos, IsAdmin From groupuser where GroupID = ? and Deleted = 0");
         $stmt->bind_param("i", $groupID);
@@ -481,7 +481,6 @@ class GroupDAO {
         if ($stmt->execute()) {
             $stmt->bind_result($UserID, $Molopuntos, $IsAdmin);
 
-            $participantsList = array();
 
             $i = 0;
             while ($stmt->fetch()) {
@@ -494,24 +493,16 @@ class GroupDAO {
                     $participant["IsAdmin"] = true;
                 }
 
-
                 $participantsList[$i] = $participant;
                 $i++;
             }
 
-
-            $response["status"] = 200;
-            $response["participants"] = $participantsList;
-
-        } else {
-            $response["status"] = 456;
-            $response["groups"] = "Error obteniendo grupos del usuario";
         }
         
         $stmt->close();
         
         $db->disconnect();
-        return $response;
+        return $participantsList;
     }
 
 
