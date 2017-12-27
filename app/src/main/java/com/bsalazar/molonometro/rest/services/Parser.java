@@ -12,13 +12,11 @@ import com.bsalazar.molonometro.rest.json.ContactJson;
 import com.bsalazar.molonometro.rest.json.FriendRequestJson;
 import com.bsalazar.molonometro.rest.json.GroupJson;
 import com.bsalazar.molonometro.rest.json.LastEventJson;
-import com.bsalazar.molonometro.rest.json.RequestFriendJson;
 import com.bsalazar.molonometro.rest.json.UserJson;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 /**
@@ -36,7 +34,7 @@ public class Parser {
         user.setName(userJson.getName());
         user.setPhone(userJson.getPhone());
         user.setState(userJson.getState());
-//        user.setImageBase64(userJson.getImage());
+        user.setImageURL(userJson.getImage());
         user.setNumRequest(userJson.getRequests());
 
         return user;

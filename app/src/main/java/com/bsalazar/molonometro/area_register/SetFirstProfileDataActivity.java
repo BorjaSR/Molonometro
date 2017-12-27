@@ -20,6 +20,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,6 +34,7 @@ import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.MainActivity;
 import com.bsalazar.molonometro.general.Constants;
 import com.bsalazar.molonometro.general.SendFileFTP;
+import com.bsalazar.molonometro.general.Tools;
 import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.controllers.UserController;
 import com.bsalazar.molonometro.rest.json.UpdateUserJson;
@@ -116,19 +118,25 @@ public class SetFirstProfileDataActivity extends AppCompatActivity implements Vi
                     updateUser(updateUserJson);
 
                 } else {
-                    new SendFileFTP(String.valueOf(Variables.User.getUserID()), SendFileFTP.MODE_USER, profileBitmap, null).execute();
+                    String encoded = Tools.encodeBitmapToBase64(profileBitmap);
+                    byte[] imageByteArray = Base64.decode(encoded, Base64.DEFAULT);
 
-//                    new UserController().updateUserImage(this, profileBitmap, new ServiceCallback() {
-//                        @Override
-//                        public void onSuccess(String result) {
-//                            updateUser(updateUserJson);
-//                        }
-//
-//                        @Override
-//                        public void onFailure(String result) {
-//
-//                        }
-//                    });
+                    new SendFileFTP(String.valueOf(Variables.User.getUserID()), SendFileFTP.MODE_USER, imageByteArray, new SendFileFTP.SendFileFTPListener() {
+                        @Override
+                        public void onFinish(boolean result, String URL) {
+                            new UserController().updateUserImage(SetFirstProfileDataActivity.this, URL, new ServiceCallback() {
+                                @Override
+                                public void onSuccess(String result) {
+                                    updateUser(updateUserJson);
+                                }
+
+                                @Override
+                                public void onFailure(String result) {
+
+                                }
+                            });
+                        }
+                    }).execute();
                 }
 
                 break;

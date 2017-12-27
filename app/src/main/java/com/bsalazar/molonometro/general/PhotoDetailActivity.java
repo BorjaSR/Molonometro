@@ -4,24 +4,19 @@ import android.animation.Animator;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityOptions;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
-import android.transition.Explode;
 import android.transition.Fade;
-import android.util.AttributeSet;
 import android.util.Base64;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.widget.ImageView;
 
 import com.bsalazar.molonometro.R;
-import com.bumptech.glide.Glide;
 
 /**
  * Created by bsalazar on 23/05/2017.

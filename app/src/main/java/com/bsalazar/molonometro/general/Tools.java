@@ -93,7 +93,6 @@ public class Tools {
     public static String encodeBitmapToBase64(Bitmap image) {
 
         ByteArrayOutputStream baos2 = new ByteArrayOutputStream();
-
         image.compress(Bitmap.CompressFormat.JPEG, 25, baos2);
 
         int sinCompr = Base64.encodeToString(baos2.toByteArray(), Base64.DEFAULT).getBytes().length;

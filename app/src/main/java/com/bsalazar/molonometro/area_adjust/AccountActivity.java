@@ -18,14 +18,12 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bsalazar.molonometro.BuildConfig;
 import com.bsalazar.molonometro.R;
@@ -38,6 +36,7 @@ import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.controllers.UserController;
 import com.bsalazar.molonometro.rest.services.ServiceCallback;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.io.File;
 
@@ -96,22 +95,17 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
         profile_state.setText(Variables.User.getState());
         profile_name.setText(Tools.formatPhone(Variables.User.getName()));
         user_molopuntos.setText(Variables.User.getMolopuntos() + " Molopuntos");
-
-//        if(Variables.User.getNumRequest() > 0){
-//            notifText.setVisibility(View.VISIBLE);
-//            notifText.setText(String.valueOf(Variables.User.getNumRequest()));
-//        }
     }
 
-    private void loadImage(){
+    private void loadImage() {
         try {
-//            byte[] imageByteArray = Base64.decode(Variables.User.getImageBase64(), Base64.DEFAULT);
 
             Glide.with(this)
-                    .load(Tools.getUserImagePath(String.valueOf(Variables.User.getUserID())))
-//                    .load("http://hostingtestbsalazar.esy.es/molonometro/images/profile.jpg")
+                    .load(Variables.User.getImageURL())
                     .asBitmap()
                     .dontAnimate()
+                    .skipMemoryCache(true)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .listener(new MyRequestListener(activity, profile_image))
                     .into(profile_image);
 
@@ -231,18 +225,16 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
 
     private Uri getOutputMediaFileUri() {
         //check for external storage
-        if(isExternalStorageAvaiable())
-        {
+        if (isExternalStorageAvaiable()) {
             File mediaStorageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
             File mediaFile;
 
             try {
                 mediaFile = new File(mediaStorageDir.getPath() + "/temp.jpg");
-                Log.i("st","File: "+Uri.fromFile(mediaFile));
-            }
-            catch (Exception e) {
+                Log.i("st", "File: " + Uri.fromFile(mediaFile));
+            } catch (Exception e) {
                 e.printStackTrace();
-                Log.i("St","Error creating file: " + mediaStorageDir.getAbsolutePath() + "/temp.jpg");
+                Log.i("St", "Error creating file: " + mediaStorageDir.getAbsolutePath() + "/temp.jpg");
                 return null;
             }
 
@@ -309,10 +301,23 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
 
-    private void setImage(Bitmap bitmap){
+    private void setImage(Bitmap bitmap) {
         profile_image.setImageBitmap(null);
 
-        new SendFileFTP(String.valueOf(Variables.User.getUserID()), SendFileFTP.MODE_USER, bitmap, null).execute();
+        new SendFileFTP(String.valueOf(Variables.User.getUserID()), SendFileFTP.MODE_USER, bitmap, new SendFileFTP.SendFileFTPListener() {
+            @Override
+            public void onFinish(boolean result, String URL) {
+                if (result)
+                    Glide.with(AccountActivity.this)
+                            .load(Variables.User.getImageURL())
+                            .asBitmap()
+                            .dontAnimate()
+                            .skipMemoryCache(true)
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                            .listener(new MyRequestListener(activity, profile_image))
+                            .into(profile_image);
+            }
+        }).execute();
 
 //        new UserController().updateUserImage(this, bitmap, new ServiceCallback() {
 //            @Override

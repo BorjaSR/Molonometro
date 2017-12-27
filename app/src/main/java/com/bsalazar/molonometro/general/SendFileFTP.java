@@ -31,10 +31,19 @@ public class SendFileFTP extends AsyncTask<String, Void, Boolean> {
     private byte[] imageByteArray;
     private SendFileFTPListener onFinishListener;
 
+    private String imageURL;
+
     public SendFileFTP(String fileName, int mode, Bitmap bitmap, SendFileFTPListener onFinishListener) {
-        this.fileName = fileName + ".png";
+        this.fileName = fileName;
         this.mode = mode;
         this.imageByteArray = Base64.decode(Tools.encodeBitmapToBase64(bitmap), Base64.DEFAULT);
+        this.onFinishListener = onFinishListener;
+    }
+
+    public SendFileFTP(String fileName, int mode, byte[] imageByteArray, SendFileFTPListener onFinishListener) {
+        this.fileName = fileName;
+        this.mode = mode;
+        this.imageByteArray = imageByteArray;
         this.onFinishListener = onFinishListener;
     }
 
@@ -55,12 +64,15 @@ public class SendFileFTP extends AsyncTask<String, Void, Boolean> {
             switch (mode){
                 case MODE_USER:
                     path.append("/Users");
+                    imageURL = Tools.getUserImagePath(fileName);
                     break;
                 case MODE_GROUP:
                     path.append("/Groups");
+                    imageURL = Tools.getGroupImagePath(fileName);
                     break;
                 case MODE_COMMENT:
                     path.append("/Comments");
+                    imageURL = Tools.getCommentImagePath(fileName);
                     break;
             }
 
@@ -69,7 +81,7 @@ public class SendFileFTP extends AsyncTask<String, Void, Boolean> {
 
             ByteArrayInputStream bs = new ByteArrayInputStream(imageByteArray);
             ftpClient.enterLocalPassiveMode();
-            ftpClient.storeFile(fileName, bs);
+            ftpClient.storeFile(fileName + ".png", bs);
 
             ftpClient.logout();
             ftpClient.disconnect();
@@ -83,7 +95,7 @@ public class SendFileFTP extends AsyncTask<String, Void, Boolean> {
 
     @Override
     protected void onPostExecute(Boolean result) {
-        if (onFinishListener != null) onFinishListener.onFinish(result);
+        if (onFinishListener != null) onFinishListener.onFinish(result, imageURL);
     }
 
     public void setOnFinishListener(SendFileFTPListener onFinishListener) {
@@ -91,6 +103,6 @@ public class SendFileFTP extends AsyncTask<String, Void, Boolean> {
     }
 
     public interface SendFileFTPListener {
-        void onFinish(boolean result);
+        void onFinish(boolean result, String URL);
     }
 }

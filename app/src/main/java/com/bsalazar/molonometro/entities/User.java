@@ -1,7 +1,5 @@
 package com.bsalazar.molonometro.entities;
 
-import android.graphics.Bitmap;
-
 import java.util.ArrayList;
 
 /**
@@ -15,8 +13,7 @@ public class User {
     private String Name;
     private String Phone;
     private String State;
-//    private String ImageBase64;
-//    private Bitmap Image;
+    private String ImageURL;
     private String FirebaseToken;
     private int Molopuntos;
     private int numRequest;
@@ -81,22 +78,6 @@ public class User {
         State = state;
     }
 
-//    public String getImageBase64() {
-//        return ImageBase64;
-//    }
-//
-//    public void setImageBase64(String imageBase64) {
-//        ImageBase64 = imageBase64;
-//    }
-//
-//    public Bitmap getImage() {
-//        return Image;
-//    }
-//
-//    public void setImage(Bitmap image) {
-//        Image = image;
-//    }
-
     public String getFirebaseToken() {
         return FirebaseToken;
     }
@@ -119,5 +100,13 @@ public class User {
 
     public void setFriendRquests(ArrayList<FriendRquest> friendRquests) {
         this.friendRquests = friendRquests;
+    }
+
+    public String getImageURL() {
+        return ImageURL;
+    }
+
+    public void setImageURL(String imageURL) {
+        ImageURL = imageURL;
     }
 }

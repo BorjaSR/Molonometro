@@ -116,7 +116,7 @@ public class UserController {
                         Memo.rememberMe(mContext, userStringJson);
 
 //                        if (Variables.User.getImageBase64() != null)
-//                            Variables.User.setImage(Tools.decodeBase64(Variables.User.getImageBase64()));
+//                            Variables.User.setImageURL(Tools.decodeBase64(Variables.User.getImageBase64()));
 
                         callback.onSuccess("");
                     }
@@ -133,10 +133,10 @@ public class UserController {
     }
 
 
-    public void updateUserImage(final Context mContext, Bitmap image_profile, final ServiceCallback callback) {
+    public void updateUserImage(final Context mContext, String imageURL, final ServiceCallback callback) {
 
         UpdateUserJson updateUserJson = getUpdateUserJson();
-        updateUserJson.setImage(Tools.encodeBitmapToBase64(image_profile));
+        updateUserJson.setImage(imageURL);
 
         Constants.restController.getService().updateUserImage(updateUserJson
                 , new Callback<UserJson>() {
@@ -150,7 +150,7 @@ public class UserController {
                         Memo.rememberMe(mContext, userStringJson);
 
 //                        if (Variables.User.getImageBase64() != null)
-//                            Variables.User.setImage(Tools.decodeBase64(Variables.User.getImageBase64()));
+//                            Variables.User.setImageURL(Tools.decodeBase64(Variables.User.getImageBase64()));
 
 
                         callback.onSuccess("");
@@ -196,7 +196,7 @@ public class UserController {
 
     private UpdateUserJson getUpdateUserJson() {
         UpdateUserJson userJson = new UpdateUserJson();
-//        userJson.setImage(Variables.User.getImageBase64());
+//        userJson.setImageURL(Variables.User.getImageBase64());
         userJson.setUserName(Variables.User.getUserName());
         userJson.setEmail(Variables.User.getEmail());
         userJson.setName(Variables.User.getName());
@@ -218,7 +218,7 @@ public class UserController {
                             Variables.User = Parser.parseUser(userJson);
 
 //                            if (Variables.User.getImageBase64() != null)
-//                                Variables.User.setImage(Tools.decodeBase64(Variables.User.getImageBase64()));
+//                                Variables.User.setImageURL(Tools.decodeBase64(Variables.User.getImageBase64()));
 
                             Variables.User.setMolopuntos(userJson.getMolopuntos());
 

@@ -126,7 +126,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
                                 User aux = Variables.User;
 //                                aux. setImageBase64(null);
-//                                aux.setImage(null);
+//                                aux.setImageURL(null);
                                 Memo.rememberMe(getApplicationContext(), new Gson().toJson(aux));
 
                                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
