@@ -52,7 +52,7 @@ public class PendingRequestAdapter extends RecyclerView.Adapter<PendingRequestAd
 
         try {
             Glide.with(mContext)
-                    .load(Base64.decode(contact.getImageBase64(), Base64.DEFAULT))
+                    .load(contact.getImageURL())
                     .asBitmap()
                     .listener(new MyRequestListener(mContext, holder.contact_image))
                     .into(holder.contact_image);

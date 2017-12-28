@@ -124,12 +124,12 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                             @Override
                             public void onSuccess(String result) {
 
-                                User aux = Variables.User;
-//                                aux. setImageBase64(null);
-//                                aux.setImageURL(null);
-                                Memo.rememberMe(getApplicationContext(), new Gson().toJson(aux));
+                                Memo.rememberMe(getApplicationContext(), new Gson().toJson(Variables.User));
 
-                                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+
+                                Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+                                intent.putExtra("REM", true);
+                                startActivity(intent);
                                 finish();
                             }
                         });

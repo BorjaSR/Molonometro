@@ -2,7 +2,6 @@ package com.bsalazar.molonometro.area_dashboard_group.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +22,7 @@ import java.util.Locale;
  * Created by bsalazar on 23/03/2017.
  */
 
-public class RepliesRecyclerAdapter extends RecyclerView.Adapter<RepliesRecyclerAdapter.ReplyViewHolder>  {
+public class RepliesRecyclerAdapter extends RecyclerView.Adapter<RepliesRecyclerAdapter.ReplyViewHolder> {
 
     private Context mContext;
     private ArrayList<Comment> comments;
@@ -44,18 +43,12 @@ public class RepliesRecyclerAdapter extends RecyclerView.Adapter<RepliesRecycler
 
         final Comment comment = comments.get(position);
 
-        try{
-            byte[] imageByteArray = Base64.decode(comment.getUserImage(), Base64.DEFAULT);
-
-            Glide.with(mContext)
-                    .load(imageByteArray)
-                    .asBitmap()
-                    .listener(new MyRequestListener(mContext, holder.user_image))
-                    .into(holder.user_image);
-
-        }catch (Exception e){
-            holder.user_image.setImageResource(R.drawable.user_icon);
-        }
+        Glide.with(mContext)
+                .load(comment.getUserImage())
+                .asBitmap()
+                .listener(new MyRequestListener(mContext, holder.user_image))
+                .placeholder(R.drawable.user_icon)
+                .into(holder.user_image);
 
         holder.comment_from.setText(comment.getUserName());
         holder.comment.setText(comment.getText());
@@ -64,10 +57,10 @@ public class RepliesRecyclerAdapter extends RecyclerView.Adapter<RepliesRecycler
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
 
         final String date_string;
-            if (Tools.isToday(comment.getDate()))
-                date_string = mContext.getString(R.string.today) + " " + timeFormat.format(comment.getDate());
-            else
-                date_string = dateFormat.format(comment.getDate());
+        if (Tools.isToday(comment.getDate()))
+            date_string = mContext.getString(R.string.today) + " " + timeFormat.format(comment.getDate());
+        else
+            date_string = dateFormat.format(comment.getDate());
 
         holder.reply_date.setText(date_string);
     }

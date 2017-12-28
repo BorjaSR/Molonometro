@@ -107,16 +107,16 @@ public class UserController {
                     @Override
                     public void success(UserJson userJson, Response response) {
 
-//                        String user_image = Variables.User.getImageBase64();
+//                        String user_image = Variables.User.getImageURL();
                         Variables.User = Parser.parseUser(userJson);
-//                        Variables.User.setImageBase64(user_image);
+//                        Variables.User.setImageURL(user_image);
 
                         Gson gson = new Gson();
                         String userStringJson = gson.toJson(Variables.User);
                         Memo.rememberMe(mContext, userStringJson);
 
-//                        if (Variables.User.getImageBase64() != null)
-//                            Variables.User.setImageURL(Tools.decodeBase64(Variables.User.getImageBase64()));
+//                        if (Variables.User.getImageURL() != null)
+//                            Variables.User.setImageURL(Tools.decodeBase64(Variables.User.getImageURL()));
 
                         callback.onSuccess("");
                     }
@@ -149,8 +149,8 @@ public class UserController {
                         String userStringJson = gson.toJson(Variables.User);
                         Memo.rememberMe(mContext, userStringJson);
 
-//                        if (Variables.User.getImageBase64() != null)
-//                            Variables.User.setImageURL(Tools.decodeBase64(Variables.User.getImageBase64()));
+//                        if (Variables.User.getImageURL() != null)
+//                            Variables.User.setImageURL(Tools.decodeBase64(Variables.User.getImageURL()));
 
 
                         callback.onSuccess("");
@@ -196,7 +196,7 @@ public class UserController {
 
     private UpdateUserJson getUpdateUserJson() {
         UpdateUserJson userJson = new UpdateUserJson();
-//        userJson.setImageURL(Variables.User.getImageBase64());
+//        userJson.setImageURL(Variables.User.getImageURL());
         userJson.setUserName(Variables.User.getUserName());
         userJson.setEmail(Variables.User.getEmail());
         userJson.setName(Variables.User.getName());
@@ -217,8 +217,8 @@ public class UserController {
 
                             Variables.User = Parser.parseUser(userJson);
 
-//                            if (Variables.User.getImageBase64() != null)
-//                                Variables.User.setImageURL(Tools.decodeBase64(Variables.User.getImageBase64()));
+//                            if (Variables.User.getImageURL() != null)
+//                                Variables.User.setImageURL(Tools.decodeBase64(Variables.User.getImageURL()));
 
                             Variables.User.setMolopuntos(userJson.getMolopuntos());
 

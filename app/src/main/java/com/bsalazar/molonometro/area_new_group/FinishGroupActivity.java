@@ -36,6 +36,8 @@ import com.bsalazar.molonometro.MainActivity;
 import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.entities.Contact;
 import com.bsalazar.molonometro.general.Constants;
+import com.bsalazar.molonometro.general.MyRequestListener;
+import com.bsalazar.molonometro.general.SendFileFTP;
 import com.bsalazar.molonometro.general.Tools;
 import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.controllers.GroupController;
@@ -87,33 +89,30 @@ public class FinishGroupActivity extends AppCompatActivity implements View.OnCli
             TextView contact_name = (TextView) participant.findViewById(R.id.participant_name);
             TextView contact_state = (TextView) participant.findViewById(R.id.contact_state);
 
-            String image64 = "";
+            String imageURL = "";
             String Name = "";
             String State = "";
 
             if (id == Variables.User.getUserID()) {
-                image64 = "";
+                imageURL = Variables.User.getImageURL();
                 Name = getString(R.string.you);
                 State = Variables.User.getState();
 
             } else {
                 Contact contact = getContactByID(id);
                 if (contact != null) {
-                    image64 = contact.getImageBase64();
-                    Name = contact.getName();
+                    imageURL = contact.getImageURL();
+                    Name = contact.getUserName();
                     State = contact.getState();
                 }
             }
 
-            try {
-                Glide.with(this)
-                        .load(Base64.decode(image64, Base64.DEFAULT))
-                        .asBitmap()
-                        .into(contact_image);
-
-            } catch (Exception e) {
-                contact_image.setImageResource(R.drawable.user_icon);
-            }
+            Glide.with(FinishGroupActivity.this)
+                    .load(imageURL)
+                    .asBitmap()
+                    .listener(new MyRequestListener(FinishGroupActivity.this, contact_image))
+                    .placeholder(R.drawable.user_icon)
+                    .into(contact_image);
 
             contact_name.setText(Name);
             contact_state.setText(State);
@@ -159,25 +158,32 @@ public class FinishGroupActivity extends AppCompatActivity implements View.OnCli
                         @Override
                         public void onSuccess(String result) {
 
-                            GroupJson groupJson = new Gson().fromJson(result, GroupJson.class);
+                            final GroupJson groupJson = new Gson().fromJson(result, GroupJson.class);
                             if (groupJson.getFirebaseTopic() != null && !groupJson.getFirebaseTopic().equals(""))
                                 FirebaseMessaging.getInstance().subscribeToTopic(groupJson.getFirebaseTopic());
 
                             if (group_image_bitmap != null) {
-                                groupJson.setImage(Tools.encodeBitmapToBase64(group_image_bitmap));
-                                new GroupController().updateGroupImage(getApplicationContext(), groupJson, new ServiceCallback() {
-                                    @Override
-                                    public void onSuccess(String result) {
-                                        Intent main = new Intent(getApplicationContext(), MainActivity.class);
-                                        main.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                        startActivity(main);
-                                    }
 
+                                new SendFileFTP(String.valueOf(groupJson.getGroupID()), SendFileFTP.MODE_GROUP, group_image_bitmap, new SendFileFTP.SendFileFTPListener() {
                                     @Override
-                                    public void onFailure(String result) {
+                                    public void onFinish(boolean result, String URL) {
+                                        groupJson.setImage(URL);
+                                        new GroupController().updateGroupImage(getApplicationContext(), groupJson, new ServiceCallback() {
+                                            @Override
+                                            public void onSuccess(String result) {
+                                                Intent main = new Intent(getApplicationContext(), MainActivity.class);
+                                                main.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                startActivity(main);
+                                            }
 
+                                            @Override
+                                            public void onFailure(String result) {
+
+                                            }
+                                        });
                                     }
-                                });
+                                }).execute();
+
                             } else {
                                 Intent main = new Intent(getApplicationContext(), MainActivity.class);
                                 main.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

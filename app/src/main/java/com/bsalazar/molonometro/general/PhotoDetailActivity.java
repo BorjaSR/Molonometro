@@ -17,6 +17,7 @@ import android.view.ViewAnimationUtils;
 import android.widget.ImageView;
 
 import com.bsalazar.molonometro.R;
+import com.bumptech.glide.Glide;
 
 /**
  * Created by bsalazar on 23/05/2017.
@@ -39,18 +40,26 @@ public class PhotoDetailActivity extends Activity {
 
         group_image_dialog = (ImageView) findViewById(R.id.group_image_dialog);
 
-        final String imageBase64 = getIntent().getExtras().getString("image");
+        final String imageURL = getIntent().getExtras().getString("image");
         final int noImage = getIntent().getExtras().getInt("noImage");
         final String title = getIntent().getExtras().getString("title", getString(R.string.image));
 
-        if (imageBase64 != null){
-            byte[] imageByteArray = Base64.decode(imageBase64, Base64.DEFAULT);
-            Bitmap bmp = BitmapFactory.decodeByteArray(imageByteArray, 0, imageByteArray.length);
-            group_image_dialog.setImageBitmap(bmp);
+//        if (imageURL != null){
+//            byte[] imageByteArray = Base64.decode(imageURL, Base64.DEFAULT);
+//            Bitmap bmp = BitmapFactory.decodeByteArray(imageByteArray, 0, imageByteArray.length);
+//            group_image_dialog.setImageBitmap(bmp);
+//
+//        } else {
+//            group_image_dialog.setImageResource(noImage);
+//        }
 
-        } else {
-            group_image_dialog.setImageResource(noImage);
-        }
+
+        Glide.with(PhotoDetailActivity.this)
+                .load(imageURL)
+                .asBitmap()
+                .listener(new MyRequestListener(PhotoDetailActivity.this, group_image_dialog))
+                .placeholder(noImage)
+                .into(group_image_dialog);
 
         group_image_dialog.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,7 +67,7 @@ public class PhotoDetailActivity extends Activity {
 
                 Bundle args = new Bundle();
                 args.putInt("type", 1);
-                args.putString("image", imageBase64);
+                args.putString("image", imageURL);
                 args.putInt("noImage", noImage);
                 args.putString("title", title);
 

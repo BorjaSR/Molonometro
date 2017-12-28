@@ -99,8 +99,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Gson gson = new Gson();
                 Variables.User = gson.fromJson(rememberedUser, User.class);
 
-//                if(Variables.User.getImageBase64() != null)
-//                    Variables.User.setImageURL(Tools.decodeBase64(Variables.User.getImageBase64()));
+//                if(Variables.User.getImageURL() != null)
+//                    Variables.User.setImageURL(Tools.decodeBase64(Variables.User.getImageURL()));
             }
         }
 

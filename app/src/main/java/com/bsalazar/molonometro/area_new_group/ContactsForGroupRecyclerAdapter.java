@@ -47,13 +47,13 @@ public class ContactsForGroupRecyclerAdapter extends RecyclerView.Adapter<Contac
         final Contact contact = contacts.get(position);
 
         if (Variables.search_for_contacts_for_group.equals("")) {
-            holder.contact_name_first_part.setText(contact.getName());
+            holder.contact_name_first_part.setText(contact.getUserName());
             holder.contact_name_first_part.setVisibility(View.VISIBLE);
             holder.match_contact_name.setVisibility(View.GONE);
             holder.contact_name_second_part.setVisibility(View.GONE);
 
         } else {
-            String[] parts = contact.getName().split(Variables.search_for_contacts_for_group);
+            String[] parts = contact.getUserName().split(Variables.search_for_contacts_for_group);
             if (parts.length == 0) {
                 holder.match_contact_name.setText(Variables.search_for_contacts_for_group);
                 holder.contact_name_first_part.setVisibility(View.GONE);
@@ -74,16 +74,12 @@ public class ContactsForGroupRecyclerAdapter extends RecyclerView.Adapter<Contac
 
         holder.item_detail.setText(contact.getState());
 
-        try {
-            Glide.with(mContext)
-                    .load(Base64.decode(contact.getImageBase64(), Base64.DEFAULT))
-                    .asBitmap()
-                    .listener(new MyRequestListener(mContext, holder.contact_image))
-                    .into(holder.contact_image);
-
-        } catch (Exception e) {
-            holder.contact_image.setImageResource(R.drawable.user_icon);
-        }
+        Glide.with(mContext)
+                .load(contact.getImageURL())
+                .asBitmap()
+                .listener(new MyRequestListener(mContext, holder.contact_image))
+                .placeholder(R.drawable.user_icon)
+                .into(holder.contact_image);
 
         if (contacts_selected.contains(contact.getUserID()))
             holder.contact_selected_shadow.setVisibility(View.VISIBLE);

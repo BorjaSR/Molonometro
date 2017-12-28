@@ -3,9 +3,6 @@ package com.bsalazar.molonometro.area_dashboard_group.adapters;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
-import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,24 +53,17 @@ public class AutoCompleteAdapter extends ArrayAdapter<Participant> {
             holder.participant_image = (ImageView) convertView.findViewById(R.id.participant_image);
             holder.participant_name = (TextView) convertView.findViewById(R.id.participant_name);
             convertView.setTag(holder);
-        }
-        else {
+        } else {
             holder = (ViewHolder) convertView.getTag();
         }
 
         holder.participant_name.setText(participant.getUserName());
 
-        try{
-            byte[] imageByteArray = Base64.decode(participant.getImage(), Base64.DEFAULT);
-
-            Glide.with(mContext)
-                    .load(imageByteArray)
-                    .asBitmap()
-                    .into(holder.participant_image);
-
-        }catch (Exception e){
-            holder.participant_image.setImageResource(R.drawable.user_icon);
-        }
+        Glide.with(mContext)
+                .load(participant.getImage())
+                .asBitmap()
+                .placeholder(R.drawable.user_icon)
+                .into(holder.participant_image);
 
         return convertView;
     }
@@ -98,14 +88,15 @@ public class AutoCompleteAdapter extends ArrayAdapter<Participant> {
     private Filter nameFilter = new Filter() {
         @Override
         public String convertResultToString(Object resultValue) {
-            return ((Participant)(resultValue)).getUserName();
+            return ((Participant) (resultValue)).getUserName();
         }
+
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
-            if(constraint != null) {
+            if (constraint != null) {
                 suggestions.clear();
                 for (Participant customer : itemsAll) {
-                    if(customer.getUserName().toLowerCase().startsWith(constraint.toString().toLowerCase())){
+                    if (customer.getUserName().toLowerCase().startsWith(constraint.toString().toLowerCase())) {
                         suggestions.add(customer);
                     }
                 }
@@ -117,10 +108,11 @@ public class AutoCompleteAdapter extends ArrayAdapter<Participant> {
                 return new FilterResults();
             }
         }
+
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
             ArrayList<Participant> filteredList = (ArrayList<Participant>) results.values;
-            if(results != null && results.count > 0) {
+            if (results != null && results.count > 0) {
                 clear();
                 for (Participant c : filteredList) {
                     add(c);

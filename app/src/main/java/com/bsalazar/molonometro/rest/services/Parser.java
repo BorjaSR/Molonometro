@@ -49,7 +49,7 @@ public class Parser {
         contact.setName(contactJson.getName());
         contact.setPhone(contactJson.getPhone());
         contact.setState(contactJson.getState());
-        contact.setImageBase64(contactJson.getImage());
+        contact.setImageURL(contactJson.getImage());
 
         return contact;
     }
@@ -59,7 +59,7 @@ public class Parser {
         Group group = new Group();
         group.setId(groupJson.getGroupID());
         group.setName(groupJson.getName());
-        group.setImageBase64(groupJson.getImage());
+        group.setImageURL(groupJson.getImage());
         group.setFirebaseTopic(groupJson.getFirebaseTopic());
 
         try {
@@ -130,7 +130,7 @@ public class Parser {
 //            } else
 //                for (Contact contact : Variables.contacts)
 //                    if (contact.getUserID() == participantJson.getUserID()) {
-//                        participant.setImageBase64(contact.getImageBase64());
+//                        participant.setImageURL(contact.getImageURL());
 //                        participant.setName(contact.getName());
 //                        participant.setPhone(contact.getPhone());
 //                        participant.setState(contact.getState());
@@ -176,19 +176,19 @@ public class Parser {
                 comment.setLikes(new ArrayList<Integer>());
 
             if (commentJson.getUserID() == Variables.User.getUserID()) {
-                comment.setUserName(Variables.User.getName());
-                comment.setUserImage("");
-                comment.setDestinationUserName(getContactByID(commentJson.getDestinationUserID()).getName());
+                comment.setUserName(Variables.User.getUserName());
+                comment.setUserImage(Variables.User.getImageURL());
+                comment.setDestinationUserName(getContactByID(commentJson.getDestinationUserID()).getUserName());
             } else {
                 Contact contact = getContactByID(commentJson.getUserID());
                 if (contact != null) {
-                    comment.setUserName(contact.getName());
-                    comment.setUserImage(contact.getImageBase64());
+                    comment.setUserName(contact.getUserName());
+                    comment.setUserImage(contact.getImageURL());
 
                     if (commentJson.getDestinationUserID() == Variables.User.getUserID())
-                        comment.setDestinationUserName(Variables.User.getName());
+                        comment.setDestinationUserName(Variables.User.getUserName());
                     else
-                        comment.setDestinationUserName(getContactByID(commentJson.getDestinationUserID()).getName());
+                        comment.setDestinationUserName(getContactByID(commentJson.getDestinationUserID()).getUserName());
 
                 }
             }
@@ -224,7 +224,7 @@ public class Parser {
                 Contact contact = getContactByID(commentJson.getUserID());
                 if (contact != null) {
                     comment.setUserName(contact.getName());
-                    comment.setUserImage(contact.getImageBase64());
+                    comment.setUserImage(contact.getImageURL());
                 }
             }
 

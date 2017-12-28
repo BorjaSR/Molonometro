@@ -107,7 +107,7 @@ public class GroupDetailActivity extends AppCompatActivity {
         final CollapsingToolbarLayout ctl = (CollapsingToolbarLayout) findViewById(R.id.ctl);
         group_image = (ImageView) findViewById(R.id.contact_image);
 
-        final String imageBase64 = Variables.Group.getImageBase64();
+        final String imageBase64 = Variables.Group.getImageURL();
         if (imageBase64 != null) {
             byte[] imageByteArray = Base64.decode(imageBase64, Base64.DEFAULT);
             Bitmap bmp = BitmapFactory.decodeByteArray(imageByteArray, 0, imageByteArray.length);
@@ -552,7 +552,7 @@ public class GroupDetailActivity extends AppCompatActivity {
             @Override
             public void onSuccess(String result) {
 
-                Variables.Group.setImageBase64(new_image_64);
+                Variables.Group.setImageURL(new_image_64);
                 setCollapsing();
             }
 
@@ -560,7 +560,7 @@ public class GroupDetailActivity extends AppCompatActivity {
             public void onFailure(String result) {
 
                 try {
-                    byte[] imageByteArray = Base64.decode(Variables.Group.getImageBase64(), Base64.DEFAULT);
+                    byte[] imageByteArray = Base64.decode(Variables.Group.getImageURL(), Base64.DEFAULT);
 
                     Glide.with(getApplicationContext())
                             .load(imageByteArray)

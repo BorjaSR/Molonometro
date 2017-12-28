@@ -2,7 +2,6 @@ package com.bsalazar.molonometro.area_dashboard_group.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +20,7 @@ import java.util.ArrayList;
  * Created by bsalazar on 23/03/2017.
  */
 
-public class CommonGroupsRecyclerAdapter extends RecyclerView.Adapter<CommonGroupsRecyclerAdapter.GroupViewHolder>  {
+public class CommonGroupsRecyclerAdapter extends RecyclerView.Adapter<CommonGroupsRecyclerAdapter.GroupViewHolder> {
 
     private Context mContext;
     private ArrayList<Group> groups;
@@ -43,26 +42,12 @@ public class CommonGroupsRecyclerAdapter extends RecyclerView.Adapter<CommonGrou
 
         holder.group_name.setText(group.getName());
 
-        try {
-            if (group.getImageBase64() != null)
-                try {
-                    byte[] imageByteArray = Base64.decode(group.getImageBase64(), Base64.DEFAULT);
-
-                    Glide.with(mContext)
-                            .load(imageByteArray)
-                            .asBitmap()
-                            .listener(new MyRequestListener(mContext, holder.group_image))
-                            .into(holder.group_image);
-
-                } catch (Exception e) {
-                    holder.group_image.setImageResource(R.drawable.group_icon);
-                }
-            else
-                holder.group_image.setImageResource(R.drawable.group_icon);
-
-        } catch (Exception e) {
-            holder.group_image.setImageResource(R.drawable.group_icon);
-        }
+        Glide.with(mContext)
+                .load(group.getImageURL())
+                .asBitmap()
+                .listener(new MyRequestListener(mContext, holder.group_image))
+                .placeholder(R.drawable.group_icon)
+                .into(holder.group_image);
 
         holder.last_event_date.setVisibility(View.GONE);
         holder.group_detail.setVisibility(View.GONE);

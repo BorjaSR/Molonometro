@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.entities.Contact;
+import com.bsalazar.molonometro.general.MyRequestListener;
 import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.json.CreateGroupJson;
 import com.bumptech.glide.Glide;
@@ -97,17 +98,14 @@ public class NewGroupActivity extends AppCompatActivity implements View.OnClickL
 
             ImageView contact_for_group_user_image = (ImageView) user_for_group.findViewById(R.id.contact_for_group_user_image);
             TextView contact_for_group_user_name = (TextView) user_for_group.findViewById(R.id.contact_for_group_user_name);
-            contact_for_group_user_name.setText(filteredContacts.get(indexUser).getName());
+            contact_for_group_user_name.setText(filteredContacts.get(indexUser).getUserName());
 
-            try{
-                Glide.with(this)
-                        .load(Base64.decode(filteredContacts.get(indexUser).getImageBase64(), Base64.DEFAULT))
-                        .asBitmap()
-                        .into(contact_for_group_user_image);
-
-            }catch (Exception e){
-                contact_for_group_user_image.setImageResource(R.drawable.user_icon);
-            }
+            Glide.with(NewGroupActivity.this)
+                    .load(filteredContacts.get(indexUser).getImageURL())
+                    .asBitmap()
+                    .listener(new MyRequestListener(NewGroupActivity.this, contact_for_group_user_image))
+                    .placeholder(R.drawable.user_icon)
+                    .into(contact_for_group_user_image);
 
             final int contactsID = filteredContacts.get(indexUser).getUserID();
 
@@ -222,7 +220,7 @@ public class NewGroupActivity extends AppCompatActivity implements View.OnClickL
     private void filterResults(String query) {
         filteredContacts.clear();
         for (Contact contact : Variables.contacts)
-            if (contact.getName().contains(query))
+            if (contact.getUserName().contains(query))
                 filteredContacts.add(contact);
 
         adapterRecycler.notifyDataSetChanged();

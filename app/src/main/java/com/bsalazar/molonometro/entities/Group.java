@@ -2,8 +2,6 @@ package com.bsalazar.molonometro.entities;
 
 import android.graphics.Bitmap;
 
-import com.bsalazar.molonometro.rest.json.LastEventJson;
-
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -13,8 +11,7 @@ import java.util.Date;
 public class Group {
 
     private int id;
-    private Bitmap image;
-    private String imageBase64;
+    private String imageURL;
     private String name;
     private String FirebaseTopic;
     private Date LastUpdate;
@@ -28,12 +25,6 @@ public class Group {
 
     public Group(int id, String groupName) {
         this.id = id;
-        name = groupName;
-    }
-
-    public Group(int id, String groupName, Bitmap groupImage) {
-        this.id = id;
-        image = groupImage;
         name = groupName;
     }
 
@@ -69,20 +60,12 @@ public class Group {
         this.id = id;
     }
 
-    public Bitmap getImage() {
-        return image;
+    public String getImageURL() {
+        return imageURL;
     }
 
-    public void setImage(Bitmap image) {
-        this.image = image;
-    }
-
-    public String getImageBase64() {
-        return imageBase64;
-    }
-
-    public void setImageBase64(String imageBase64) {
-        this.imageBase64 = imageBase64;
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
     }
 
     public String getName() {

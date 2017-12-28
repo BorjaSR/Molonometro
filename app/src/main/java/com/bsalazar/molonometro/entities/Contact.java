@@ -14,7 +14,7 @@ public class Contact {
     private String Name;
     private String Phone;
     private String State;
-    private String ImageBase64;
+    private String ImageURL;
     private int Molopuntos;
     private ArrayList<Integer> commonGroups;
 
@@ -69,12 +69,12 @@ public class Contact {
         State = state;
     }
 
-    public String getImageBase64() {
-        return ImageBase64;
+    public String getImageURL() {
+        return ImageURL;
     }
 
-    public void setImageBase64(String imageBase64) {
-        ImageBase64 = imageBase64;
+    public void setImageURL(String imageURL) {
+        ImageURL = imageURL;
     }
 
     public int getMolopuntos() {

@@ -185,9 +185,9 @@ public class AddCommentDialogFragment extends DialogFragment  implements View.On
                             public void onSuccess(String result) {
                                 progress.dismiss();
 
-                                comment.setUserName(Variables.User.getName());
-                                comment.setUserImage("");
-                                comment.setDestinationUserName(participantToSend.getName());
+                                comment.setUserName(Variables.User.getUserName());
+                                comment.setUserImage(Variables.User.getImageURL());
+                                comment.setDestinationUserName(participantToSend.getUserName());
                                 comment.setDate(new Date());
 
                                 comment.setComments(new ArrayList<Integer>());

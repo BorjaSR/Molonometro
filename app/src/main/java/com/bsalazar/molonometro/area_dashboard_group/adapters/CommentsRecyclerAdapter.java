@@ -65,8 +65,8 @@ public class CommentsRecyclerAdapter extends RecyclerView.Adapter<CommentsRecycl
 
             final Comment comment = comments.get(position - 1);
 
-            holder.comment_from.setText(Tools.cropName(comment.getUserName()));
-            holder.comment_to.setText(Tools.cropName(comment.getDestinationUserName()));
+            holder.comment_from.setText(comment.getUserName());
+            holder.comment_to.setText(comment.getDestinationUserName());
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM HH:mm", Locale.getDefault());
             SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
@@ -131,18 +131,13 @@ public class CommentsRecyclerAdapter extends RecyclerView.Adapter<CommentsRecycl
                 holder.likes.setVisibility(View.GONE);
 
 
-            try {
-                byte[] imageByteArray = Base64.decode(comment.getUserImage(), Base64.DEFAULT);
+            Glide.with(mContext)
+                    .load(comment.getUserImage())
+                    .asBitmap()
+                    .listener(new MyRequestListener(mContext, holder.user_image))
+                    .placeholder(R.drawable.user_icon)
+                    .into(holder.user_image);
 
-                Glide.with(mContext)
-                        .load(imageByteArray)
-                        .asBitmap()
-                        .listener(new MyRequestListener(mContext, holder.user_image))
-                        .into(holder.user_image);
-
-            } catch (Exception e) {
-                holder.user_image.setImageResource(R.drawable.user_icon);
-            }
 
             holder.likes_and_comments.setOnClickListener(new View.OnClickListener() {
                 @Override

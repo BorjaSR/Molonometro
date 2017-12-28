@@ -13,7 +13,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Base64;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -148,7 +147,9 @@ public class DashboardGroupActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_dashboard_group, menu);
         return true;
     }
+
     AddCommentDialogFragment addCommentDialogFragment;
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -188,17 +189,11 @@ public class DashboardGroupActivity extends AppCompatActivity {
                 user_name.setText(Tools.cropNameSurname(user.getUserName()) + " (" + user.getMolopuntos() + " Mp)");
             }
 
-            try {
-                byte[] imageByteArray = Base64.decode(user.getImage(), Base64.DEFAULT);
-
-                Glide.with(this)
-                        .load(imageByteArray)
-                        .asBitmap()
-                        .into(dashboard_user_image);
-
-            } catch (Exception e) {
-                dashboard_user_image.setImageResource(R.drawable.user_icon);
-            }
+            Glide.with(this)
+                    .load(user.getImage())
+                    .asBitmap()
+                    .placeholder(R.drawable.user_icon)
+                    .into(dashboard_user_image);
 
             users_container.addView(user_termometer_view);
             users_container.getChildAt(users_container.getChildCount() - 1).setTranslationY(getPositionUser(user.getMolopuntos()));
@@ -229,7 +224,7 @@ public class DashboardGroupActivity extends AppCompatActivity {
         popup.showAsDropDown(anchorView, 0, 0, Gravity.CENTER_HORIZONTAL);
     }
 
-    public void addComment(Comment comment){
+    public void addComment(Comment comment) {
         Variables.Group.getComments().add(0, comment);
         adapter.notifyItemInserted(1);
 
@@ -309,6 +304,7 @@ public class DashboardGroupActivity extends AppCompatActivity {
     }
 
     int minimumScore = Integer.MAX_VALUE;
+
     public int getHighestScore() {
         int highScore = Integer.MIN_VALUE;
         for (Participant user : Variables.Group.getParticipants())
@@ -317,11 +313,11 @@ public class DashboardGroupActivity extends AppCompatActivity {
         for (Participant user : Variables.Group.getParticipants())
             minimumScore = Math.min(minimumScore, user.getMolopuntos());
 
-        if(minimumScore > 2) minimumScore -= 2;
+        if (minimumScore > 2) minimumScore -= 2;
 
         highestScore = highScore - minimumScore;
 //        highestScore = highScore;
-        if(highestScore <= 0) highestScore = 1;
+        if (highestScore <= 0) highestScore = 1;
         return highestScore;
     }
 

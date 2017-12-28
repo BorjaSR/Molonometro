@@ -71,17 +71,11 @@ public class AddParticipantAdapter extends RecyclerView.Adapter<AddParticipantAd
             }
         }
 
-
-        try {
-            Glide.with(mContext)
-                    .load(Base64.decode(contact.getImageBase64(), Base64.DEFAULT))
-                    .asBitmap()
-                    .listener(new MyRequestListener(mContext, holder.contact_image))
-                    .into(holder.contact_image);
-
-        } catch (Exception e) {
-            holder.contact_image.setImageResource(R.drawable.user_icon);
-        }
+        Glide.with(mContext)
+                .load(contact.getImageURL())
+                .asBitmap()
+                .placeholder(R.drawable.user_icon)
+                .into(holder.contact_image);
 
         if (isInGroup(contact)) {
             holder.contact_selected_shadow.setVisibility(View.VISIBLE);

@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
-import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,9 +15,9 @@ import android.widget.TextView;
 
 import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.area_dashboard_group.DashboardGroupActivity;
-import com.bsalazar.molonometro.general.PhotoDetailActivity;
 import com.bsalazar.molonometro.entities.Group;
 import com.bsalazar.molonometro.general.MyRequestListener;
+import com.bsalazar.molonometro.general.PhotoDetailActivity;
 import com.bsalazar.molonometro.general.Tools;
 import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.controllers.GroupController;
@@ -79,31 +78,17 @@ public class GroupsRecyclerAdapter extends RecyclerView.Adapter<GroupsRecyclerAd
         else
             eventDate = group.getLastUpdate();
 
-        if (Tools.isToday(eventDate))        {
+        if (Tools.isToday(eventDate)) {
             holder.last_event_date.setText(formatTime.format(eventDate));
         } else
             holder.last_event_date.setText(formatDate.format(eventDate));
 
-        try {
-            if (group.getImageBase64() != null)
-                try {
-                    byte[] imageByteArray = Base64.decode(group.getImageBase64(), Base64.DEFAULT);
-
-                    Glide.with(mContext)
-                            .load(imageByteArray)
-                            .asBitmap()
-                            .listener(new MyRequestListener(mContext, holder.group_image))
-                            .into(holder.group_image);
-
-                } catch (Exception e) {
-                    holder.group_image.setImageResource(R.drawable.group_icon);
-                }
-            else
-                holder.group_image.setImageResource(R.drawable.group_icon);
-
-        } catch (Exception e) {
-            holder.group_image.setImageResource(R.drawable.group_icon);
-        }
+        Glide.with(mContext)
+                .load(group.getImageURL())
+                .asBitmap()
+                .listener(new MyRequestListener(mContext, holder.group_image))
+                .placeholder(R.drawable.group_icon)
+                .into(holder.group_image);
 
         holder.group_image.setOnClickListener(
                 new View.OnClickListener()
@@ -114,7 +99,7 @@ public class GroupsRecyclerAdapter extends RecyclerView.Adapter<GroupsRecyclerAd
 //
                         // Supply index input as an argument.
                         Bundle args = new Bundle();
-                        args.putString("image", group.getImageBase64());
+                        args.putString("image", group.getImageURL());
                         args.putInt("noImage", R.drawable.group_icon);
                         args.putString("title", group.getName());
 

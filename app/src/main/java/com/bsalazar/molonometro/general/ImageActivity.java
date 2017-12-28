@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import com.bsalazar.molonometro.MainActivity;
 import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.area_dashboard_group.GroupDetailActivity;
+import com.bumptech.glide.Glide;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -42,7 +43,7 @@ public class ImageActivity extends AppCompatActivity {
 
         getSupportActionBar().setHomeButtonEnabled(true);
 
-        String imageBase64 = getIntent().getExtras().getString("image");
+        String imageURL = getIntent().getExtras().getString("image");
         int noImage = getIntent().getExtras().getInt("noImage", R.drawable.user_icon);
 
         String title = getIntent().getExtras().getString("title", NO_TITLE);
@@ -57,14 +58,21 @@ public class ImageActivity extends AppCompatActivity {
 
         ImageView image = (ImageView) findViewById(R.id.image);
 
-        if (imageBase64 != null) {
-            byte[] imageByteArray = Base64.decode(imageBase64, Base64.DEFAULT);
-            bmp = BitmapFactory.decodeByteArray(imageByteArray, 0, imageByteArray.length);
-            image.setImageBitmap(bmp);
+//        if (imageURL != null) {
+//            byte[] imageByteArray = Base64.decode(imageURL, Base64.DEFAULT);
+//            bmp = BitmapFactory.decodeByteArray(imageByteArray, 0, imageByteArray.length);
+//            image.setImageBitmap(bmp);
+//
+//        } else {
+//            image.setImageResource(noImage);
+//        }
 
-        } else {
-            image.setImageResource(noImage);
-        }
+        Glide.with(ImageActivity.this)
+                .load(imageURL)
+                .asBitmap()
+                .listener(new MyRequestListener(ImageActivity.this, image))
+                .placeholder(noImage)
+                .into(image);
     }
 
 

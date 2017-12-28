@@ -2,7 +2,6 @@ package com.bsalazar.molonometro.area_dashboard_group;
 
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -14,7 +13,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.transition.Explode;
-import android.util.Base64;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -25,6 +23,7 @@ import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.area_dashboard_group.adapters.CommonGroupsRecyclerAdapter;
 import com.bsalazar.molonometro.entities.Contact;
 import com.bsalazar.molonometro.entities.Group;
+import com.bsalazar.molonometro.general.GetImageFromURL;
 import com.bsalazar.molonometro.general.Tools;
 import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.controllers.ContactController;
@@ -121,21 +120,26 @@ public class ContactDetailActivity extends AppCompatActivity {
         collapsing = (CollapsingToolbarLayout) findViewById(R.id.collapsing);
         contact_image = (ImageView) findViewById(R.id.contact_image);
 
-        final String imageBase64 = contact.getImageBase64();
-        if (imageBase64 != null) {
-            byte[] imageByteArray = Base64.decode(imageBase64, Base64.DEFAULT);
-            Bitmap bmp = BitmapFactory.decodeByteArray(imageByteArray, 0, imageByteArray.length);
-            contact_image.setImageBitmap(bmp);
+        final String imageURL = contact.getImageURL();
 
-            Palette p = Palette.from(bmp).generate();
-            if (Build.VERSION.SDK_INT >= 21) {
-                getWindow().setStatusBarColor(Tools.brightnessDown(p.getDominantSwatch().getRgb()));
-                collapsing.setContentScrimColor(p.getDominantSwatch().getRgb());
+        new GetImageFromURL(this, imageURL, new GetImageFromURL.OnImageDownloadListener() {
+            @Override
+            public void onFinish(Bitmap bitmap) {
+
+                if (bitmap != null) {
+                    contact_image.setImageBitmap(bitmap);
+
+                    Palette p = Palette.from(bitmap).generate();
+                    if (Build.VERSION.SDK_INT >= 21) {
+                        getWindow().setStatusBarColor(Tools.brightnessDown(p.getDominantSwatch().getRgb()));
+                        collapsing.setContentScrimColor(p.getDominantSwatch().getRgb());
+                    }
+
+                } else
+                    contact_image.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.user_icon));
+
             }
-
-        } else {
-            contact_image.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.user_icon));
-        }
+        }).execute();
 
         contact_image.setOnClickListener(new View.OnClickListener() {
             @Override

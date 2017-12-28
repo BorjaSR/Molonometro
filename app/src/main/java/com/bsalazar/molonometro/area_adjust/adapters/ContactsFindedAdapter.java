@@ -12,7 +12,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bsalazar.molonometro.R;
-import com.bsalazar.molonometro.area_new_group.NewGroupActivity;
 import com.bsalazar.molonometro.entities.Contact;
 import com.bsalazar.molonometro.entities.FriendRquest;
 import com.bsalazar.molonometro.general.MyRequestListener;
@@ -53,7 +52,7 @@ public class ContactsFindedAdapter extends RecyclerView.Adapter<ContactsFindedAd
 
         try {
             Glide.with(mContext)
-                    .load(Base64.decode(contact.getImageBase64(), Base64.DEFAULT))
+                    .load(contact.getImageURL())
                     .asBitmap()
                     .listener(new MyRequestListener(mContext, holder.contact_image))
                     .into(holder.contact_image);

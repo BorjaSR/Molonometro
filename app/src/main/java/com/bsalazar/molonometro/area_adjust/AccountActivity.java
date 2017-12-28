@@ -323,7 +323,7 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
 //            @Override
 //            public void onSuccess(String result) {
 //
-//                byte[] bitmapdata = Base64.decode(Variables.User.getImageBase64(), Base64.DEFAULT);
+//                byte[] bitmapdata = Base64.decode(Variables.User.getImageURL(), Base64.DEFAULT);
 //
 //                Glide.with(getApplicationContext())
 //                        .load(bitmapdata)
@@ -337,7 +337,7 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
 //            public void onFailure(String result) {
 //
 //                try {
-//                    byte[] imageByteArray = Base64.decode(Variables.User.getImageBase64(), Base64.DEFAULT);
+//                    byte[] imageByteArray = Base64.decode(Variables.User.getImageURL(), Base64.DEFAULT);
 //
 //                    Glide.with(getApplicationContext())
 //                            .load(imageByteArray)

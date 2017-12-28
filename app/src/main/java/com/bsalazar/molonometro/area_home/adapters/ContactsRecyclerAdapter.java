@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
-import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,18 +52,12 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
         holder.contact_name.setText(String.format(mContext.getString(R.string.user_name), contact.getUserName()));
         holder.item_detail.setText(contact.getName());
 
-        try {
-            byte[] imageByteArray = Base64.decode(contact.getImageBase64(), Base64.DEFAULT);
-
-            Glide.with(mContext)
-                    .load(imageByteArray)
-                    .asBitmap()
-                    .listener(new MyRequestListener(mContext, holder.contact_image))
-                    .into(holder.contact_image);
-
-        } catch (Exception e) {
-            holder.contact_image.setImageResource(R.drawable.user_icon);
-        }
+        Glide.with(mContext)
+                .load(contact.getImageURL())
+                .asBitmap()
+                .listener(new MyRequestListener(mContext, holder.contact_image))
+                .placeholder(R.drawable.user_icon)
+                .into(holder.contact_image);
 
         holder.invite_contact_button.setVisibility(View.GONE);
 
@@ -85,7 +78,7 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
 
                 // Supply index input as an argument.
                 Bundle args = new Bundle();
-                args.putString("image", contact.getImageBase64());
+                args.putString("image", contact.getImageURL());
                 args.putInt("noImage", R.drawable.user_icon);
                 args.putString("title", contact.getName());
 
