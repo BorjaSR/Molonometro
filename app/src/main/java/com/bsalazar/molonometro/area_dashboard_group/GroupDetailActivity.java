@@ -43,6 +43,7 @@ import com.bsalazar.molonometro.entities.Participant;
 import com.bsalazar.molonometro.general.Constants;
 import com.bsalazar.molonometro.general.GetImageFromURL;
 import com.bsalazar.molonometro.general.MyRequestListener;
+import com.bsalazar.molonometro.general.SendFileFTP;
 import com.bsalazar.molonometro.general.Tools;
 import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.controllers.GroupController;
@@ -545,36 +546,43 @@ public class GroupDetailActivity extends AppCompatActivity {
     }
 
     public void setGroupImage(Bitmap bitmap) {
-        GroupJson groupJson = new GroupJson();
-        groupJson.setGroupID(Variables.Group.getId());
-        final String new_image_64 = Tools.encodeBitmapToBase64(bitmap);
-        groupJson.setImage(new_image_64);
 
-        new GroupController().updateGroupImage(this, groupJson, new ServiceCallback() {
+        new SendFileFTP(String.valueOf(Variables.Group.getId()), SendFileFTP.MODE_GROUP, bitmap, new SendFileFTP.SendFileFTPListener() {
             @Override
-            public void onSuccess(Object result) {
+            public void onFinish(boolean result, final String URL) {
 
-                Variables.Group.setImageURL(new_image_64);
-                setCollapsing();
+                GroupJson groupJson = new GroupJson();
+                groupJson.setGroupID(Variables.Group.getId());
+                groupJson.setImage(URL);
+
+                new GroupController().updateGroupImage(GroupDetailActivity.this, groupJson, new ServiceCallback() {
+                    @Override
+                    public void onSuccess(Object result) {
+
+                        Variables.Group.setImageURL(URL);
+                        setCollapsing();
+                    }
+
+                    @Override
+                    public void onFailure(String result) {
+
+                        try {
+                            byte[] imageByteArray = Base64.decode(Variables.Group.getImageURL(), Base64.DEFAULT);
+
+                            Glide.with(getApplicationContext())
+                                    .load(imageByteArray)
+                                    .asBitmap()
+                                    .dontAnimate()
+                                    .listener(new MyRequestListener(activity, group_image))
+                                    .into(group_image);
+
+                        } catch (Exception e) {
+                            group_image.setImageDrawable(getResources().getDrawable(R.drawable.user_icon));
+                        }
+                    }
+                });
             }
+        }).execute();
 
-            @Override
-            public void onFailure(String result) {
-
-                try {
-                    byte[] imageByteArray = Base64.decode(Variables.Group.getImageURL(), Base64.DEFAULT);
-
-                    Glide.with(getApplicationContext())
-                            .load(imageByteArray)
-                            .asBitmap()
-                            .dontAnimate()
-                            .listener(new MyRequestListener(activity, group_image))
-                            .into(group_image);
-
-                } catch (Exception e) {
-                    group_image.setImageDrawable(getResources().getDrawable(R.drawable.user_icon));
-                }
-            }
-        });
     }
 }
