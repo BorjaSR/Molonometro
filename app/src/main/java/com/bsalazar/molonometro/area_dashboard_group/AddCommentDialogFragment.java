@@ -41,6 +41,7 @@ import com.bsalazar.molonometro.area_dashboard_group.adapters.AutoCompleteAdapte
 import com.bsalazar.molonometro.entities.Comment;
 import com.bsalazar.molonometro.entities.Participant;
 import com.bsalazar.molonometro.general.Constants;
+import com.bsalazar.molonometro.general.SendFileFTP;
 import com.bsalazar.molonometro.general.Tools;
 import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.controllers.CommentsController;
@@ -172,29 +173,60 @@ public class AddCommentDialogFragment extends DialogFragment  implements View.On
                         comment.setUserID(Variables.User.getUserID());
                         comment.setDestinationUserID(participantToSend.getUserID());
                         comment.setText(comment_text.getText().toString());
-                        if (comment_bitmap == null)
-                            comment.setImage("");
-                        else
-                            comment.setImage(Tools.encodeBitmapToBase64(comment_bitmap));
+
+//                        if (comment_bitmap != null)
+//                            comment.setImage(Tools.encodeBitmapToBase64(comment_bitmap));
 
                         final ProgressDialog progress = ProgressDialog.show(getActivity(), "",
                                 "Enviando...", true);
 
                         new CommentsController().addCommentToGroup(mContext, comment, new ServiceCallback() {
                             @Override
-                            public void onSuccess(String result) {
-                                progress.dismiss();
+                            public void onSuccess(Object result) {
 
-                                comment.setUserName(Variables.User.getUserName());
-                                comment.setUserImage(Variables.User.getImageURL());
-                                comment.setDestinationUserName(participantToSend.getUserName());
-                                comment.setDate(new Date());
+                                final Comment commentResponse = (Comment) result;
 
-                                comment.setComments(new ArrayList<Integer>());
-                                comment.setLikes(new ArrayList<Integer>());
+                                if (comment_bitmap != null) {
+                                    new SendFileFTP(String.valueOf(((Comment) result).getCommentID()), SendFileFTP.MODE_COMMENT, comment_bitmap, new SendFileFTP.SendFileFTPListener() {
+                                        @Override
+                                        public void onFinish(boolean result, final String URL) {
 
-                                ((DashboardGroupActivity) getActivity()).addComment(comment);
-                                dismiss();
+                                            commentResponse.setImage(URL);
+                                            new CommentsController().updateCommentImage(mContext, commentResponse, new ServiceCallback() {
+                                                @Override
+                                                public void onSuccess(Object result) {
+                                                    progress.dismiss();
+
+                                                    comment.setUserName(Variables.User.getUserName());
+                                                    comment.setUserImage(Variables.User.getImageURL());
+                                                    comment.setDestinationUserName(participantToSend.getUserName());
+                                                    comment.setImage(URL);
+                                                    comment.setDate(new Date());
+
+                                                    comment.setComments(new ArrayList<Integer>());
+                                                    comment.setLikes(new ArrayList<Integer>());
+
+                                                    ((DashboardGroupActivity) getActivity()).addComment(comment);
+                                                    dismiss();
+                                                }
+                                            });
+                                        }
+                                    }).execute();
+
+                                } else {
+                                    progress.dismiss();
+
+                                    comment.setUserName(Variables.User.getUserName());
+                                    comment.setUserImage(Variables.User.getImageURL());
+                                    comment.setDestinationUserName(participantToSend.getUserName());
+                                    comment.setDate(new Date());
+
+                                    comment.setComments(new ArrayList<Integer>());
+                                    comment.setLikes(new ArrayList<Integer>());
+
+                                    ((DashboardGroupActivity) getActivity()).addComment(comment);
+                                    dismiss();
+                                }
                             }
 
                             @Override

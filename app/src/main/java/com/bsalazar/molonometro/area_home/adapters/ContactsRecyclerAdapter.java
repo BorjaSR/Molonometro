@@ -3,6 +3,8 @@ package com.bsalazar.molonometro.area_home.adapters;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,11 +18,13 @@ import com.bsalazar.molonometro.MainActivity;
 import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.area_dashboard_group.ContactDetailActivity;
 import com.bsalazar.molonometro.entities.Contact;
+import com.bsalazar.molonometro.general.GetImageFromURL;
 import com.bsalazar.molonometro.general.MyRequestListener;
 import com.bsalazar.molonometro.general.PhotoDetailActivity;
 import com.bumptech.glide.Glide;
 import com.futuremind.recyclerviewfastscroll.SectionTitleProvider;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 /**
@@ -76,22 +80,35 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
             @Override
             public void onClick(View view) {
 
-                // Supply index input as an argument.
-                Bundle args = new Bundle();
-                args.putString("image", contact.getImageURL());
-                args.putInt("noImage", R.drawable.user_icon);
-                args.putString("title", contact.getName());
+                if (contact.getImageURL() != null) {
+                    new GetImageFromURL(mContext, contact.getImageURL(), new GetImageFromURL.OnImageDownloadListener() {
+                        @Override
+                        public void onFinish(Bitmap bitmap) {
 
-                Intent intent = new Intent(mContext, PhotoDetailActivity.class);
-                intent.putExtras(args);
+                            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                            byte[] byteArray = stream.toByteArray();
 
+                            // Supply index input as an argument.
+                            Bundle args = new Bundle();
+//                            args.putString("image", contact.getImageURL());
+//                            args.putInt("noImage", R.drawable.user_icon);
+                            args.putString("title", contact.getName());
 
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                    ActivityOptions options = ActivityOptions
-                            .makeSceneTransitionAnimation((MainActivity) mContext, holder.contact_image, mContext.getString(R.string.image_transition));
-                    mContext.startActivity(intent, options.toBundle());
-                } else
-                    mContext.startActivity(intent);
+                            Intent intent = new Intent(mContext, PhotoDetailActivity.class);
+                            intent.putExtras(args);
+                            intent.putExtra("imageBytes", byteArray);
+
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                ActivityOptions options = ActivityOptions
+                                        .makeSceneTransitionAnimation((MainActivity) mContext, holder.contact_image, mContext.getString(R.string.image_transition));
+                                mContext.startActivity(intent, options.toBundle());
+                            } else
+                                mContext.startActivity(intent);
+
+                        }
+                    }).execute();
+                }
             }
         });
 

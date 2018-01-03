@@ -32,14 +32,9 @@ public class ContactController {
                     public void success(List<ContactJson> contactListJson, Response response) {
 
                         Variables.contacts.clear();
-//                        Variables.contacts.clear();
 
-                        for (int i = 0; i < contactListJson.size(); i++) {
+                        for (int i = 0; i < contactListJson.size(); i++)
                             Variables.contacts.add(Parser.parseContact(contactListJson.get(i)));
-
-//                            if (contactListJson.get(i).isInApp())
-//                                Variables.contacts.add(Parser.parseContact(contactListJson.get(i)));
-                        }
 
                         callback.onSuccess("");
                     }
@@ -59,7 +54,7 @@ public class ContactController {
                 , new Callback<ContactJson>() {
                     @Override
                     public void success(ContactJson contactJson, Response response) {
-                        callback.onSuccess(new Gson().toJson(contactJson));
+                        callback.onSuccess(contactJson);
                     }
 
                     @Override

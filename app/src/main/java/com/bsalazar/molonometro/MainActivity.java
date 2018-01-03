@@ -1,25 +1,18 @@
 package com.bsalazar.molonometro;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Point;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.transition.TransitionManager;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
@@ -37,35 +30,17 @@ import com.bsalazar.molonometro.area_home.ContactsFragment;
 import com.bsalazar.molonometro.area_home.GroupsFragment;
 import com.bsalazar.molonometro.area_new_group.NewGroupActivity;
 import com.bsalazar.molonometro.area_register.RegisterActivity;
-import com.bsalazar.molonometro.entities.PhoneContact;
 import com.bsalazar.molonometro.entities.User;
 import com.bsalazar.molonometro.general.Constants;
 import com.bsalazar.molonometro.general.Memo;
-import com.bsalazar.molonometro.general.Tools;
 import com.bsalazar.molonometro.general.Variables;
-import com.bsalazar.molonometro.rest.controllers.ContactController;
 import com.bsalazar.molonometro.rest.controllers.GroupController;
 import com.bsalazar.molonometro.rest.controllers.UserController;
-import com.bsalazar.molonometro.rest.json.ContactsListJson;
-import com.bsalazar.molonometro.rest.json.PushTestJson;
 import com.bsalazar.molonometro.rest.json.UserIdJson;
 import com.bsalazar.molonometro.rest.json.UserJson;
 import com.bsalazar.molonometro.rest.services.ServiceCallback;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
-
-import org.apache.commons.net.ftp.FTP;
-import org.apache.commons.net.ftp.FTPClient;
-
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.net.InetAddress;
-import java.util.ArrayList;
-
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -164,17 +139,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         display.getSize(size);
 
         if (getIntent().getExtras() != null && getIntent().getExtras().getBoolean("REM", false)){
-            new UserController().getUser(new ServiceCallback() {
-                @Override
-                public void onSuccess(String result) {
-                    if(Variables.User.getNumRequest() > 0){
-                        notifText.setVisibility(View.VISIBLE);
-                        notifText.setText(String.valueOf(Variables.User.getNumRequest()));
-                    }
-                }
-            });
+            refreshNotificationBubble();
         }
-
 
         new UserController().updateFirebaseToken(this, getFirebaseToken(), null);
     }
@@ -184,6 +150,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onBackPressed();
     }
 
+    public static final int REQUEST_ACTUALIZE = 1;
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -202,8 +169,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 public void onClick(View v) {
                     new UserController().getRequest(new UserJson(Variables.User.getUserID()), new ServiceCallback() {
                         @Override
-                        public void onSuccess(String result) {
-                            startActivity(new Intent(getApplication(), AddFriendsActivity.class));
+                        public void onSuccess(Object result) {
+                            startActivityForResult(new Intent(getApplication(), AddFriendsActivity.class), REQUEST_ACTUALIZE);
                         }
                     });
                 }
@@ -256,13 +223,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(new Intent(this, RegisterActivity.class));
                 this.finish();
             }
+        } else if (requestCode == REQUEST_ACTUALIZE){
+            if (resultCode == RESULT_OK){
+                getContacts(false);
+                refreshNotificationBubble();
+            }
         }
+    }
+
+    private void refreshNotificationBubble(){
+        new UserController().getUser(new ServiceCallback() {
+            @Override
+            public void onSuccess(Object result) {
+                if(Variables.User.getNumRequest() > 0){
+                    notifText.setVisibility(View.VISIBLE);
+                    notifText.setText(String.valueOf(Variables.User.getNumRequest()));
+                } else
+                    notifText.setVisibility(View.INVISIBLE);
+            }
+        });
     }
 
     public void refreshGroups(final boolean firstTime) {
         new GroupController().getGroupsByUser(this, new UserIdJson(Variables.User.getUserID()), new ServiceCallback() {
             @Override
-            public void onSuccess(String result) {
+            public void onSuccess(Object result) {
                 adapter.updateGroups();
                 if(firstTime){
                     groupsReady = true;
@@ -292,7 +277,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         new UserController().getFriends(new UserJson(Variables.User.getUserID()), new ServiceCallback() {
             @Override
-            public void onSuccess(String result) {
+            public void onSuccess(Object result) {
                 adapter.updateContacts();
                 if(firstTime){
                     contactsReady = true;

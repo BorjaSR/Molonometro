@@ -31,10 +31,12 @@ public class PendingRequestAdapter extends RecyclerView.Adapter<PendingRequestAd
 
     private Context mContext;
     private ArrayList<FriendRquest> friendRquests;
+    private RequestListener listener;
 
-    public PendingRequestAdapter(Context context, ArrayList<FriendRquest> friendRquests) {
+    public PendingRequestAdapter(Context context, ArrayList<FriendRquest> friendRquests, RequestListener listener) {
         this.mContext = context;
         this.friendRquests = friendRquests;
+        this.listener = listener;
     }
 
     @Override
@@ -69,8 +71,9 @@ public class PendingRequestAdapter extends RecyclerView.Adapter<PendingRequestAd
                 requestFriendJson.setUserID(contact.getUserID());
                 new UserController().acceptFriendship(requestFriendJson, new ServiceCallback() {
                     @Override
-                    public void onSuccess(String result) {
+                    public void onSuccess(Object result) {
                         showRequestAccepted(holder);
+                        listener.onRequestAccepted(contact);
                     }
                 });
             }

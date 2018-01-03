@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.area_dashboard_group.DashboardGroupActivity;
 import com.bsalazar.molonometro.entities.Group;
+import com.bsalazar.molonometro.general.GetImageFromURL;
 import com.bsalazar.molonometro.general.MyRequestListener;
 import com.bsalazar.molonometro.general.PhotoDetailActivity;
 import com.bsalazar.molonometro.general.Tools;
@@ -24,6 +26,7 @@ import com.bsalazar.molonometro.rest.controllers.GroupController;
 import com.bsalazar.molonometro.rest.services.ServiceCallback;
 import com.bumptech.glide.Glide;
 
+import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -55,12 +58,8 @@ public class GroupsRecyclerAdapter extends RecyclerView.Adapter<GroupsRecyclerAd
 
         holder.group_name.setText(group.getName());
         if (group.getLastEvent() != null) {
-            String userName = "????";
-            String destinationUserName = "????";
-            if (group.getLastEvent().getUserName() != null)
-                userName = Tools.cropName(group.getLastEvent().getUserName());
-            if (group.getLastEvent().getDestinationUserName() != null)
-                destinationUserName = Tools.cropName(group.getLastEvent().getDestinationUserName());
+            String userName = group.getLastEvent().getUser().getUserName();
+            String destinationUserName = group.getLastEvent().getDestinationUser().getUserName();
 
             holder.group_detail.setText(userName + " ha votado a " + destinationUserName);
         } else
@@ -97,38 +96,51 @@ public class GroupsRecyclerAdapter extends RecyclerView.Adapter<GroupsRecyclerAd
                     @Override
                     public void onClick(View view) {
 //
-                        // Supply index input as an argument.
-                        Bundle args = new Bundle();
-                        args.putString("image", group.getImageURL());
-                        args.putInt("noImage", R.drawable.group_icon);
-                        args.putString("title", group.getName());
+                        if (group.getImageURL() != null) {
 
-                        Intent intent = new Intent(mContext, PhotoDetailActivity.class);
-                        intent.putExtras(args);
+                            new GetImageFromURL(mContext, group.getImageURL(), new GetImageFromURL.OnImageDownloadListener() {
+                                @Override
+                                public void onFinish(Bitmap bitmap) {
+
+                                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                                    byte[] byteArray = stream.toByteArray();
+
+                                    // Supply index input as an argument.
+                                    Bundle args = new Bundle();
+//                                    args.putString("image", group.getImageURL());
+//                                    args.putInt("noImage", R.drawable.group_icon);
+                                    args.putString("title", group.getName());
+
+                                    Intent intent = new Intent(mContext, PhotoDetailActivity.class);
+                                    intent.putExtras(args);
+                                    intent.putExtra("imageBytes", byteArray);
 
 
-                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                            ActivityOptions options = ActivityOptions
-                                    .makeSceneTransitionAnimation((Activity) mContext, holder.group_image, mContext.getString(R.string.image_transition));
-                            mContext.startActivity(intent, options.toBundle());
-                        } else
-                            mContext.startActivity(intent);
+                                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                                        ActivityOptions options = ActivityOptions
+                                                .makeSceneTransitionAnimation((Activity) mContext, holder.group_image, mContext.getString(R.string.image_transition));
+                                        mContext.startActivity(intent, options.toBundle());
+                                    } else
+                                        mContext.startActivity(intent);
+                                }
+                            }).execute();
 
+                        }
                     }
                 }
 
         );
 
         holder.group_layout.setOnClickListener(
-                new View.OnClickListener()
+                new View.OnClickListener() {
 
-                {
                     @Override
                     public void onClick(View view) {
                         Variables.Group = group;
                         new GroupController().getGroupParticipantsByID(group.getId(), new ServiceCallback() {
                             @Override
-                            public void onSuccess(String result) {
+                            public void onSuccess(Object result) {
                                 mContext.startActivity(new Intent(mContext, DashboardGroupActivity.class));
                             }
 

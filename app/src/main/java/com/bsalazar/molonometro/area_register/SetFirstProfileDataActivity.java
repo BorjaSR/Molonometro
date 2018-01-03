@@ -126,7 +126,7 @@ public class SetFirstProfileDataActivity extends AppCompatActivity implements Vi
                         public void onFinish(boolean result, String URL) {
                             new UserController().updateUserImage(SetFirstProfileDataActivity.this, URL, new ServiceCallback() {
                                 @Override
-                                public void onSuccess(String result) {
+                                public void onSuccess(Object result) {
                                     updateUser(updateUserJson);
                                 }
 
@@ -150,7 +150,7 @@ public class SetFirstProfileDataActivity extends AppCompatActivity implements Vi
     private void updateUser(UpdateUserJson updateUserJson){
         new UserController().updateUser(getApplicationContext(), updateUserJson, new ServiceCallback() {
             @Override
-            public void onSuccess(String result) {
+            public void onSuccess(Object result) {
                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
                 finish();
             }

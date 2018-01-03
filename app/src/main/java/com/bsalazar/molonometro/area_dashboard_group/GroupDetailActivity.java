@@ -41,6 +41,7 @@ import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.area_adjust.EditFieldActivity;
 import com.bsalazar.molonometro.entities.Participant;
 import com.bsalazar.molonometro.general.Constants;
+import com.bsalazar.molonometro.general.GetImageFromURL;
 import com.bsalazar.molonometro.general.MyRequestListener;
 import com.bsalazar.molonometro.general.Tools;
 import com.bsalazar.molonometro.general.Variables;
@@ -107,21 +108,26 @@ public class GroupDetailActivity extends AppCompatActivity {
         final CollapsingToolbarLayout ctl = (CollapsingToolbarLayout) findViewById(R.id.ctl);
         group_image = (ImageView) findViewById(R.id.contact_image);
 
-        final String imageBase64 = Variables.Group.getImageURL();
-        if (imageBase64 != null) {
-            byte[] imageByteArray = Base64.decode(imageBase64, Base64.DEFAULT);
-            Bitmap bmp = BitmapFactory.decodeByteArray(imageByteArray, 0, imageByteArray.length);
-            group_image.setImageBitmap(bmp);
 
-            Palette p = Palette.from(bmp).generate();
-            if (Build.VERSION.SDK_INT >= 21) {
-                getWindow().setStatusBarColor(Tools.brightnessDown(p.getDominantSwatch().getRgb()));
-                ctl.setContentScrimColor(p.getDominantSwatch().getRgb());
+        new GetImageFromURL(this, Variables.Group.getImageURL(), new GetImageFromURL.OnImageDownloadListener() {
+            @Override
+            public void onFinish(Bitmap bitmap) {
+
+                if (bitmap != null) {
+                    group_image.setImageBitmap(bitmap);
+
+                    Palette p = Palette.from(bitmap).generate();
+                    if (Build.VERSION.SDK_INT >= 21) {
+                        getWindow().setStatusBarColor(Tools.brightnessDown(p.getDominantSwatch().getRgb()));
+                        ctl.setContentScrimColor(p.getDominantSwatch().getRgb());
+                    }
+
+                } else
+                    group_image.setImageDrawable(getResources().getDrawable(R.drawable.group_icon));
+
+
             }
-
-        } else {
-            group_image.setImageDrawable(getResources().getDrawable(R.drawable.group_icon));
-        }
+        }).execute();
 
         group_image.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -178,17 +184,17 @@ public class GroupDetailActivity extends AppCompatActivity {
             TextView contact_state = (TextView) participant_view.findViewById(R.id.contact_state);
             LinearLayout admin_signal = (LinearLayout) participant_view.findViewById(R.id.admin_signal);
 
-            String image64 = "";
+            String imageURL = "";
             String Name = "";
             String State = "";
 
             if (participant.getUserID() == Variables.User.getUserID()) {
-                image64 = "";
+                imageURL = Variables.User.getImageURL();
                 Name = getString(R.string.you);
                 State = Variables.User.getState();
 
             } else {
-                image64 = participant.getImage();
+                imageURL = participant.getImage();
                 Name = participant.getUserName();
                 State = participant.getState();
 
@@ -208,15 +214,11 @@ public class GroupDetailActivity extends AppCompatActivity {
                 });
             }
 
-            try {
-                Glide.with(this)
-                        .load(Base64.decode(image64, Base64.DEFAULT))
-                        .asBitmap()
-                        .into(contact_image);
-
-            } catch (Exception e) {
-                contact_image.setImageResource(R.drawable.user_icon);
-            }
+            Glide.with(this)
+                    .load(imageURL)
+                    .asBitmap()
+                    .placeholder(R.drawable.user_icon)
+                    .into(contact_image);
 
             contact_name.setText(Name);
             contact_state.setText(State);
@@ -290,7 +292,7 @@ public class GroupDetailActivity extends AppCompatActivity {
 
         new GroupController().removeUserFromGroup(addUserToGroupJson, new ServiceCallback() {
             @Override
-            public void onSuccess(String result) {
+            public void onSuccess(Object result) {
                 for (Participant participantGroup : Variables.Group.getParticipants())
                     if (participantGroup.getUserID() == participant.getUserID()) {
                         Variables.Group.getParticipants().remove(participantGroup);
@@ -315,7 +317,7 @@ public class GroupDetailActivity extends AppCompatActivity {
         makeAdmin.setGroupID(Variables.Group.getId());
         new GroupController().makeAdmin(makeAdmin, new ServiceCallback() {
             @Override
-            public void onSuccess(String result) {
+            public void onSuccess(Object result) {
                 progress.dismiss();
                 for (int i = 0; i < participants_container.getChildCount(); i++)
                     if ((int) participants_container.getChildAt(i).getTag() == participant.getUserID())
@@ -345,7 +347,7 @@ public class GroupDetailActivity extends AppCompatActivity {
 
                         new GroupController().removeUserFromGroup(addUserToGroupJson, new ServiceCallback() {
                             @Override
-                            public void onSuccess(String result) {
+                            public void onSuccess(Object result) {
                                 FirebaseMessaging.getInstance().unsubscribeFromTopic(Variables.Group.getFirebaseTopic());
 
                                 for (Participant participant : Variables.Group.getParticipants())
@@ -550,7 +552,7 @@ public class GroupDetailActivity extends AppCompatActivity {
 
         new GroupController().updateGroupImage(this, groupJson, new ServiceCallback() {
             @Override
-            public void onSuccess(String result) {
+            public void onSuccess(Object result) {
 
                 Variables.Group.setImageURL(new_image_64);
                 setCollapsing();

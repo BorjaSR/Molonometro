@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost:8889
--- Tiempo de generación: 22-12-2017 a las 12:15:37
+-- Tiempo de generación: 03-01-2018 a las 10:52:09
 -- Versión del servidor: 5.6.35
 -- Versión de PHP: 7.1.8
 
@@ -86,7 +86,7 @@ CREATE TABLE `comments` (
   `AssociatedCommentID` int(11) DEFAULT NULL,
   `hasAnswers` tinyint(1) NOT NULL DEFAULT '0',
   `Text` varchar(400) COLLATE utf8_spanish_ci DEFAULT NULL,
-  `Image` blob,
+  `Image` varchar(250) COLLATE utf8_spanish_ci DEFAULT NULL,
   `Created` datetime NOT NULL,
   `LastUpdate` datetime NOT NULL,
   `Deleted` tinyint(1) NOT NULL DEFAULT '0'
@@ -118,7 +118,7 @@ CREATE TABLE `friendships` (
 CREATE TABLE `groups` (
   `GroupID` int(11) NOT NULL,
   `Name` varchar(150) COLLATE utf8_spanish_ci NOT NULL,
-  `Image` blob,
+  `Image` varchar(250) COLLATE utf8_spanish_ci DEFAULT NULL,
   `FirebaseTopic` varchar(200) COLLATE utf8_spanish_ci DEFAULT NULL,
   `CreatedBy` int(11) NOT NULL,
   `Created` datetime NOT NULL,
@@ -169,7 +169,7 @@ CREATE TABLE `users` (
   `Name` varchar(75) COLLATE utf8_spanish_ci DEFAULT '',
   `Phone` varchar(25) COLLATE utf8_spanish_ci DEFAULT NULL,
   `State` varchar(200) COLLATE utf8_spanish_ci DEFAULT '',
-  `Image` blob,
+  `Image` varchar(250) COLLATE utf8_spanish_ci DEFAULT NULL,
   `FirebaseToken` varchar(250) COLLATE utf8_spanish_ci DEFAULT NULL,
   `Activated` tinyint(1) NOT NULL DEFAULT '0',
   `Created` datetime NOT NULL,

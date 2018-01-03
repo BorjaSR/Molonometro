@@ -92,7 +92,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
                 new UserController().createUser(createUserJson, new ServiceCallback() {
                     @Override
-                    public void onSuccess(String result) {
+                    public void onSuccess(Object result) {
 
                         Memo.rememberMe(getApplicationContext(), new Gson().toJson(Variables.User));
 
@@ -118,11 +118,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
                 new UserController().login(userJson, new ServiceCallback() {
                     @Override
-                    public void onSuccess(String result) {
-                        Variables.User.setUserID(Integer.valueOf(result));
+                    public void onSuccess(Object result) {
+                        Variables.User.setUserID((int)result);
                         new UserController().getUser(new ServiceCallback() {
                             @Override
-                            public void onSuccess(String result) {
+                            public void onSuccess(Object result) {
 
                                 Memo.rememberMe(getApplicationContext(), new Gson().toJson(Variables.User));
 

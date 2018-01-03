@@ -117,7 +117,7 @@ public class GroupController {
                     @Override
                     public void success(GroupJson group, Response response) {
                         if (callback != null)
-                            callback.onSuccess(new Gson().toJson(group));
+                            callback.onSuccess(group);
 
                     }
 
@@ -139,9 +139,8 @@ public class GroupController {
                     @Override
                     public void success(ArrayList<Participant> participants, Response response) {
                         Variables.Group.setParticipants(participants);
-//                        Variables.Group.setParticipants(Parser.parseParticipants(participants));
                         if (callback != null)
-                            callback.onSuccess(new Gson().toJson(participants));
+                            callback.onSuccess(participants);
 
                     }
 
@@ -161,9 +160,9 @@ public class GroupController {
                     public void success(Boolean result, Response response) {
                         if (callback != null)
                             if (result)
-                                callback.onSuccess(new Gson().toJson(result));
+                                callback.onSuccess(result);
                             else
-                                callback.onFailure(new Gson().toJson(result));
+                                callback.onFailure("false");
 
                     }
 

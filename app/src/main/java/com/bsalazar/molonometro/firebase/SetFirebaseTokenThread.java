@@ -31,7 +31,7 @@ public class SetFirebaseTokenThread extends Thread {
                     if (Variables.User != null) {
                         new UserController().updateFirebaseToken(mContext, firebaseToken, new ServiceCallback() {
                             @Override
-                            public void onSuccess(String result) {
+                            public void onSuccess(Object result) {
                                 Variables.User.setFirebaseToken(firebaseToken);
                                 Variables.FirebaseToken = firebaseToken;
                             }

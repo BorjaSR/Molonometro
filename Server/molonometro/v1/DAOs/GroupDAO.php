@@ -445,8 +445,8 @@ class GroupDAO {
                 $group["LastUpdate"] = $LastUpdate;
 
 
-                $commentsDAO = new CommentsDAO();
-                $group["lastEvent"] = $commentsDAO->getLastCommentByGroup($GroupID);
+                // $commentsDAO = new CommentsDAO();
+                // $group["lastEvent"] = $commentsDAO->getLastCommentByGroup($GroupID);
 
 
                 $groupsList[$i] = $group;

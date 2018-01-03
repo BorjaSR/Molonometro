@@ -156,9 +156,9 @@ public class FinishGroupActivity extends AppCompatActivity implements View.OnCli
 
                     new GroupController().createGroup(this, Variables.createGroupJson, new ServiceCallback() {
                         @Override
-                        public void onSuccess(String result) {
+                        public void onSuccess(Object result) {
 
-                            final GroupJson groupJson = new Gson().fromJson(result, GroupJson.class);
+                            final GroupJson groupJson = (GroupJson) result;
                             if (groupJson.getFirebaseTopic() != null && !groupJson.getFirebaseTopic().equals(""))
                                 FirebaseMessaging.getInstance().subscribeToTopic(groupJson.getFirebaseTopic());
 
@@ -170,7 +170,7 @@ public class FinishGroupActivity extends AppCompatActivity implements View.OnCli
                                         groupJson.setImage(URL);
                                         new GroupController().updateGroupImage(getApplicationContext(), groupJson, new ServiceCallback() {
                                             @Override
-                                            public void onSuccess(String result) {
+                                            public void onSuccess(Object result) {
                                                 Intent main = new Intent(getApplicationContext(), MainActivity.class);
                                                 main.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                                 startActivity(main);

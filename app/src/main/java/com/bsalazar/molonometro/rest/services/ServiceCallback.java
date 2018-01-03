@@ -19,7 +19,7 @@ import retrofit.http.POST;
 
 public abstract class ServiceCallback {
 
-    public abstract void onSuccess(String result);
+    public abstract void onSuccess(Object result);
 
     public void onFailure(String result) {
         Log.e("SERVICE ERROR", "");

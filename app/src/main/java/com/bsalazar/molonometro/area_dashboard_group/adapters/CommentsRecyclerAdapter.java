@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -19,14 +20,17 @@ import android.widget.TextView;
 import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.area_dashboard_group.DashboardGroupActivity;
 import com.bsalazar.molonometro.entities.Comment;
+import com.bsalazar.molonometro.general.GetImageFromURL;
 import com.bsalazar.molonometro.general.ImageActivity;
 import com.bsalazar.molonometro.general.MyRequestListener;
+import com.bsalazar.molonometro.general.PhotoDetailActivity;
 import com.bsalazar.molonometro.general.Tools;
 import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.controllers.LikesController;
 import com.bsalazar.molonometro.rest.services.ServiceCallback;
 import com.bumptech.glide.Glide;
 
+import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -85,10 +89,9 @@ public class CommentsRecyclerAdapter extends RecyclerView.Adapter<CommentsRecycl
                 holder.comment_image.setVisibility(View.GONE);
             else {
                 holder.comment_image.setVisibility(View.VISIBLE);
-                byte[] imageByteArray = Base64.decode(comment.getImage(), Base64.DEFAULT);
 
                 Glide.with(mContext)
-                        .load(imageByteArray)
+                        .load(comment.getImage())
                         .asBitmap()
                         .listener(new MyRequestListener(mContext, holder.user_image))
                         .into(holder.comment_image);
@@ -97,20 +100,31 @@ public class CommentsRecyclerAdapter extends RecyclerView.Adapter<CommentsRecycl
                     @Override
                     public void onClick(View view) {
 
-                        Bundle args = new Bundle();
-                        args.putString("image", comment.getImage());
-                        args.putString("title", comment.getUserName());
-                        args.putString("subtitle", date_string);
+                        new GetImageFromURL(mContext, comment.getImage(), new GetImageFromURL.OnImageDownloadListener() {
+                            @Override
+                            public void onFinish(Bitmap bitmap) {
 
-                        Intent intent = new Intent(mContext, ImageActivity.class);
-                        intent.putExtras(args);
+                                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                                bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                                byte[] byteArray = stream.toByteArray();
 
-                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                            ActivityOptions options = ActivityOptions
-                                    .makeSceneTransitionAnimation((Activity) mContext, holder.comment_image, mContext.getString(R.string.image_transition));
-                            mContext.startActivity(intent, options.toBundle());
-                        } else
-                            mContext.startActivity(intent);
+                                Bundle args = new Bundle();
+//                                args.putString("image", comment.getImage());
+                                args.putString("title", comment.getUserName());
+                                args.putString("subtitle", date_string);
+
+                                Intent intent = new Intent(mContext, ImageActivity.class);
+                                intent.putExtras(args);
+                                intent.putExtra("imageBytes", byteArray);
+
+                                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                                    ActivityOptions options = ActivityOptions
+                                            .makeSceneTransitionAnimation((Activity) mContext, holder.comment_image, mContext.getString(R.string.image_transition));
+                                    mContext.startActivity(intent, options.toBundle());
+                                } else
+                                    mContext.startActivity(intent);
+                            }
+                        }).execute();
                     }
                 });
             }
@@ -169,7 +183,7 @@ public class CommentsRecyclerAdapter extends RecyclerView.Adapter<CommentsRecycl
                     if (!comment.getLikes().contains(Variables.User.getUserID()))
                         new LikesController().addLikeToComment(mContext, comment.getCommentID(), new ServiceCallback() {
                             @Override
-                            public void onSuccess(String result) {
+                            public void onSuccess(Object result) {
                                 comment.getLikes().add(Variables.User.getUserID());
 
                                 TransitionManager.beginDelayedTransition(holder.comment_container);

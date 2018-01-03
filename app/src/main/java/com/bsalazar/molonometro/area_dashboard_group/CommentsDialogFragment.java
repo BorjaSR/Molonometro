@@ -155,7 +155,7 @@ public class CommentsDialogFragment extends DialogFragment {
 
                     new CommentsController().addReplyToComment(mContext, reply, new ServiceCallback() {
                         @Override
-                        public void onSuccess(String result) {
+                        public void onSuccess(Object result) {
                             if (result.equals("true")) {
                                 loadReplies();
                             }
@@ -184,13 +184,9 @@ public class CommentsDialogFragment extends DialogFragment {
         if (commentID != -1)
             new CommentsController().getRepliesByComment(mContext, commentID, new ServiceCallback() {
                 @Override
-                public void onSuccess(String result) {
+                public void onSuccess(Object result) {
                     try {
-                        JSONArray jArray = new JSONArray(result);
-                        ArrayList<Comment> replies = new ArrayList<>();
-
-                        for (int i = 0; i < jArray.length(); i++)
-                            replies.add(new Gson().fromJson(String.valueOf(jArray.getJSONObject(i)), Comment.class));
+                        ArrayList<Comment> replies = (ArrayList<Comment>) result;
 
                         progress_replies.setVisibility(View.GONE);
                         commentsRecyclerView.setVisibility(View.VISIBLE);

@@ -82,7 +82,7 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
 
         new UserController().getUser(new ServiceCallback() {
             @Override
-            public void onSuccess(String result) {
+            public void onSuccess(Object result) {
                 fillFields();
                 loadImage();
             }
@@ -318,38 +318,5 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
                             .into(profile_image);
             }
         }).execute();
-
-//        new UserController().updateUserImage(this, bitmap, new ServiceCallback() {
-//            @Override
-//            public void onSuccess(String result) {
-//
-//                byte[] bitmapdata = Base64.decode(Variables.User.getImageURL(), Base64.DEFAULT);
-//
-//                Glide.with(getApplicationContext())
-//                        .load(bitmapdata)
-//                        .asBitmap()
-//                        .dontAnimate()
-//                        .listener(new MyRequestListener(activity, profile_image))
-//                        .into(profile_image);
-//            }
-//
-//            @Override
-//            public void onFailure(String result) {
-//
-//                try {
-//                    byte[] imageByteArray = Base64.decode(Variables.User.getImageURL(), Base64.DEFAULT);
-//
-//                    Glide.with(getApplicationContext())
-//                            .load(imageByteArray)
-//                            .asBitmap()
-//                            .dontAnimate()
-//                            .listener(new MyRequestListener(activity, profile_image))
-//                            .into(profile_image);
-//
-//                } catch (Exception e) {
-//                    profile_image.setImageDrawable(getResources().getDrawable(R.drawable.user_icon));
-//                }
-//            }
-//        });
     }
 }

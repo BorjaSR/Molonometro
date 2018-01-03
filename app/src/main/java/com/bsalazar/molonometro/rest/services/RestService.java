@@ -166,6 +166,11 @@ public interface RestService {
             @Body Comment comment,
             Callback<Comment> callback);
 
+    @POST("/comments/updateCommentImage")
+    void updateCommentImage(
+            @Body Comment comment,
+            Callback<Comment> callback);
+
     @POST("/comments/addReplyToComment")
     void addReplyToComment(
             @Body Comment comment,

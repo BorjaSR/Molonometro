@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.area_adjust.adapters.ContactsFindedAdapter;
 import com.bsalazar.molonometro.area_adjust.adapters.PendingRequestAdapter;
+import com.bsalazar.molonometro.area_adjust.adapters.RequestListener;
 import com.bsalazar.molonometro.entities.Contact;
 import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.controllers.UserController;
@@ -35,7 +36,7 @@ import java.util.ArrayList;
  * Created by bsalazar on 18/12/17.
  */
 
-public class AddFriendsActivity extends AppCompatActivity implements View.OnClickListener {
+public class AddFriendsActivity extends AppCompatActivity implements View.OnClickListener, RequestListener {
 
     private EditText search_edit;
     private ImageView clear_search;
@@ -60,11 +61,11 @@ public class AddFriendsActivity extends AppCompatActivity implements View.OnClic
 
         clear_search.setOnClickListener(this);
 
-        pendingRequestAdapter = new PendingRequestAdapter(getApplicationContext(), Variables.User.getFriendRquests());
+        pendingRequestAdapter = new PendingRequestAdapter(getApplicationContext(), Variables.User.getFriendRquests(), AddFriendsActivity.this);
         pending_request_recycler.setLayoutManager(new LinearLayoutManager(this));
         pending_request_recycler.setAdapter(pendingRequestAdapter);
 
-        adapter = new ContactsFindedAdapter(getApplicationContext(), contactsFinded);
+        adapter = new ContactsFindedAdapter(getApplicationContext(), contactsFinded, AddFriendsActivity.this);
         contacts_finded_recycler.setLayoutManager(new LinearLayoutManager(this));
         contacts_finded_recycler.setAdapter(adapter);
 
@@ -100,13 +101,16 @@ public class AddFriendsActivity extends AppCompatActivity implements View.OnClic
 
                 if (text.length() == 0) {
                     contactsFinded.clear();
-                    adapter = new ContactsFindedAdapter(getApplicationContext(), contactsFinded);
+                    adapter = new ContactsFindedAdapter(getApplicationContext(), contactsFinded, AddFriendsActivity.this);
                     contacts_finded_recycler.setAdapter(adapter);
 
                     showPendingRequest();
 
-                } else if (text.length() % 3 == 0) {
+                } else if (text.length() == 3) {
                     requestSearch(text);
+
+                } else if(text.length() > 3){
+                    searchUserLocal(text);
                 }
             }
         });
@@ -135,11 +139,10 @@ public class AddFriendsActivity extends AppCompatActivity implements View.OnClic
         showLoading();
         new UserController().searchUsers(text, new ServiceCallback() {
             @Override
-            public void onSuccess(String result) {
+            public void onSuccess(Object result) {
                 showSearchResults();
-                Type contactTypeList = new TypeToken<ArrayList<Contact>>() {}.getType();
-                contactsFinded = new Gson().fromJson(result, contactTypeList);
-                adapter = new ContactsFindedAdapter(getApplicationContext(), contactsFinded);
+                contactsFinded = (ArrayList<Contact>) result;
+                adapter = new ContactsFindedAdapter(getApplicationContext(), contactsFinded, AddFriendsActivity.this);
                 contacts_finded_recycler.setAdapter(adapter);
             }
 
@@ -147,10 +150,20 @@ public class AddFriendsActivity extends AppCompatActivity implements View.OnClic
             public void onFailure(String result) {
                 showSearchResults();
                 contactsFinded.clear();
-                adapter = new ContactsFindedAdapter(getApplicationContext(), contactsFinded);
+                adapter = new ContactsFindedAdapter(getApplicationContext(), contactsFinded, AddFriendsActivity.this);
                 contacts_finded_recycler.setAdapter(adapter);
             }
         });
+    }
+
+    private void searchUserLocal(String text){
+        ArrayList<Contact> contacts2 = new ArrayList<>();
+        for (Contact contact : contactsFinded)
+            if (contact.getUserName().toLowerCase().contains(text.toLowerCase()))
+                contacts2.add(contact);
+
+        adapter = new ContactsFindedAdapter(getApplicationContext(), contacts2, AddFriendsActivity.this);
+        contacts_finded_recycler.setAdapter(adapter);
     }
 
     @Override
@@ -190,5 +203,10 @@ public class AddFriendsActivity extends AppCompatActivity implements View.OnClic
         loading.setVisibility(View.GONE);
         contacts_finded_recycler.setVisibility(View.GONE);
         layout_pending_request.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onRequestAccepted(Contact contact) {
+        setResult(RESULT_OK);
     }
 }

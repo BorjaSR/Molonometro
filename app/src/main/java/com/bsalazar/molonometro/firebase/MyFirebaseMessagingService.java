@@ -10,15 +10,14 @@ import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
-import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.MainActivity;
-import com.bsalazar.molonometro.entities.Comment;
-import com.bsalazar.molonometro.entities.Contact;
+import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.entities.Group;
 import com.bsalazar.molonometro.general.Constants;
 import com.bsalazar.molonometro.general.Tools;
 import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.controllers.GroupController;
+import com.bsalazar.molonometro.rest.json.CommentNotification;
 import com.bsalazar.molonometro.rest.json.GroupJson;
 import com.bsalazar.molonometro.rest.services.Parser;
 import com.bsalazar.molonometro.rest.services.RestController;
@@ -67,9 +66,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         groupJson.setGroupID(groupID);
                         new GroupController().getGroupByID(getApplicationContext(), groupJson, new ServiceCallback() {
                             @Override
-                            public void onSuccess(String result) {
+                            public void onSuccess(Object result) {
 
-                                Group group = Parser.parseGroup(new Gson().fromJson(result, GroupJson.class));
+                                Group group = Parser.parseGroup((GroupJson) result);
                                 Variables.groups.add(0, group);
 
                                 FirebaseMessaging.getInstance().subscribeToTopic(group.getFirebaseTopic());
@@ -86,39 +85,18 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
                     case COMMENT_NOTIFICATION:
                         String json_comment = new JSONObject(remoteMessage.getData().toString()).get("comment").toString();
-                        final Comment comment = new Gson().fromJson(json_comment, Comment.class);
+                        final CommentNotification comment = new Gson().fromJson(json_comment, CommentNotification.class);
 
                         GroupJson groupJson2 = new GroupJson();
                         groupJson2.setGroupID(comment.getGroupID());
                         new GroupController().getGroupByID(getApplicationContext(), groupJson2, new ServiceCallback() {
                             @Override
-                            public void onSuccess(String result) {
+                            public void onSuccess(Object result) {
 
-                                GroupJson group = new Gson().fromJson(result, GroupJson.class);
-                                String userName = null, destinationUserName = null;
-
-                                for (Contact contact : Variables.contacts) {
-                                    if (contact.getUserID() == comment.getUserID())
-                                        userName = contact.getName();
-                                    if (contact.getUserID() == comment.getDestinationUserID())
-                                        destinationUserName = contact.getName();
-                                }
-
-                                boolean myself = false;
-                                if (Variables.User != null) {
-                                    if (comment.getUserID() == Variables.User.getUserID()) {
-                                        userName = Variables.User.getName();
-                                        myself = true;
-                                    }
-                                    if (comment.getDestinationUserID() == Variables.User.getUserID())
-                                        destinationUserName = Variables.User.getName();
-                                }
-
-                                if (!myself)
-                                    if (userName == null || destinationUserName == null)
-                                        sendNotification(group.getName(), "Alguien ha votado!");
-                                    else
-                                        sendNotification(group.getName(), Tools.cropName(userName) + " ha votado a " + Tools.cropName(destinationUserName) + "!");
+                                GroupJson group = (GroupJson) result;
+                                String userName = comment.getUserID().getUserName();
+                                String destinationUserName = comment.getDestinationUserID().getUserName();
+                                sendNotification(group.getName(), userName + " ha votado a " + destinationUserName + "!");
 
                             }
 

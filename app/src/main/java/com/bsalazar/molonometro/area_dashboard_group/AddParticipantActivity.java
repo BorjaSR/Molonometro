@@ -119,7 +119,7 @@ public class AddParticipantActivity extends AppCompatActivity implements View.On
 
                         new GroupController().addUserToGroup(getApplicationContext(), addUserToGroupJson, new ServiceCallback() {
                             @Override
-                            public void onSuccess(String result) {
+                            public void onSuccess(Object result) {
                                 Participant participant = new Participant();
                                 participant.setUserID(contact.getUserID());
                                 participant.setName(contact.getName());

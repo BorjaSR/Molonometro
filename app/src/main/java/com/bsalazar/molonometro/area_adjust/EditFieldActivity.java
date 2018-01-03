@@ -102,7 +102,7 @@ public class EditFieldActivity extends AppCompatActivity {
                         case EDIT_USER_NAME:
                             new UserController().updateUserName(this, edit_text.getText().toString(), new ServiceCallback() {
                                 @Override
-                                public void onSuccess(String result) {
+                                public void onSuccess(Object result) {
                                     finish();
                                 }
 
@@ -116,7 +116,7 @@ public class EditFieldActivity extends AppCompatActivity {
                         case EDIT_NAME:
                             new UserController().updateName(this, edit_text.getText().toString(), new ServiceCallback() {
                                 @Override
-                                public void onSuccess(String result) {
+                                public void onSuccess(Object result) {
                                     finish();
                                 }
 
@@ -130,7 +130,7 @@ public class EditFieldActivity extends AppCompatActivity {
                         case EDIT_USER_STATE:
                             new UserController().updateUserState(this, edit_text.getText().toString(), new ServiceCallback() {
                                 @Override
-                                public void onSuccess(String result) {
+                                public void onSuccess(Object result) {
                                     finish();
                                 }
 
@@ -149,7 +149,7 @@ public class EditFieldActivity extends AppCompatActivity {
 
                             new GroupController().updateGroup(this, groupJson, new ServiceCallback() {
                                 @Override
-                                public void onSuccess(String result) {
+                                public void onSuccess(Object result) {
                                     finish();
                                 }
 

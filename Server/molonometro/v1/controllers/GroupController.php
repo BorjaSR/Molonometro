@@ -99,11 +99,28 @@ $app->post('/group/getGroupsByUser', function() use ($app) {
     $groupDAO = new GroupDAO();
     $DBresponse = $groupDAO->getGroupsByUser($userID);
 
+    $finalResponse = array();
+    $i = 0;
+    foreach ($DBresponse["groups"] as $group) {
+
+        $commentsDAO = new CommentsDAO();
+        $lastEvent = $commentsDAO->getLastCommentByGroup($group["GroupID"]);
+
+        $userDAO = new UserDAO();
+        $lastEvent["UserID"] = $userDAO->getUserById($lastEvent["UserID"]);
+        $lastEvent["DestinationUserID"] = $userDAO->getUserById($lastEvent["DestinationUserID"]);
+        
+        $group["lastEvent"] = $lastEvent;
+
+        $finalResponse[$i] = $group;
+        $i++;
+    }
+
     if($DBresponse["status"] == 200){
-        echoResponse(200, $DBresponse["groups"]);
+        echoResponse(200, $finalResponse);
 
     }else{
-        echoResponse(455, $DBresponse["groups"]);
+        echoResponse(455, $finalResponse);
     }
 });
 

@@ -41,7 +41,7 @@ public class UserController {
                     @Override
                     public void success(Integer userID, Response response) {
                         if (userID != -1 && callback != null)
-                            callback.onSuccess(userID.toString());
+                            callback.onSuccess(userID);
                         else if (callback != null)
                             callback.onFailure("KO");
                     }
@@ -253,7 +253,7 @@ public class UserController {
                                 contacts.add(Parser.parseContact(contactJson));
 
                         if (callback != null)
-                            callback.onSuccess(new Gson().toJson(contacts));
+                            callback.onSuccess(contacts);
                     }
 
                     @Override

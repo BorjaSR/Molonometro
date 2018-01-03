@@ -43,8 +43,8 @@ public class ImageActivity extends AppCompatActivity {
 
         getSupportActionBar().setHomeButtonEnabled(true);
 
-        String imageURL = getIntent().getExtras().getString("image");
-        int noImage = getIntent().getExtras().getInt("noImage", R.drawable.user_icon);
+//        String imageURL = getIntent().getExtras().getString("image");
+//        int noImage = getIntent().getExtras().getInt("noImage", R.drawable.user_icon);
 
         String title = getIntent().getExtras().getString("title", NO_TITLE);
         String subtitle = getIntent().getExtras().getString("subtitle", NO_SUBTITLE);
@@ -67,12 +67,16 @@ public class ImageActivity extends AppCompatActivity {
 //            image.setImageResource(noImage);
 //        }
 
-        Glide.with(ImageActivity.this)
-                .load(imageURL)
-                .asBitmap()
-                .listener(new MyRequestListener(ImageActivity.this, image))
-                .placeholder(noImage)
-                .into(image);
+        final byte[] byteArray = getIntent().getByteArrayExtra("imageBytes");
+        Bitmap bmp = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+        image.setImageBitmap(bmp);
+
+//        Glide.with(ImageActivity.this)
+//                .load(byteArray)
+//                .asBitmap()
+//                .listener(new MyRequestListener(ImageActivity.this, image))
+//                .placeholder(noImage)
+//                .into(image);
     }
 
 

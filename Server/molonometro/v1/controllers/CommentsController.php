@@ -13,19 +13,24 @@ $app->post('/comments/addCommentToGroup', function() use ($app) {
     $userID = (int)$input->UserID;
     $destinationUserID = (int)$input->DestinationUserID;
     $text = (string)$input->Text;
-    $image = (string)$input->Image;
+    // $image = (string)$input->Image;
 
 	if($userID != $destinationUserID){
 
 	    $commentsDAO = new CommentsDAO();
-	    $DBresponse = $commentsDAO->addComment($groupID, $userID, $destinationUserID, $text, $image);
+	    $DBresponse = $commentsDAO->addComment($groupID, $userID, $destinationUserID, $text);
 
 	    if($DBresponse["status"] == 200){
 	    	$isAddMolopuntos = addMolopuntosByComment($destinationUserID, $groupID);
 	    	if($isAddMolopuntos != -1){
 
             	$fcm = new FCM();
-            	$fcm->sendCommentToTopic(FIREBASE_TOPICS_PREFIX . $groupID, $DBresponse["comment"]);
+                $userDAO = new UserDAO();
+                $comment = $DBresponse["comment"];
+                $comment["UserID"] = $userDAO->getUserById($comment["UserID"]);
+                $comment["DestinationUserID"] = $userDAO->getUserById($comment["DestinationUserID"]);
+
+            	$fcm->sendCommentToTopic(FIREBASE_TOPICS_PREFIX . $groupID, $comment);
 
 	        	echoResponse(200, $DBresponse["comment"]);
 	        	
@@ -68,6 +73,29 @@ $app->post('/comments/addReplyToComment', function() use ($app) {
 	} else {
         echoResponse(455, "Associated comment doesn't exist");
 	}
+});
+
+// User update image
+$app->post('/comments/updateCommentImage', function() use ($app) {
+    // check for required params
+    //verifyRequiredParams(array('Name', 'Phone', 'State', 'Image'));
+
+	$body = $app->request()->getBody(); 
+	$input = json_decode($body);
+
+    // reading post params
+    $commentID = (string)$input->CommentID;
+    $Image = (string)$input->Image;
+	
+    $commentDAO = new CommentsDAO();
+    $DBresponse = $commentDAO->updateCommentImage($commentID, $Image);
+
+    $response = $DBresponse;
+    if($DBresponse["status"] == 200)
+    	echoResponse(200, $DBresponse["comment"]);
+    else
+    	echoResponse(455, $DBresponse);
+
 });
 
 // User login

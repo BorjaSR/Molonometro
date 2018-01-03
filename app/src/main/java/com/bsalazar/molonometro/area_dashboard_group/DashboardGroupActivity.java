@@ -36,6 +36,7 @@ import com.bsalazar.molonometro.general.Constants;
 import com.bsalazar.molonometro.general.Tools;
 import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.controllers.CommentsController;
+import com.bsalazar.molonometro.rest.services.Parser;
 import com.bsalazar.molonometro.rest.services.ServiceCallback;
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
@@ -116,7 +117,7 @@ public class DashboardGroupActivity extends AppCompatActivity {
         loading_comments.setVisibility(View.VISIBLE);
         new CommentsController().getCommentsByGroup(this, Variables.Group.getId(), new ServiceCallback() {
             @Override
-            public void onSuccess(String result) {
+            public void onSuccess(Object result) {
                 loading_comments.setVisibility(View.GONE);
                 adapter = new CommentsRecyclerAdapter(activity, Variables.Group.getComments());
                 commentsRecyclerView.setAdapter(adapter);
@@ -234,16 +235,16 @@ public class DashboardGroupActivity extends AppCompatActivity {
         }
 
         LastEvent lastEvent = new LastEvent();
-        lastEvent.setUserID(Variables.User.getUserID());
-        lastEvent.setUserName(Variables.User.getName());
-        lastEvent.setDestinationUserID(comment.getDestinationUserID());
-        lastEvent.setDestinationUserName(comment.getDestinationUserName());
+        lastEvent.setUser(Parser.parseUserToParticipant(Variables.User));
         lastEvent.setLastUpdate(new Date());
-        Variables.Group.setLastEvent(lastEvent);
 
         for (Participant participant : Variables.Group.getParticipants())
-            if (participant.getUserID() == comment.getDestinationUserID())
+            if (participant.getUserID() == comment.getDestinationUserID()) {
                 participant.setMolopuntos(participant.getMolopuntos() + 1);
+                lastEvent.setDestinationUser(participant);
+            }
+
+        Variables.Group.setLastEvent(lastEvent);
 
         repositionedTermometer();
         recalculateTermometer();

@@ -85,8 +85,8 @@ public class ContactDetailActivity extends AppCompatActivity {
         contactJson.setUserID(Variables.User.getUserID());
         new ContactController().getContactByID(getApplicationContext(), contactJson, new ServiceCallback() {
             @Override
-            public void onSuccess(String result) {
-                ContactJson contactResponseJson = new Gson().fromJson(result, ContactJson.class);
+            public void onSuccess(Object result) {
+                ContactJson contactResponseJson = (ContactJson) result;
                 contact.setMolopuntos(contactResponseJson.getMolopuntos());
                 contact.setEmail(contactResponseJson.getEmail());
                 contact.setUserName(contactResponseJson.getUserName());

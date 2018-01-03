@@ -1,6 +1,7 @@
 package com.bsalazar.molonometro.area_adjust.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.transition.TransitionManager;
 import android.util.Base64;
@@ -12,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bsalazar.molonometro.R;
+import com.bsalazar.molonometro.area_dashboard_group.ContactDetailActivity;
 import com.bsalazar.molonometro.entities.Contact;
 import com.bsalazar.molonometro.entities.FriendRquest;
 import com.bsalazar.molonometro.general.MyRequestListener;
@@ -31,10 +33,12 @@ public class ContactsFindedAdapter extends RecyclerView.Adapter<ContactsFindedAd
 
     private Context mContext;
     private ArrayList<Contact> contacts;
+    private RequestListener listener;
 
-    public ContactsFindedAdapter(Context context, ArrayList<Contact> contacts) {
+    public ContactsFindedAdapter(Context context, ArrayList<Contact> contacts, RequestListener listener) {
         this.mContext = context;
         this.contacts = contacts;
+        this.listener = listener;
     }
 
     @Override
@@ -55,13 +59,26 @@ public class ContactsFindedAdapter extends RecyclerView.Adapter<ContactsFindedAd
                     .load(contact.getImageURL())
                     .asBitmap()
                     .listener(new MyRequestListener(mContext, holder.contact_image))
+                    .placeholder(R.drawable.user_icon)
                     .into(holder.contact_image);
 
         } catch (Exception e) {
             holder.contact_image.setImageResource(R.drawable.user_icon);
         }
 
-        if(!haveRequestFrom(contact.getUserID())){
+        if(isFriend(contact)) {
+            holder.buttons_container.setVisibility(View.GONE);
+
+            holder.view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(mContext, ContactDetailActivity.class);
+                    intent.putExtra("contactID", contact.getUserID());
+
+                    mContext.startActivity(intent);
+                }
+            });
+        } else if(!haveRequestFrom(contact.getUserID())){
             holder.accept.setText(mContext.getString(R.string.add));
             holder.accept.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -69,7 +86,7 @@ public class ContactsFindedAdapter extends RecyclerView.Adapter<ContactsFindedAd
                     RequestFriendJson requestFriendJson = new RequestFriendJson(Variables.User.getUserID(), contact.getUserID());
                     new UserController().requestFriendship(requestFriendJson, new ServiceCallback() {
                         @Override
-                        public void onSuccess(String result) {
+                        public void onSuccess(Object result) {
                             showRequestSend(holder);
                         }
                     });
@@ -93,8 +110,9 @@ public class ContactsFindedAdapter extends RecyclerView.Adapter<ContactsFindedAd
                     requestFriendJson.setUserID(contact.getUserID());
                     new UserController().acceptFriendship(requestFriendJson, new ServiceCallback() {
                         @Override
-                        public void onSuccess(String result) {
+                        public void onSuccess(Object result) {
                             showRequestAccepted(holder);
+                            listener.onRequestAccepted(contact);
                         }
                     });
                 }
@@ -154,6 +172,13 @@ public class ContactsFindedAdapter extends RecyclerView.Adapter<ContactsFindedAd
     private boolean haveRequestFrom(int contactId){
         for (FriendRquest friendRquest : Variables.User.getFriendRquests())
             if(friendRquest.getContact().getUserID() == contactId)
+                return true;
+        return false;
+    }
+
+    private boolean isFriend(Contact contact){
+        for (Contact friend : Variables.contacts)
+            if(friend.getUserID() == contact.getUserID())
                 return true;
         return false;
     }

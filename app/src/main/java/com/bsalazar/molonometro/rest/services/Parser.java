@@ -84,8 +84,8 @@ public class Parser {
             return null;
 
         lastEvent.setCommentID(lastEventJson.getCommentID());
-        lastEvent.setUserID(lastEventJson.getUserID());
-        lastEvent.setDestinationUserID(lastEventJson.getDestinationUserID());
+        lastEvent.setUser(parseParticipant(lastEventJson.getUserID()));
+        lastEvent.setDestinationUser(parseParticipant(lastEventJson.getDestinationUserID()));
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
         try {
@@ -94,55 +94,38 @@ public class Parser {
             e.printStackTrace();
         }
 
-        if (lastEventJson.getUserID() == Variables.User.getUserID())
-            lastEvent.setUserName(Variables.User.getName());
-        else {
-            for (Contact contact : Variables.contacts)
-                if (contact.getUserID() == lastEventJson.getUserID())
-                    lastEvent.setUserName(contact.getName());
-        }
-
-        if (lastEventJson.getDestinationUserID() == Variables.User.getUserID())
-            lastEvent.setDestinationUserName(Variables.User.getName());
-        else {
-            for (Contact contact : Variables.contacts)
-                if (contact.getUserID() == lastEventJson.getDestinationUserID())
-                    lastEvent.setDestinationUserName(contact.getName());
-        }
-
         return lastEvent;
     }
 
-    public static ArrayList<Participant> parseParticipants(ArrayList<Participant> participantsJson) {
+    private static ArrayList<Participant> parseParticipants(ArrayList<Participant> participantsJson) {
         ArrayList<Participant> participants = new ArrayList<>();
 
-        for (Participant participantJson : participantsJson) {
-
-            Participant participant = new Participant();
-            participant.setUserID(participantJson.getUserID());
-            participant.setUserName(participantJson.getUserName());
-            participant.setImage(participantJson.getImage());
-            participant.setName(participantJson.getName());
-            participant.setState(participantJson.getState());
-
-//            if (participantJson.getUserID() == Variables.User.getUserID()) {
-
-//            } else
-//                for (Contact contact : Variables.contacts)
-//                    if (contact.getUserID() == participantJson.getUserID()) {
-//                        participant.setImageURL(contact.getImageURL());
-//                        participant.setName(contact.getName());
-//                        participant.setPhone(contact.getPhone());
-//                        participant.setState(contact.getState());
-//                    }
-
-            participant.setMolopuntos(participantJson.getMolopuntos());
-            participant.setAdmin(participantJson.isAdmin());
-
-            participants.add(participant);
-        }
+        for (Participant participantJson : participantsJson)
+            participants.add(parseParticipant(participantJson));
 
         return participants;
+    }
+
+    private static Participant parseParticipant(Participant participantJson){
+        Participant participant = new Participant();
+        participant.setUserID(participantJson.getUserID());
+        participant.setUserName(participantJson.getUserName());
+        participant.setImage(participantJson.getImage());
+        participant.setName(participantJson.getName());
+        participant.setState(participantJson.getState());
+        participant.setMolopuntos(participantJson.getMolopuntos());
+        participant.setAdmin(participantJson.isAdmin());
+        return participant;
+    }
+
+    public static Participant parseUserToParticipant(User user){
+        Participant participant = new Participant();
+        participant.setUserID(user.getUserID());
+        participant.setUserName(user.getUserName());
+        participant.setImage(user.getImageURL());
+        participant.setName(user.getName());
+        participant.setState(user.getState());
+        return participant;
     }
 
     public static ArrayList<Comment> parseComments(ArrayList<Comment> commentsJson) {
@@ -178,17 +161,17 @@ public class Parser {
             if (commentJson.getUserID() == Variables.User.getUserID()) {
                 comment.setUserName(Variables.User.getUserName());
                 comment.setUserImage(Variables.User.getImageURL());
-                comment.setDestinationUserName(getContactByID(commentJson.getDestinationUserID()).getUserName());
+                comment.setDestinationUserName(getContactInGroupByID(commentJson.getDestinationUserID(), Variables.Group).getUserName());
             } else {
-                Contact contact = getContactByID(commentJson.getUserID());
+                Participant contact = getContactInGroupByID(commentJson.getUserID(), Variables.Group);
                 if (contact != null) {
                     comment.setUserName(contact.getUserName());
-                    comment.setUserImage(contact.getImageURL());
+                    comment.setUserImage(contact.getImage());
 
                     if (commentJson.getDestinationUserID() == Variables.User.getUserID())
                         comment.setDestinationUserName(Variables.User.getUserName());
                     else
-                        comment.setDestinationUserName(getContactByID(commentJson.getDestinationUserID()).getUserName());
+                        comment.setDestinationUserName(getContactInGroupByID(commentJson.getDestinationUserID(), Variables.Group).getUserName());
 
                 }
             }
@@ -221,10 +204,10 @@ public class Parser {
                 comment.setUserName(Variables.User.getName());
                 comment.setUserImage("");
             } else {
-                Contact contact = getContactByID(commentJson.getUserID());
-                if (contact != null) {
-                    comment.setUserName(contact.getName());
-                    comment.setUserImage(contact.getImageURL());
+                Participant participant = getContactInGroupByID(commentJson.getUserID(), Variables.Group);
+                if (participant != null) {
+                    comment.setUserName(participant.getName());
+                    comment.setUserImage(participant.getImage());
                 }
             }
 
@@ -238,6 +221,13 @@ public class Parser {
         for (Contact contact : Variables.contacts)
             if (contact.getUserID() == id)
                 return contact;
+        return null;
+    }
+
+    private static Participant getContactInGroupByID(int contactId, Group group) {
+        for (Participant participant : group.getParticipants())
+            if (participant.getUserID() == contactId)
+                return participant;
         return null;
     }
 

@@ -64,7 +64,7 @@ public class CommentsController {
                         ArrayList<Comment> comments = Parser.parseReply(commentsJson);
 
                         if (callback != null)
-                            callback.onSuccess(new Gson().toJson(comments));
+                            callback.onSuccess(comments);
                     }
 
                     @Override
@@ -86,6 +86,27 @@ public class CommentsController {
                     @Override
                     public void success(Comment result, Response response) {
                         if (callback != null)
+                            callback.onSuccess(result);
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        if (callback != null)
+                            callback.onFailure(error.getResponse().getReason());
+
+                        if (error.getResponse() != null)
+                            Toast.makeText(mContext, "KO enviando comentario\n" + error.getResponse().getStatus() + " " + error.getResponse().getReason(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    public void updateCommentImage(final Context mContext, Comment comment, final ServiceCallback callback) {
+
+        Constants.restController.getService().updateCommentImage(comment
+                , new Callback<Comment>() {
+                    @Override
+                    public void success(Comment result, Response response) {
+                        if (callback != null)
                             callback.onSuccess(result.toString());
                     }
 
@@ -95,7 +116,7 @@ public class CommentsController {
                             callback.onSuccess(error.getResponse().getReason());
 
                         if (error.getResponse() != null)
-                            Toast.makeText(mContext, "KO enviando comentario\n" + error.getResponse().getStatus() + " " + error.getResponse().getReason(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mContext, "KO actualizando imagen\n" + error.getResponse().getStatus() + " " + error.getResponse().getReason(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }

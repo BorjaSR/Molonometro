@@ -20,7 +20,7 @@ class CommentsDAO {
 
 
     // creating new user if not existed
-    public function addComment($groupID, $userID, $destinationUserID, $text, $image) {
+    public function addComment($groupID, $userID, $destinationUserID, $text) {
         $userDAO = new UserDAO();
         $groupDAO = new GroupDAO();
         if ($userDAO->isUserExistsById($userID) &&
@@ -31,11 +31,11 @@ class CommentsDAO {
             $response = array();
 
             // insert query
-        $db = new DbConnect();
-        $this->conn = $db->connect();
+            $db = new DbConnect();
+            $this->conn = $db->connect();
 
-            $stmt = $this->conn->prepare("INSERT INTO comments(GroupID, UserID, DestinationUserID, Text, Image, Created, LastUpdate, Deleted) values(?, ?, ?, ?, ?, now(), now(), 0)");
-            $stmt->bind_param("iiiss", $groupID, $userID, $destinationUserID, $text, $image);
+            $stmt = $this->conn->prepare("INSERT INTO comments(GroupID, UserID, DestinationUserID, Text, Created, LastUpdate, Deleted) values(?, ?, ?, ?, now(), now(), 0)");
+            $stmt->bind_param("iiis", $groupID, $userID, $destinationUserID, $text);
 
             $result = $stmt->execute();
 
@@ -61,6 +61,35 @@ class CommentsDAO {
         return $response;
     }
 
+
+    // updateing the image for a comment
+    public function updateCommentImage($id, $image) {
+        $response = array();
+            // update query
+        $db = new DbConnect();
+        $this->conn = $db->connect();
+        $stmt = $this->conn->prepare("UPDATE comments SET Image = ?, LastUpdate = now() WHERE CommentID = ?");
+        $stmt->bind_param("si", $image, $id);
+
+        $result = $stmt->execute();
+
+        $stmt->close();
+
+        // Check for successful update
+        if ($result) {
+            // User successfully inserted
+            $response["status"] = 200;
+            $response["comment"] = $this->getCommentById($id);
+        } else {
+            // Failed to create user
+            $response["status"] = 430;
+            $response["error"] = "Oops! An error occurred while updating user";
+        }
+
+        $db->disconnect();
+        return $response;
+    }
+
     // creating new user if not existed
     public function addReply($groupID, $userID, $destinationUserID, $text, $associatedCommentID) {
 
@@ -75,8 +104,8 @@ class CommentsDAO {
             $response = array();
 
             // insert query
-        $db = new DbConnect();
-        $this->conn = $db->connect();
+            $db = new DbConnect();
+            $this->conn = $db->connect();
             $stmt = $this->conn->prepare("INSERT INTO comments(GroupID, UserID, DestinationUserID, AssociatedCommentID, Text, Created, LastUpdate, Deleted) values(?, ?, ?, ?, ?, now(), now(), 0)");
             $stmt->bind_param("iiiis", $groupID, $userID, $destinationUserID, $associatedCommentID, $text);
 
