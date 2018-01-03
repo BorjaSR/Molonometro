@@ -36,8 +36,8 @@ public class GroupController {
                     @Override
                     public void success(GroupJson groupJson, Response response) {
                         Variables.createGroupJson = null;
-                        ;
-                        callback.onSuccess(new Gson().toJson(groupJson));
+
+                        callback.onSuccess(groupJson);
                     }
 
                     @Override
