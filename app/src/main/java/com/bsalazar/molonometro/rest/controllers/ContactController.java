@@ -24,30 +24,6 @@ import retrofit.client.Response;
 
 public class ContactController {
 
-    public void checkContacts(final Context mContext, ContactsListJson contactsListJson, final ServiceCallback callback) {
-
-        Constants.restController.getService().checkContacts(contactsListJson
-                , new Callback<List<ContactJson>>() {
-                    @Override
-                    public void success(List<ContactJson> contactListJson, Response response) {
-
-                        Variables.contacts.clear();
-
-                        for (int i = 0; i < contactListJson.size(); i++)
-                            Variables.contacts.add(Parser.parseContact(contactListJson.get(i)));
-
-                        callback.onSuccess("");
-                    }
-
-                    @Override
-                    public void failure(RetrofitError error) {
-                        if (error.getResponse() != null)
-                            Toast.makeText(mContext, "KO checkenado usuarios\n" + error.getResponse().getStatus() + " " + error.getResponse().getReason(), Toast.LENGTH_SHORT).show();
-                        callback.onFailure("");
-                    }
-                });
-    }
-
     public void getContactByID(final Context mContext, GetContactDetailJson contactsJson, final ServiceCallback callback) {
 
         Constants.restController.getService().getContactByID(contactsJson

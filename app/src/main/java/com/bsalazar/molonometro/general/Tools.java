@@ -1,5 +1,6 @@
 package com.bsalazar.molonometro.general;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -9,72 +10,29 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
+import android.text.TextUtils;
+import android.text.format.DateUtils;
 import android.util.Base64;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
+import com.bsalazar.molonometro.R;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by bsalazar on 14/10/2016.
  */
 public class Tools {
-
-    public static Bitmap getBitmapFromURL(String src) {
-        try {
-            java.net.URL url = new java.net.URL(src);
-            HttpURLConnection connection = (HttpURLConnection) url
-                    .openConnection();
-            connection.setDoInput(true);
-            connection.connect();
-            InputStream input = connection.getInputStream();
-            return BitmapFactory.decodeStream(input);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public static Bitmap getRoundedCroppedBitmap(Bitmap bitmap) {
-
-        Bitmap finalBitmap;
-        if (bitmap.getWidth() >= bitmap.getHeight())
-            finalBitmap = Bitmap.createBitmap(bitmap,
-                    bitmap.getWidth() / 2 - bitmap.getHeight() / 2, 0,
-                    bitmap.getHeight(), bitmap.getHeight());
-
-        else
-            finalBitmap = Bitmap.createBitmap(bitmap,
-                    0, bitmap.getHeight() / 2 - bitmap.getWidth() / 2,
-                    bitmap.getWidth(), bitmap.getWidth());
-
-        Bitmap output = Bitmap.createBitmap(finalBitmap.getWidth(),
-                finalBitmap.getHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(output);
-
-        final Paint paint = new Paint();
-        final Rect rect = new Rect(0, 0, finalBitmap.getWidth(),
-                finalBitmap.getHeight());
-
-        paint.setAntiAlias(true);
-        paint.setFilterBitmap(true);
-        paint.setDither(true);
-        canvas.drawARGB(0, 0, 0, 0);
-        paint.setColor(Color.parseColor("#BAB399"));
-        canvas.drawCircle(finalBitmap.getWidth() / 2 + 0.7f,
-                finalBitmap.getHeight() / 2 + 0.7f,
-                finalBitmap.getWidth() / 2 + 0.1f, paint);
-        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-        canvas.drawBitmap(finalBitmap, rect, rect, paint);
-
-        return output;
-    }
 
     public static String formatPhone(String old_phone) {
         String new_phone = "NOT_FORMAT";
@@ -129,13 +87,6 @@ public class Tools {
             return Name;
     }
 
-    public static String cropName(String Name) {
-        if (Name == null)
-            return "";
-
-        return Name.split(" ")[0];
-    }
-
     public static Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
         int width = bm.getWidth();
         int height = bm.getHeight();
@@ -151,11 +102,6 @@ public class Tools {
                 bm, 0, 0, width, height, matrix, false);
         bm.recycle();
         return resizedBitmap;
-    }
-
-    public static boolean isToday(Date date) {
-        Date today = new Date();
-        return today.getYear() == date.getYear() && today.getMonth() == date.getMonth() && today.getDay() == date.getDay();
     }
 
     public static int brightnessDown(int color) {
@@ -247,5 +193,62 @@ public class Tools {
             path.append(path);
 
         return path.append("Comments/").append(fileName).append(".png").toString();
+    }
+
+    public static String formatDate(Context context, Date date){
+        String dateString = "";
+
+        SimpleDateFormat dateFormat;
+
+        if (DateUtils.isToday(date.getTime())) {
+            dateFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+            String dateFormatString = dateFormat.format(date);
+            dateString = String.format(context.getString(R.string.today_date), dateFormatString);
+
+        }else if (isYesterday(date.getTime())){
+            dateFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+            String dateFormatString = dateFormat.format(date);
+            dateString = String.format(context.getString(R.string.yesterday_date), dateFormatString);
+
+        } else{
+            dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+            dateString = dateFormat.format(date);
+        }
+
+        return dateString;
+    }
+    public static String formatDateWithTime (Context context, Date date){
+        String dateString = "";
+
+        SimpleDateFormat dateFormat;
+
+        if (DateUtils.isToday(date.getTime())) {
+            dateFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+            String dateFormatString = dateFormat.format(date);
+            dateString = String.format(context.getString(R.string.today_date), dateFormatString);
+
+        }else if (isYesterday(date.getTime())){
+            dateFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+            String dateFormatString = dateFormat.format(date);
+            dateString = String.format(context.getString(R.string.yesterday_date), dateFormatString);
+
+        } else{
+            dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
+            dateString = dateFormat.format(date);
+        }
+
+        return dateString;
+    }
+
+    private static boolean isYesterday(long date) {
+        Calendar now = Calendar.getInstance();
+        Calendar cdate = Calendar.getInstance();
+        cdate.setTimeInMillis(date);
+
+        now.add(Calendar.DATE, -1);
+
+        return now.get(Calendar.YEAR) == cdate.get(Calendar.YEAR)
+                && now.get(Calendar.MONTH) == cdate.get(Calendar.MONTH)
+                && now.get(Calendar.DATE) == cdate.get(Calendar.DATE);
     }
 }

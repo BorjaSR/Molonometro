@@ -201,12 +201,12 @@ public class Parser {
             }
 
             if (commentJson.getUserID() == Variables.User.getUserID()) {
-                comment.setUserName(Variables.User.getName());
-                comment.setUserImage("");
+                comment.setUserName(Variables.User.getUserName());
+                comment.setUserImage(Variables.User.getImageURL());
             } else {
                 Participant participant = getContactInGroupByID(commentJson.getUserID(), Variables.Group);
                 if (participant != null) {
-                    comment.setUserName(participant.getName());
+                    comment.setUserName(participant.getUserName());
                     comment.setUserImage(participant.getImage());
                 }
             }
@@ -215,13 +215,6 @@ public class Parser {
         }
 
         return comments;
-    }
-
-    private static Contact getContactByID(int id) {
-        for (Contact contact : Variables.contacts)
-            if (contact.getUserID() == id)
-                return contact;
-        return null;
     }
 
     private static Participant getContactInGroupByID(int contactId, Group group) {

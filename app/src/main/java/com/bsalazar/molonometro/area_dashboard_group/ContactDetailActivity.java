@@ -29,8 +29,8 @@ import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.controllers.ContactController;
 import com.bsalazar.molonometro.rest.json.ContactJson;
 import com.bsalazar.molonometro.rest.json.GetContactDetailJson;
+import com.bsalazar.molonometro.rest.services.Parser;
 import com.bsalazar.molonometro.rest.services.ServiceCallback;
-import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
@@ -46,6 +46,7 @@ public class ContactDetailActivity extends AppCompatActivity {
     private TextView contact_molopuntos, contact_state, contact_name, no_common_groups;
     private RecyclerView common_groups_recycler;
 
+    private int contactID;
     private Contact contact;
 
     @Override
@@ -58,7 +59,7 @@ public class ContactDetailActivity extends AppCompatActivity {
             getWindow().setExitTransition(new Explode());
         }
 
-        int contactID = getIntent().getExtras().getInt("contactID", -1);
+        contactID = getIntent().getExtras().getInt("contactID", -1);
         for (Contact contactAux : Variables.contacts)
             if (contactAux.getUserID() == contactID) {
                 contact = contactAux;
@@ -74,34 +75,34 @@ public class ContactDetailActivity extends AppCompatActivity {
         common_groups_recycler = (RecyclerView) findViewById(R.id.common_groups_recycler);
 
         setToolbar();
-        setCollapsing();
+
+        if(contact == null) {
+            final GetContactDetailJson contactJson = new GetContactDetailJson();
+            contactJson.setContactID(contactID);
+            contactJson.setUserID(Variables.User.getUserID());
+            new ContactController().getContactByID(getApplicationContext(), contactJson, new ServiceCallback() {
+                @Override
+                public void onSuccess(Object result) {
+                    ContactJson contactResponseJson = (ContactJson) result;
+                    contact = Parser.parseContact((ContactJson) result);
+
+                    contact.setMolopuntos(contactResponseJson.getMolopuntos());
+
+                    if (contactResponseJson.getCommonGroups() == null)
+                        contact.setCommonGroups(new ArrayList<Integer>());
+                    else
+                        contact.setCommonGroups(contactResponseJson.getCommonGroups());
+
+                    setView();
+                    setCollapsing();
+                }
+            });
+
+        } else{
+            setView();
+            setCollapsing();
+        }
     }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        final GetContactDetailJson contactJson = new GetContactDetailJson();
-        contactJson.setContactID(contact.getUserID());
-        contactJson.setUserID(Variables.User.getUserID());
-        new ContactController().getContactByID(getApplicationContext(), contactJson, new ServiceCallback() {
-            @Override
-            public void onSuccess(Object result) {
-                ContactJson contactResponseJson = (ContactJson) result;
-                contact.setMolopuntos(contactResponseJson.getMolopuntos());
-                contact.setEmail(contactResponseJson.getEmail());
-                contact.setUserName(contactResponseJson.getUserName());
-
-                if (contactResponseJson.getCommonGroups() == null)
-                    contact.setCommonGroups(new ArrayList<Integer>());
-                else
-                    contact.setCommonGroups(contactResponseJson.getCommonGroups());
-
-                collapsing.setTitle(contact.getUserName());
-                setView();
-            }
-        });
-    }
-
 
     private void setToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);

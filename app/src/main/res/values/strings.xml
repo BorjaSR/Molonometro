@@ -69,4 +69,6 @@
     <string name="request_send">Solicitud enviada</string>
     <string name="pending_request">Solicitudes pendientes</string>
     <string name="request_accepted">Solicitud aceptada</string>
+    <string name="today_date">Hoy %1$s</string>
+    <string name="yesterday_date">Ayer %1$s</string>
 </resources>

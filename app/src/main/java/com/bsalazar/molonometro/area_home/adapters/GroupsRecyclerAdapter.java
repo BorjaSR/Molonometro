@@ -65,22 +65,13 @@ public class GroupsRecyclerAdapter extends RecyclerView.Adapter<GroupsRecyclerAd
         } else
             holder.group_detail.setText(mContext.getString(R.string.group_creation));
 
-        SimpleDateFormat formatTime = new SimpleDateFormat("HH:mm");
-        SimpleDateFormat formatDate = new SimpleDateFormat("dd/MM/yyyy");
-
         Date eventDate;
         if (group.getLastEvent() != null)
-            eventDate = group.getLastEvent().
-
-                    getLastUpdate();
-
+            eventDate = group.getLastEvent().getLastUpdate();
         else
             eventDate = group.getLastUpdate();
 
-        if (Tools.isToday(eventDate)) {
-            holder.last_event_date.setText(formatTime.format(eventDate));
-        } else
-            holder.last_event_date.setText(formatDate.format(eventDate));
+        holder.last_event_date.setText(Tools.formatDate(mContext, eventDate));
 
         Glide.with(mContext)
                 .load(group.getImageURL())

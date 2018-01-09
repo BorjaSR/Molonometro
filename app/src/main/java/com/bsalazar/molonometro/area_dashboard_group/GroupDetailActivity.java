@@ -246,9 +246,9 @@ public class GroupDetailActivity extends AppCompatActivity {
 
         final ArrayList<String> items = new ArrayList<>();
 
-        items.add("Ver a " + participant.getName());
+        items.add("Ver a " + participant.getUserName());
         if (userIsAdmin()) {
-            items.add("Eliminar a " + participant.getName());
+            items.add("Eliminar a " + participant.getUserName());
             if (!participant.isAdmin())
                 items.add("Hacer administrador de grupo");
         }

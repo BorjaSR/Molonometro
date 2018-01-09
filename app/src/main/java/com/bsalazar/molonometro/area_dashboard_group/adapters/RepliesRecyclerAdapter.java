@@ -53,16 +53,7 @@ public class RepliesRecyclerAdapter extends RecyclerView.Adapter<RepliesRecycler
         holder.comment_from.setText(comment.getUserName());
         holder.comment.setText(comment.getText());
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM HH:mm", Locale.getDefault());
-        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
-
-        final String date_string;
-        if (Tools.isToday(comment.getDate()))
-            date_string = mContext.getString(R.string.today) + " " + timeFormat.format(comment.getDate());
-        else
-            date_string = dateFormat.format(comment.getDate());
-
-        holder.reply_date.setText(date_string);
+        holder.reply_date.setText(Tools.formatDateWithTime(mContext, comment.getDate()));
     }
 
     @Override

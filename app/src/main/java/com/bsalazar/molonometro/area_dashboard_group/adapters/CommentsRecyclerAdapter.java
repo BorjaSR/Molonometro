@@ -72,15 +72,7 @@ public class CommentsRecyclerAdapter extends RecyclerView.Adapter<CommentsRecycl
             holder.comment_from.setText(comment.getUserName());
             holder.comment_to.setText(comment.getDestinationUserName());
 
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM HH:mm", Locale.getDefault());
-            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
-            final String date_string;
-            if (Tools.isToday(comment.getDate()))
-                date_string = mContext.getString(R.string.today) + " " + timeFormat.format(comment.getDate());
-            else
-                date_string = dateFormat.format(comment.getDate());
-
-            holder.comment_date.setText(date_string);
+            holder.comment_date.setText(Tools.formatDateWithTime(mContext, comment.getDate()));
             holder.comment.setText(comment.getText());
 
 
@@ -111,7 +103,7 @@ public class CommentsRecyclerAdapter extends RecyclerView.Adapter<CommentsRecycl
                                 Bundle args = new Bundle();
 //                                args.putString("image", comment.getImage());
                                 args.putString("title", comment.getUserName());
-                                args.putString("subtitle", date_string);
+                                args.putString("subtitle", Tools.formatDateWithTime(mContext, comment.getDate()));
 
                                 Intent intent = new Intent(mContext, ImageActivity.class);
                                 intent.putExtras(args);

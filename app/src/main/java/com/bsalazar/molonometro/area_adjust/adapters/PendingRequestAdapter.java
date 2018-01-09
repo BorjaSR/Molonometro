@@ -2,8 +2,8 @@ package com.bsalazar.molonometro.area_adjust.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateUtils;
 import android.transition.TransitionManager;
-import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,13 +15,17 @@ import com.bsalazar.molonometro.R;
 import com.bsalazar.molonometro.entities.Contact;
 import com.bsalazar.molonometro.entities.FriendRquest;
 import com.bsalazar.molonometro.general.MyRequestListener;
+import com.bsalazar.molonometro.general.Tools;
 import com.bsalazar.molonometro.general.Variables;
 import com.bsalazar.molonometro.rest.controllers.UserController;
 import com.bsalazar.molonometro.rest.json.RequestFriendJson;
 import com.bsalazar.molonometro.rest.services.ServiceCallback;
 import com.bumptech.glide.Glide;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by bsalazar on 28/02/2017.
@@ -51,6 +55,9 @@ public class PendingRequestAdapter extends RecyclerView.Adapter<PendingRequestAd
 
         holder.participant_user_name.setText(String.format(mContext.getString(R.string.user_name), contact.getUserName()));
         holder.participant_name.setText(contact.getName());
+
+        Date date = friendRquests.get(position).getDate();
+        holder.request_date.setText(Tools.formatDate(mContext, date));
 
         try {
             Glide.with(mContext)
@@ -87,7 +94,7 @@ public class PendingRequestAdapter extends RecyclerView.Adapter<PendingRequestAd
         });
     }
 
-    private void showRequestAccepted(ContactsForGroupViewHolder holder){
+    private void showRequestAccepted(ContactsForGroupViewHolder holder) {
         TransitionManager.beginDelayedTransition(holder.view);
 
         holder.buttons_container.setVisibility(View.GONE);
@@ -111,6 +118,7 @@ public class PendingRequestAdapter extends RecyclerView.Adapter<PendingRequestAd
         LinearLayout buttons_container;
         TextView accept, reject;
         TextView request_send;
+        TextView request_date;
 
         ContactsForGroupViewHolder(View itemView) {
             super(itemView);
@@ -125,6 +133,7 @@ public class PendingRequestAdapter extends RecyclerView.Adapter<PendingRequestAd
             accept = (TextView) itemView.findViewById(R.id.accept);
             reject = (TextView) itemView.findViewById(R.id.reject);
             request_send = (TextView) itemView.findViewById(R.id.request_send);
+            request_date = (TextView) itemView.findViewById(R.id.request_date);
         }
     }
 }
